@@ -1,8 +1,8 @@
-﻿# thinkloop.run - Project Documentation
+﻿# ThinkLoop - Project Documentation
 
 ## Project Overview
 
-**thinkloop.run** is a web platform designed to empower users with rapid iterative thinking capabilities. It enables users to explore ideas and generate unexpected outcomes at lightning speed by running thousands of "flash thinking" iterations based on an initial seed input.
+**ThinkLoop** is a web platform designed to empower users with rapid iterative thinking capabilities. It enables users to explore ideas and generate unexpected outcomes at lightning speed by running thousands of "flash thinking" iterations based on an initial seed input.
 
 The platform containerizes the iterative process, offering a secure and consistent environment for exploring concepts, refining ideas, and discovering novel solutions. Whether for brainstorming, creative writing, or data pattern analysis, thinkloop.run provides the engine for rapid exploration and idea generation.
 
@@ -175,4 +175,4 @@ The project's design and future development will likely focus on:
 -   **Interactive Features:** Potentially adding more interactive features using JavaScript to enhance user engagement on the frontend.
 -   **Backend Scalability and Robustness:** Continuously improving the backend infrastructure for handling increased load and ensuring reliable iterative processes.
 
-**© 2025 maxSoft All rights reserved.**
+**© 2025 MaxSoft All rights reserved.**
