@@ -1,17 +1,17 @@
 {
-  "name": "thinkloop",
-  "version": "1.0.0",
-  "description": "A web platform for rapid iterative thinking.",
-  "main": "index.js",
-  "scripts": {
-    "start": "serve .",
-    "build": "echo 'No build process defined yet.'"
-  },
-  "author": "MaxSoft",
-  "license": "ISC",
-  "devDependencies": {
-    "serve": "^14.2.1",
-    "eslint": "^8.56.0",
-    "prettier": "^3.2.5"
-  }
+    "name": "thinkloop",
+    "version": "1.0.0",
+    "description": "A web platform designed to empower users with rapid iterative thinking capabilities.",
+    "main": "app.js",
+    "scripts": {
+        "start": "serve .",
+        "format": "prettier --write ."
+    },
+    "author": "MaxSoft",
+    "license": "ISC",
+    "devDependencies": {
+        "serve": "^14.2.1",
+        "eslint": "^8.56.0",
+        "prettier": "^3.2.5"
+    }
 }
