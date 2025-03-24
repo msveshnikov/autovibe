@@ -8,7 +8,6 @@ The platform containerizes the iterative process, offering a secure and consiste
 
 ![alt text](image.png)
 
-
 # DEMO
 
 https://thinkloop.run
@@ -24,26 +23,16 @@ https://thinkloop.run
 
 ## Architecture Description
 
-thinkloop.run likely employs a client-server architecture. Based on the provided code, we can infer the following components:
-
--   **Frontend (Client-side):**
-
-    -   Implemented using HTML, CSS, and potentially JavaScript.
-    -   Responsible for the user interface, displaying information, and handling user interactions.
-    -   `index.html` represents the landing page and likely includes forms or interfaces for users to input their "seed" and initiate the iterative process.
-    -   Handles displaying the output of the iterative process to the user.
-    -   Uses CSS (embedded in both `README.md` and `index.html`) for styling and visual presentation.
-    -   May incorporate JavaScript for dynamic behavior and interaction (although not explicitly shown in provided files, it's a standard practice for web applications).
-
 -   **Backend (Server-side):**
 
+    -   NodeJS based
     -   Handles the core "thinking loop" process. This is where the iterative algorithms and models reside.
     -   Manages containerization to run iterations in isolated environments.
     -   Receives the "seed" input from the frontend.
     -   Executes thousands of iterations based on the seed and configured parameters.
+    -   Calls AutoCode CLI for generating code.
     -   Generates and manages the output from the iterative processes.
     -   Provides an API for the frontend to communicate with and retrieve results.
-    -   Potentially manages user accounts and access if a signup is required (mentioned in `README.md`).
 
 -   **Database (Potentially):**
     -   May be used to store user data, iteration history, or model configurations.
