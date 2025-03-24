@@ -12,13 +12,12 @@ https://thinkloop.run
 
 **Key Goals:**
 
--   **Rapid Iteration:** Facilitate thousands of iterations in moments.
 -   **Containerization:** Ensure secure and consistent performance through isolated containers.
 -   **Your own API key** : Get your own API key from [here](https://aistudio.google.com/apikey)
 -   **Seed-Based Creativity:** Allow users to guide the exploration with initial seed inputs.
 -   **Accessibility:** Offer a free core model for unrestricted exploration.
 -   **Ease of Use:** Provide an intuitive and user-friendly interface.
--   **Scalability:** Handle a high volume of iterative processes efficiently.
+-   **Use AutoCode** Use https://autocode.work/ in CLI mode for generating code.
 
 ## Architecture Description
 
