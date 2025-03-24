@@ -6,6 +6,9 @@
 
 The platform containerizes the iterative process, offering a secure and consistent environment for exploring concepts, refining ideas, and discovering novel solutions. Whether for brainstorming, creative writing, or data pattern analysis, thinkloop.run provides the engine for rapid exploration and idea generation.
 
+![alt text](image.png)
+
+
 # DEMO
 
 https://thinkloop.run
@@ -172,4 +175,4 @@ The project's design and future development will likely focus on:
 -   **Interactive Features:** Potentially adding more interactive features using JavaScript to enhance user engagement on the frontend.
 -   **Backend Scalability and Robustness:** Continuously improving the backend infrastructure for handling increased load and ensuring reliable iterative processes.
 
-**© 2024 thinkloop.run. All rights reserved.**
+**© 2025 maxSoft All rights reserved.**
