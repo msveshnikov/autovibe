@@ -13,7 +13,7 @@ https://thinkloop.run
 **Key Goals:**
 
 -   **Containerization:** Ensure secure and consistent performance through isolated containers.
--   **Your own API key** : Get your own API key from [here](https://aistudio.google.com/apikey)
+-   **Bring your API key** : Get your own API key from [here](https://aistudio.google.com/apikey)
 -   **Seed-Based Creativity:** Allow users to guide the exploration with initial seed inputs.
 -   **Accessibility:** Offer a free core model for unrestricted exploration.
 -   **Ease of Use:** Provide an intuitive and user-friendly interface.
