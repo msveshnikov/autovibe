@@ -1168,9 +1168,7 @@
                 <h2 class="section-title">Manage API Key</h2>
                 <div class="api-form">
                     <div class="form-group">
-                        <label for="api-key-input" class="form-label"
-                            >Your Google AI API Key</label
-                        >
+                        <label for="api-key-input" class="form-label">Your Google AI API Key</label>
                         <input
                             type="password"
                             id="api-key-input"
@@ -1445,9 +1443,9 @@
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                Authorization: `Bearer ${apiKey}`,
+                                Authorization: `Bearer ${apiKey}`
                             },
-                            body: JSON.stringify({ seed: seed }),
+                            body: JSON.stringify({ seed: seed })
                         });
 
                         const data = await response.json();
