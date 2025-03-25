@@ -1,4 +1,3 @@
-```html
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
@@ -24,6 +23,8 @@
                 --text: #fff;
                 --text-secondary: #ccc;
                 --text-muted: #777;
+                --error: #f44336;
+                --success: #4caf50;
             }
 
             * {
@@ -172,6 +173,8 @@
                 overflow: hidden;
                 animation: buttonFade 1s ease-in-out 0.6s forwards;
                 opacity: 0;
+                cursor: pointer;
+                border: none;
             }
 
             .cta-button:hover {
@@ -360,10 +363,216 @@
                 line-height: 1.7;
             }
 
-            .cta-section {
+            .loop-input-section {
+                padding: 80px 0;
+                background-color: var(--light-dark);
+            }
+
+            .loop-form {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 40px;
+                background-color: var(--card-bg);
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            }
+
+            .form-group {
+                margin-bottom: 25px;
+                text-align: left;
+            }
+
+            .form-label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 500;
+                color: var(--text);
+            }
+
+            .form-input,
+            .form-textarea {
+                width: 100%;
+                padding: 12px 15px;
+                font-size: 1rem;
+                background-color: var(--dark);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                color: var(--text);
+                transition: all 0.3s ease;
+                font-family: 'Poppins', sans-serif;
+            }
+
+            .form-textarea {
+                min-height: 100px;
+                resize: vertical;
+            }
+
+            .form-input:focus,
+            .form-textarea:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
+            }
+
+            .form-help {
+                font-size: 0.9rem;
+                color: var(--text-secondary);
+                margin-top: 5px;
+            }
+
+            .status-message {
+                margin-top: 20px;
+                padding: 10px;
+                border-radius: 8px;
+                text-align: center;
+                font-weight: 500;
+            }
+
+            .status-message.error {
+                background-color: rgba(244, 67, 54, 0.2);
+                color: var(--error);
+            }
+
+            .status-message.success {
+                background-color: rgba(76, 175, 80, 0.2);
+                color: var(--success);
+            }
+
+            .status-message.loading {
+                background-color: rgba(0, 188, 212, 0.1);
+                color: var(--primary);
+            }
+
+            .results-section {
+                padding: 80px 0;
+            }
+
+            .results-output {
+                margin-top: 30px;
+                background-color: var(--card-bg);
+                border-radius: 15px;
+                padding: 30px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                min-height: 100px;
+                white-space: pre-wrap; /* Preserve whitespace and line breaks */
+                word-wrap: break-word; /* Break long words */
+                font-family: 'Courier New', monospace;
+                font-size: 0.95rem;
+                color: var(--text-secondary);
+            }
+
+            .results-output:empty::before {
+                content: 'Results will appear here...';
+                color: var(--text-muted);
+                font-style: italic;
+            }
+
+            .api-key-section {
+                padding: 80px 0;
+                background-color: var(--darker);
+                text-align: center;
+            }
+
+            .api-form {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 30px;
+                background-color: var(--light-dark);
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            }
+
+            .demo-section {
                 padding: 100px 0;
                 text-align: center;
                 background-color: var(--light-dark);
+            }
+
+            .demo-container {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 30px;
+                background-color: var(--card-bg);
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            }
+
+            .demo-tabs {
+                display: flex;
+                justify-content: center;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                margin-bottom: 30px;
+            }
+
+            .demo-tab {
+                padding: 10px 20px;
+                margin: 0 10px;
+                font-weight: 500;
+                color: var(--text-secondary);
+                cursor: pointer;
+                position: relative;
+                transition: all 0.3s ease;
+                border: none;
+                background: none;
+                font-size: 1rem;
+            }
+
+            .demo-tab.active {
+                color: var(--primary);
+            }
+
+            .demo-tab::after {
+                content: '';
+                position: absolute;
+                bottom: -1px;
+                left: 0;
+                width: 0;
+                height: 3px;
+                background-color: var(--primary);
+                transition: width 0.3s ease;
+            }
+
+            .demo-tab.active::after {
+                width: 100%;
+            }
+
+            .demo-content {
+                padding: 20px 0;
+            }
+
+            .terminal {
+                background-color: var(--darker);
+                border-radius: 8px;
+                padding: 20px;
+                font-family: 'Courier New', monospace;
+                color: var(--text);
+                text-align: left;
+                overflow: auto;
+                max-height: 400px;
+                white-space: pre;
+            }
+
+            .terminal-line {
+                line-height: 1.6;
+                margin-bottom: 5px;
+            }
+
+            .prompt {
+                color: var(--primary);
+            }
+
+            .command {
+                color: var(--text);
+            }
+
+            .output {
+                color: var(--text-secondary);
+            }
+
+            .cta-section {
+                padding: 100px 0;
+                text-align: center;
+                background-color: var(--dark);
                 position: relative;
                 overflow: hidden;
             }
@@ -406,6 +615,7 @@
                 border: 2px solid var(--primary);
                 border-radius: 30px;
                 transition: all 0.3s ease;
+                cursor: pointer;
             }
 
             .secondary-button:hover {
@@ -644,138 +854,6 @@
                 }
             }
 
-            .api-key-section {
-                padding: 80px 0;
-                background-color: var(--card-bg);
-                text-align: center;
-            }
-
-            .api-form {
-                max-width: 600px;
-                margin: 0 auto;
-                padding: 30px;
-                background-color: var(--light-dark);
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            }
-
-            .form-group {
-                margin-bottom: 25px;
-                text-align: left;
-            }
-
-            .form-label {
-                display: block;
-                margin-bottom: 8px;
-                font-weight: 500;
-                color: var(--text);
-            }
-
-            .form-input {
-                width: 100%;
-                padding: 12px 15px;
-                font-size: 1rem;
-                background-color: var(--dark);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                border-radius: 8px;
-                color: var(--text);
-                transition: all 0.3s ease;
-            }
-
-            .form-input:focus {
-                outline: none;
-                border-color: var(--primary);
-                box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
-            }
-
-            .form-help {
-                font-size: 0.9rem;
-                color: var(--text-secondary);
-                margin-top: 5px;
-            }
-
-            .demo-section {
-                padding: 100px 0;
-                text-align: center;
-            }
-
-            .demo-container {
-                max-width: 900px;
-                margin: 0 auto;
-                padding: 30px;
-                background-color: var(--card-bg);
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            }
-
-            .demo-tabs {
-                display: flex;
-                justify-content: center;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                margin-bottom: 30px;
-            }
-
-            .demo-tab {
-                padding: 10px 20px;
-                margin: 0 10px;
-                font-weight: 500;
-                color: var(--text-secondary);
-                cursor: pointer;
-                position: relative;
-                transition: all 0.3s ease;
-            }
-
-            .demo-tab.active {
-                color: var(--primary);
-            }
-
-            .demo-tab::after {
-                content: '';
-                position: absolute;
-                bottom: -1px;
-                left: 0;
-                width: 0;
-                height: 3px;
-                background-color: var(--primary);
-                transition: width 0.3s ease;
-            }
-
-            .demo-tab.active::after {
-                width: 100%;
-            }
-
-            .demo-content {
-                padding: 20px 0;
-            }
-
-            .terminal {
-                background-color: var(--darker);
-                border-radius: 8px;
-                padding: 20px;
-                font-family: 'Courier New', monospace;
-                color: var(--text);
-                text-align: left;
-                overflow: auto;
-                max-height: 400px;
-            }
-
-            .terminal-line {
-                line-height: 1.6;
-                margin-bottom: 5px;
-            }
-
-            .prompt {
-                color: var(--primary);
-            }
-
-            .command {
-                color: var(--text);
-            }
-
-            .output {
-                color: var(--text-secondary);
-            }
-
             @media (max-width: 992px) {
                 .hero-title {
                     font-size: 2.8rem;
@@ -862,6 +940,10 @@
                     margin-bottom: 40px;
                 }
 
+                .loop-form {
+                    padding: 30px 20px;
+                }
+
                 .cta-title {
                     font-size: 2rem;
                 }
@@ -901,6 +983,13 @@
                 .section-title {
                     font-size: 1.8rem;
                 }
+
+                .demo-tabs {
+                    flex-wrap: wrap;
+                }
+                .demo-tab {
+                    margin: 5px;
+                }
             }
         </style>
     </head>
@@ -929,11 +1018,22 @@
                         <ul>
                             <li><a href="#features">Features</a></li>
                             <li><a href="#how-it-works">How it Works</a></li>
+                            <li><a href="#loop-input-section">Start Loop</a></li>
                             <li><a href="#api-key">API Key</a></li>
                             <li><a href="#demo">Demo</a></li>
                             <li>
-                                <a href="https://github.com/msveshnikov/thinkloop" class="cta-nav"
-                                    >Get Started</a
+                                <a
+                                    href="https://github.com/msveshnikov/thinkloop"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="secondary-button"
+                                    style="
+                                        padding: 10px 20px;
+                                        font-size: 1rem;
+                                        margin-left: 15px;
+                                        border-width: 1px;
+                                    "
+                                    >GitHub</a
                                 >
                             </li>
                         </ul>
@@ -950,7 +1050,7 @@
                         Experience rapid-fire thinking in containerized loops, generating thousands
                         of iterations to build anything you can dream up.
                     </p>
-                    <a href="https://github.com/msveshnikov/thinkloop" class="cta-button"
+                    <a href="#loop-input-section" class="cta-button"
                         >Start Your Thinking Loop <i class="fas fa-arrow-right"></i
                     ></a>
                 </div>
@@ -987,10 +1087,10 @@
                     </div>
                     <div class="feature-item">
                         <div class="feature-icon"><i class="fas fa-unlock-alt"></i></div>
-                        <h3 class="feature-title">Free Model Access</h3>
+                        <h3 class="feature-title">Bring Your API Key</h3>
                         <p class="feature-description">
-                            Our core model is freely accessible, empowering you to explore without
-                            limits and unleash your creative potential.
+                            Use your own API key from providers like Google AI Studio for enhanced
+                            capabilities and control over the models used.
                         </p>
                     </div>
                 </div>
@@ -1029,29 +1129,67 @@
             </div>
         </section>
 
+        <section class="loop-input-section" id="loop-input-section">
+            <div class="container">
+                <h2 class="section-title">Start Your Loop</h2>
+                <div class="loop-form">
+                    <form id="loop-form">
+                        <div class="form-group">
+                            <label for="seed-input" class="form-label">Enter Your Seed</label>
+                            <textarea
+                                id="seed-input"
+                                class="form-textarea"
+                                placeholder="Enter your initial idea, concept, or data..."
+                                rows="4"
+                                required
+                            ></textarea>
+                            <p class="form-help">
+                                This is the starting point for the iterative process.
+                            </p>
+                        </div>
+                        <button type="submit" id="run-loop-btn" class="cta-button">
+                            Run Thinking Loop <i class="fas fa-play"></i>
+                        </button>
+                        <div id="status-message" class="status-message" style="display: none"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="results-section" id="results-section">
+            <div class="container">
+                <h2 class="section-title">Loop Results</h2>
+                <div id="results-output" class="results-output"></div>
+            </div>
+        </section>
+
         <section class="api-key-section" id="api-key">
             <div class="container">
-                <h2 class="section-title">Get Your API Key</h2>
+                <h2 class="section-title">Manage API Key</h2>
                 <div class="api-form">
                     <div class="form-group">
-                        <label for="api-key" class="form-label">Your API Key</label>
+                        <label for="api-key-input" class="form-label"
+                            >Your Google AI API Key</label
+                        >
                         <input
-                            type="text"
-                            id="api-key"
+                            type="password"
+                            id="api-key-input"
                             class="form-input"
                             placeholder="Paste your API key here"
                         />
                         <p class="form-help">
-                            Get your own API key from
+                            Get your key from
                             <a
                                 href="https://aistudio.google.com/apikey"
                                 target="_blank"
+                                rel="noopener noreferrer"
                                 style="color: var(--primary)"
                                 >Google AI Studio</a
-                            >
+                            >. Your key is stored locally in your browser.
                         </p>
                     </div>
-                    <a href="#" class="cta-button">Save API Key</a>
+                    <button id="save-api-key-btn" class="cta-button">Save API Key</button>
+                    <div id="api-key-status" class="status-message" style="display: none"></div>
                 </div>
             </div>
         </section>
@@ -1060,16 +1198,364 @@
             <div class="container">
                 <h2 class="section-title">See thinkloop in Action</h2>
                 <div class="demo-container">
-                    <div class="demo-tabs">
-                        <div class="demo-tab active">Basic Example</div>
-                        <div class="demo-tab">Advanced Usage</div>
-                        <div class="demo-tab">CLI Mode</div>
+                    <div class="demo-tabs" id="demo-tabs-container">
+                        <button class="demo-tab active" data-tab="basic">Basic Example</button>
+                        <button class="demo-tab" data-tab="advanced">Advanced Usage</button>
+                        <button class="demo-tab" data-tab="cli">CLI Mode</button>
                     </div>
-                    <div class="demo-content">
-                        <div class="terminal"></div>
+                    <div class="demo-content" id="demo-content-container">
+                        <div id="terminal-output" class="terminal"></div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2 class="cta-title">Ready to Explore?</h2>
+                    <p class="cta-subtitle">
+                        Dive into the world of rapid iterative thinking. Set up your environment or
+                        start looping now.
+                    </p>
+                    <div class="cta-buttons">
+                        <a href="#loop-input-section" class="cta-button"
+                            >Start Looping Now <i class="fas fa-arrow-right"></i
+                        ></a>
+                        <a
+                            href="https://github.com/msveshnikov/thinkloop#installation-local-development"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="secondary-button"
+                            >View Setup Guide</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-column">
+                        <span class="footer-logo">thinkloop.run</span>
+                        <p class="footer-description">
+                            Empowering rapid iterative thinking through containerized loops.
+                        </p>
+                        <div class="social-links">
+                            <a
+                                href="https://github.com/msveshnikov/thinkloop"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="social-link"
+                                aria-label="GitHub"
+                                ><i class="fab fa-github"></i
+                            ></a>
+                            <!-- Add other social links here -->
+                        </div>
+                    </div>
+                    <div class="footer-column">
+                        <h4 class="footer-title">Quick Links</h4>
+                        <ul class="footer-links">
+                            <li><a href="#features">Features</a></li>
+                            <li><a href="#how-it-works">How it Works</a></li>
+                            <li><a href="#loop-input-section">Start Loop</a></li>
+                            <li><a href="#api-key">API Key</a></li>
+                            <li><a href="#demo">Demo</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4 class="footer-title">Resources</h4>
+                        <ul class="footer-links">
+                            <li>
+                                <a
+                                    href="https://aistudio.google.com/apikey"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    >Get API Key</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="https://github.com/msveshnikov/thinkloop"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    >GitHub Repository</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="https://autocode.work/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    >AutoCode</a
+                                >
+                            </li>
+                            <!-- Add links to documentation, contributing guidelines etc. -->
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    &copy; <span id="copyright-year"></span> thinkloop.run. All rights reserved.
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const API_KEY_STORAGE_KEY = 'thinkloopApiKey';
+
+                // --- Elements ---
+                const header = document.getElementById('header');
+                const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                const nav = document.getElementById('nav');
+                const apiKeyInput = document.getElementById('api-key-input');
+                const saveApiKeyBtn = document.getElementById('save-api-key-btn');
+                const apiKeyStatus = document.getElementById('api-key-status');
+                const loopForm = document.getElementById('loop-form');
+                const seedInput = document.getElementById('seed-input');
+                const runLoopBtn = document.getElementById('run-loop-btn');
+                const statusMessage = document.getElementById('status-message');
+                const resultsOutput = document.getElementById('results-output');
+                const demoTabsContainer = document.getElementById('demo-tabs-container');
+                const terminalOutput = document.getElementById('terminal-output');
+                const copyrightYear = document.getElementById('copyright-year');
+
+                // --- Initial Setup ---
+                copyrightYear.textContent = new Date().getFullYear();
+                loadApiKey();
+                setupDemoTabs(); // Initialize demo tabs
+
+                // --- Event Listeners ---
+
+                // Header scroll effect
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        header.classList.add('scrolled');
+                    } else {
+                        header.classList.remove('scrolled');
+                    }
+                });
+
+                // Mobile menu toggle
+                mobileMenuBtn.addEventListener('click', () => {
+                    nav.classList.toggle('active');
+                });
+
+                // Close mobile menu when a link is clicked
+                nav.querySelectorAll('a').forEach((link) => {
+                    link.addEventListener('click', () => {
+                        if (nav.classList.contains('active')) {
+                            nav.classList.remove('active');
+                        }
+                    });
+                });
+
+                // Save API Key
+                saveApiKeyBtn.addEventListener('click', saveApiKey);
+                apiKeyInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        saveApiKey();
+                    }
+                });
+
+                // Run Loop Form Submission
+                loopForm.addEventListener('submit', handleLoopFormSubmit);
+
+                // Demo Tabs
+                demoTabsContainer.addEventListener('click', handleDemoTabClick);
+
+                // --- Functions ---
+
+                function loadApiKey() {
+                    const storedKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+                    if (storedKey) {
+                        apiKeyInput.value = storedKey;
+                        displayApiKeyStatus('API Key loaded from local storage.', 'success');
+                    } else {
+                        displayApiKeyStatus(
+                            'API Key not found. Please get one from Google AI Studio and save it.',
+                            'error'
+                        );
+                    }
+                }
+
+                function saveApiKey() {
+                    const key = apiKeyInput.value.trim();
+                    if (key) {
+                        localStorage.setItem(API_KEY_STORAGE_KEY, key);
+                        displayApiKeyStatus('API Key saved successfully!', 'success');
+                    } else {
+                        localStorage.removeItem(API_KEY_STORAGE_KEY);
+                        displayApiKeyStatus('API Key removed.', 'error');
+                    }
+                }
+
+                function displayApiKeyStatus(message, type = 'info') {
+                    apiKeyStatus.textContent = message;
+                    apiKeyStatus.className = `status-message ${type}`;
+                    apiKeyStatus.style.display = 'block';
+                    setTimeout(() => {
+                        // Optionally hide after a delay, or keep it visible
+                        // apiKeyStatus.style.display = 'none';
+                    }, 5000);
+                }
+
+                function displayStatus(message, type = 'info') {
+                    statusMessage.textContent = message;
+                    statusMessage.className = `status-message ${type}`;
+                    statusMessage.style.display = 'block';
+                }
+
+                function clearStatus() {
+                    statusMessage.textContent = '';
+                    statusMessage.style.display = 'none';
+                }
+
+                async function handleLoopFormSubmit(event) {
+                    event.preventDefault();
+                    clearStatus();
+                    resultsOutput.textContent = ''; // Clear previous results
+
+                    const seed = seedInput.value.trim();
+                    const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+
+                    if (!apiKey) {
+                        displayStatus(
+                            'Error: API Key is missing. Please add it in the API Key section.',
+                            'error'
+                        );
+                        // Optionally scroll to the API key section
+                        document.getElementById('api-key').scrollIntoView({ behavior: 'smooth' });
+                        return;
+                    }
+
+                    if (!seed) {
+                        displayStatus('Error: Seed input cannot be empty.', 'error');
+                        seedInput.focus();
+                        return;
+                    }
+
+                    displayStatus('Running thinking loop...', 'loading');
+                    runLoopBtn.disabled = true;
+                    runLoopBtn.style.opacity = '0.7';
+
+                    try {
+                        const response = await fetch('/api/loop', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${apiKey}`,
+                            },
+                            body: JSON.stringify({ seed: seed }),
+                        });
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(
+                                data.message || `HTTP error! status: ${response.status}`
+                            );
+                        }
+
+                        if (data.results && data.results.length > 0) {
+                            resultsOutput.textContent = data.results.join('\n\n');
+                            clearStatus();
+                            // Scroll to results
+                            document
+                                .getElementById('results-section')
+                                .scrollIntoView({ behavior: 'smooth' });
+                        } else {
+                            displayStatus('Loop completed, but no results were returned.', 'info');
+                        }
+                    } catch (error) {
+                        console.error('Error running loop:', error);
+                        displayStatus(
+                            `Error: ${error.message || 'Failed to run loop. Check console.'}`,
+                            'error'
+                        );
+                        resultsOutput.textContent = ''; // Clear results on error
+                    } finally {
+                        runLoopBtn.disabled = false;
+                        runLoopBtn.style.opacity = '1';
+                    }
+                }
+
+                function setupDemoTabs() {
+                    // Set initial content based on the default active tab
+                    const initialTab = demoTabsContainer.querySelector('.demo-tab.active');
+                    if (initialTab) {
+                        updateDemoContent(initialTab.dataset.tab);
+                    }
+                }
+
+                function handleDemoTabClick(event) {
+                    if (event.target.classList.contains('demo-tab')) {
+                        const tabs = demoTabsContainer.querySelectorAll('.demo-tab');
+                        tabs.forEach((tab) => tab.classList.remove('active'));
+                        event.target.classList.add('active');
+                        updateDemoContent(event.target.dataset.tab);
+                    }
+                }
+
+                function updateDemoContent(tabName) {
+                    let content = '';
+                    switch (tabName) {
+                        case 'basic':
+                            content = `<span class="prompt">$</span> <span class="command">thinkloop --seed "Generate 3 creative blog post titles about sustainable travel"</span>
+<span class="output">
+Iteration 1: Generated Title: "Eco-Wanderlust: 5 Ways to Explore the World Responsibly"
+Iteration 2: Generated Title: "Beyond the Tourist Trail: Unforgettable Sustainable Adventures"
+Iteration 3: Generated Title: "Green Getaways: Planning Your Next Eco-Friendly Vacation"
+</span>
+<span class="prompt">$</span>`;
+                            break;
+                        case 'advanced':
+                            content = `<span class="prompt">$</span> <span class="command">thinkloop --seed "Analyze sentiment in recent customer reviews for product X" --iterations 100 --model gemini-pro</span>
+<span class="output">
+Processing 100 iterations with gemini-pro...
+Iteration 1: Review 123 - Positive sentiment detected. Keywords: "love", "excellent", "fast delivery".
+...
+Iteration 50: Review 456 - Negative sentiment detected. Keywords: "disappointed", "broken", "slow support".
+...
+Iteration 100: Review 789 - Neutral sentiment detected. Keywords: "okay", "average", "works as expected".
+
+Summary: Overall positive sentiment (75%), Negative (15%), Neutral (10%).
+Common positive themes: quality, speed. Common negative themes: support response time.
+</span>
+<span class="prompt">$</span>`;
+                            break;
+                        case 'cli':
+                            content = `<span class="prompt">$</span> <span class="command"># Example using AutoCode CLI integration within the loop</span>
+<span class="prompt">$</span> <span class="command">thinkloop --seed "Create a simple Node.js Express server boilerplate" --use-autocode</span>
+<span class="output">
+Calling AutoCode CLI: autocode generate "Create a simple Node.js Express server boilerplate"
+AutoCode Output Received:
+\`\`\`javascript
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(port, () => {
+  console.log(\`Example app listening at http://localhost:\${port}\`);
+});
+\`\`\`
+Iteration 1: Processing AutoCode output... Saved as server_v1.js
+Iteration 2: Adding basic error handling... Saved as server_v2.js
+...
+</span>
+<span class="prompt">$</span>`;
+                            break;
+                        default:
+                            content = 'Select a tab to see example content.';
+                    }
+                    terminalOutput.innerHTML = content;
+                }
+            });
+        </script>
     </body>
 </html>
