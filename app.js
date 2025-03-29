@@ -63,7 +63,7 @@ const runThinkingLoop = async (seed, apiKey, iterationCount = 5) => {
             console.error(`Error during iteration ${i}:`, err);
             results.push({ iteration: i, error: `Iteration failed: ${err.toString()}` });
             // Decide if loop should continue or break on error
-            // break;
+            break;
         }
     }
     console.log(`Loop finished for seed: "${seed}"`);
