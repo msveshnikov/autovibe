@@ -225,3 +225,9 @@ License information will be provided upon release.
   Actions) for automated testing and deployment.
 - **Monitoring & Logging:** Implement logging in `app.js` (e.g., using Winston or Pino) and consider
   monitoring tools to track application performance and errors.
+
+
+# TODO
+
+- return each loop result to the frontend
+- show in frontend appending to loop results (now I see [object Object], need text)

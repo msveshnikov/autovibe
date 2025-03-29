@@ -74,9 +74,7 @@ const runThinkingLoop = async (seed, apiKey, iterationCount = 5) => {
             // Store the result for this iteration
             results.push({ iteration: i, output: geminiResult });
 
-            // Optional: Modify seed for the next iteration based on the output if needed
-            // currentSeed = geminiResult; // Example: use the output as the next input
-            // Or keep using the original seed: currentSeed = seed;
+            currentSeed += geminiResult;
         } catch (err) {
             console.error(`Error during iteration ${i}:`, err);
             results.push({ iteration: i, error: `Iteration failed: ${err.message}` });
