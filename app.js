@@ -2,6 +2,7 @@ import express from 'express';
 import { exec } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Helper to get __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -14,6 +15,29 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 // Serve static files (index.html, css, js, images)
 app.use(express.static(path.join(__dirname, '.')));
+
+// Function to call Google Gemini Flash model
+const callGeminiFlash = async (seed, apiKey) => {
+    if (!apiKey) {
+        throw new Error('API Key is required to call the Gemini model.');
+    }
+    try {
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-thinking-exp-01-21' });
+
+        const result = await model.generateContent(seed);
+        const response = result.response;
+        const text = response.text();
+        return text;
+    } catch (error) {
+        console.error('Gemini API Error:', error);
+        // Check for specific API-related errors if needed
+        if (error.message.includes('API key not valid')) {
+            throw new Error(`Gemini API execution failed: Invalid API Key. Please check your key.`);
+        }
+        throw new Error(`Gemini API execution failed: ${error.message}`);
+    }
+};
 
 // Function to call AutoCode CLI (placeholder for iterative logic)
 const callAutoCodeCLI = (seed) =>
@@ -34,36 +58,37 @@ const callAutoCodeCLI = (seed) =>
 
 // Core thinking loop logic
 const runThinkingLoop = async (seed, apiKey, iterationCount = 5) => {
-    // NOTE: The apiKey is received but currently NOT used in this loop logic.
-    // The README suggests using it for external APIs (like Google AI).
-    // This placeholder uses AutoCode CLI as per the original code.
-    // A real implementation would integrate the external API here.
-
     console.log(
         `Starting loop for seed: "${seed}" with ${iterationCount} iterations. API Key provided: ${!!apiKey}`
     );
 
     const results = [];
-    let currentSeed = seed;
+    let currentSeed = seed; // Use the original seed for each iteration as per request interpretation
 
     for (let i = 1; i <= iterationCount; i++) {
         console.log(`Running iteration ${i} with seed: "${currentSeed}"`);
         try {
-            // Example: Call AutoCode CLI in each iteration
-            // In a real scenario, this step would involve the core "thinking" process,
-            // potentially using the apiKey, modifying the seed based on previous results, etc.
-            const cliResult = await callAutoCodeCLI(currentSeed);
+            // Call Gemini Flash model in each iteration
+            const geminiResult = await callGeminiFlash(currentSeed, apiKey);
 
             // Store the result for this iteration
-            results.push({ iteration: i, output: cliResult });
+            results.push({ iteration: i, output: geminiResult });
 
-            // Placeholder: Modify seed for the next iteration (optional)
-            // currentSeed = `${seed} - result: ${cliResult.substring(0, 20)}...`; // Example modification
+            // Optional: Modify seed for the next iteration based on the output if needed
+            // currentSeed = geminiResult; // Example: use the output as the next input
+            // Or keep using the original seed: currentSeed = seed;
         } catch (err) {
             console.error(`Error during iteration ${i}:`, err);
-            results.push({ iteration: i, error: `Iteration failed: ${err.toString()}` });
+            results.push({ iteration: i, error: `Iteration failed: ${err.message}` });
             // Decide if loop should continue or break on error
-            break;
+            // Break if API key is invalid or other critical errors occur
+            if (
+                err.message.includes('Invalid API Key') ||
+                err.message.includes('API Key is required')
+            ) {
+                break;
+            }
+            // Continue for other errors, logging them per iteration
         }
     }
     console.log(`Loop finished for seed: "${seed}"`);
@@ -96,11 +121,25 @@ app.post('/api/loop', async (req, res) => {
     const finalIterationCount = isNaN(count) || count <= 0 ? 5 : Math.min(count, 50); // Default 5, max 50
 
     try {
-        // Pass apiKey to the loop function, even if it's not used internally yet
         const results = await runThinkingLoop(seed.trim(), apiKey, finalIterationCount);
+        // Check if the loop ended early due to an API key error
+        const apiKeyError = results.find(
+            (r) =>
+                r.error &&
+                (r.error.includes('Invalid API Key') || r.error.includes('API Key is required'))
+        );
+        if (apiKeyError) {
+            // Return 401 if there was an API key issue during the loop
+            return res.status(401).json({ message: apiKeyError.error, results });
+        }
         res.json({ results });
     } catch (error) {
+        // Catch potential errors not caught within the loop (e.g., setup issues)
         console.error('Error in /api/loop handler:', error);
+        // Distinguish between client errors (like bad API key detected early) and server errors
+        if (error.message.includes('API Key is required')) {
+            return res.status(401).json({ message: 'Unauthorized: ' + error.message });
+        }
         res.status(500).json({ message: 'Internal Server Error', error: error.toString() });
     }
 });
