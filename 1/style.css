@@ -1,0 +1,223 @@
+/* style.css for Make Me Rich (Concept) */
+
+/* ----------------------------------- */
+/* --- 1. General Styles & Reset --- */
+/* ----------------------------------- */
+
+/* Basic Reset */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* CSS Variables */
+:root {
+    /* Colors */
+    --color-primary-dark: #2c3e50; /* Dark blue-grey */
+    --color-primary-medium: #34495e; /* Medium blue-grey */
+    --color-secondary-light: #ecf0f1; /* Light grey */
+    --color-secondary-medium: #bdc3c7; /* Medium grey */
+    --color-background-light: #f4f4f4; /* Very light grey background */
+    --color-background-main: #ffffff; /* White main content background */
+    --color-text-dark: #333333; /* Dark text */
+    --color-text-muted: #7f8c8d; /* Muted text (disclaimer) */
+    --color-accent: #3498db; /* Example accent color (blue) - Adjust later */
+    --color-focus-ring: #4a90e2; /* Focus outline color */
+
+    /* Typography */
+    --font-family-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-base: 16px;
+    --line-height-base: 1.6;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem; /* 4px */
+    --spacing-sm: 0.5rem; /* 8px */
+    --spacing-md: 1rem; /* 16px */
+    --spacing-lg: 1.5rem; /* 24px */
+    --spacing-xl: 2rem; /* 32px */
+
+    /* Borders */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-width: 1px;
+    --border-color: var(--color-secondary-light);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+html {
+    font-size: var(--font-size-base);
+}
+
+body {
+    font-family: var(--font-family-primary);
+    line-height: var(--line-height-base);
+    background-color: var(--color-background-light);
+    color: var(--color-text-dark);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Basic Accessibility Focus Outline */
+*:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.3); /* Optional softer glow */
+}
+
+/* --------------------- */
+/* --- 2. Layout --- */
+/* --------------------- */
+
+header {
+    background-color: var(--color-primary-dark);
+    color: var(--color-secondary-light);
+    padding: var(--spacing-lg) var(--spacing-md);
+    text-align: center;
+    box-shadow: var(--shadow-md);
+}
+
+main {
+    flex-grow: 1; /* Takes up available space */
+    padding: var(--spacing-xl) var(--spacing-md);
+    max-width: 800px;
+    width: 90%;
+    margin: var(--spacing-xl) auto;
+    background-color: var(--color-background-main);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--border-radius-md);
+}
+
+footer {
+    background-color: var(--color-primary-medium);
+    color: var(--color-secondary-medium);
+    text-align: center;
+    padding: var(--spacing-md) 0;
+    margin-top: auto; /* Pushes footer to the bottom */
+    font-size: 0.9em;
+}
+
+/* ----------------------- */
+/* --- 3. Components --- */
+/* ----------------------- */
+
+/* Headings */
+h1 {
+    font-size: 2rem;
+    margin: 0;
+    color: inherit; /* Inherits from header */
+}
+
+h2 {
+    color: var(--color-primary-dark);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    font-size: 1.5rem;
+}
+
+/* Paragraphs */
+p {
+    margin-bottom: var(--spacing-md);
+}
+
+/* Links (Example - style as needed) */
+a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+a:hover,
+a:focus {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+/* Buttons (Example - style as needed) */
+button {
+    background-color: var(--color-accent);
+    color: var(--color-background-main);
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: 1em;
+    transition:
+        background-color 0.2s ease-in-out,
+        transform 0.1s ease;
+}
+
+button:hover {
+    background-color: var(--color-primary-dark);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Disclaimer Section */
+.disclaimer {
+    font-size: 0.85em;
+    color: var(--color-text-muted);
+    border-top: var(--border-width) solid var(--border-color);
+    padding-top: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+}
+
+.disclaimer p {
+    margin-bottom: 0;
+}
+
+.disclaimer strong {
+    color: var(--color-text-dark);
+}
+
+/* ---------------------- */
+/* --- 4. Utilities --- */
+/* ---------------------- */
+/* Add utility classes here if needed (e.g., .text-center, .mt-1) */
+
+/* ------------------------- */
+/* --- 5. Responsiveness --- */
+/* ------------------------- */
+
+@media (max-width: 768px) {
+    main {
+        width: 95%;
+        margin: var(--spacing-lg) auto;
+    }
+}
+
+@media (max-width: 600px) {
+    html {
+        font-size: 15px; /* Slightly smaller base font on small screens */
+    }
+
+    header {
+        padding: var(--spacing-md);
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    main {
+        padding: var(--spacing-lg) var(--spacing-sm);
+        margin: var(--spacing-md) auto;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Add more specific styles based on README Design Ideas as the project evolves */

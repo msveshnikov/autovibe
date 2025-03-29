@@ -70,7 +70,7 @@ const callAutoCodeCLI = (seed) =>
         const sanitizedSeed = seed.replace(/"/g, '\\"').replace(/`/g, '\\`').replace(/\$/g, '\\$'); // Basic sanitization
         // In a real scenario, consider more robust sanitization or alternative execution methods
         // Ensure AutoCode CLI is installed or use npx
-        const command = `autocode generate "${sanitizedSeed}"`; // Assuming 'autocode' is in PATH or use 'npx autocode-ai generate ...'
+        const command = `npx autocode generate "${sanitizedSeed}"`; // Assuming 'autocode' is in PATH or use 'npx autocode-ai generate ...'
         console.log(`Executing AutoCode CLI: ${command}`);
         exec(command, (error, stdout, stderr) => {
             if (error) {
