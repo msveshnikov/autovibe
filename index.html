@@ -513,22 +513,27 @@
                 font-weight: bold;
             }
 
-            .result-preview-iframe {
-                width: 50%;
+            .iframe-container {
+                display: flex;
+                gap: 20px; /* Adjust spacing between iframes */
+                margin-top: 30px; /* Space above the iframe container */
+                flex-wrap: wrap; /* Allow wrapping on smaller screens if needed */
+            }
+
+            .iframe-container iframe {
+                flex: 1; /* Each iframe takes up equal available space */
+                min-width: 300px; /* Minimum width before wrapping */
                 height: 800px; /* Adjust height as needed */
                 border: 1px solid var(--light-dark);
                 border-radius: 8px;
-                background-color: var(--card-bg); /* Match theme */
-                margin-top: 30px; /* Add some space above the iframe */
             }
 
             .result-preview-iframe2 {
-                width: 50%;
-                height: 800px; /* Adjust height as needed */
-                border: 1px solid var(--light-dark);
-                border-radius: 8px;
-                background-color: #ebf1f2;
-                margin-top: 30px; /* Add some space above the iframe */
+                background-color: #ebf1f2; /* Specific background for this iframe */
+            }
+
+            .result-preview-iframe {
+                background-color: var(--card-bg); /* Match theme */
             }
 
             .api-key-section {
@@ -1008,6 +1013,15 @@
                     padding: 30px 20px;
                 }
 
+                .iframe-container {
+                    flex-direction: column; /* Stack iframes vertically on smaller screens */
+                    gap: 15px;
+                }
+
+                .iframe-container iframe {
+                    height: 600px; /* Adjust height for smaller screens */
+                }
+
                 .cta-title {
                     font-size: 2rem;
                 }
@@ -1053,6 +1067,10 @@
                 }
                 .demo-tab {
                     margin: 5px;
+                }
+
+                .iframe-container iframe {
+                    height: 500px; /* Further adjust height for very small screens */
                 }
             }
         </style>
@@ -1222,18 +1240,20 @@
 
         <section class="results-section" id="results-section">
             <div class="container">
-                <h2 class="section-title">Loop Results</h2>
+                <h2 class="section-title">Loop Results & Previews</h2>
                 <div id="results-output" class="results-output"></div>
-                <iframe
-                    class="result-preview-iframe2"
-                    src="2/README.md"
-                    title="Brainstrom"
-                ></iframe>
-                <iframe
-                    class="result-preview-iframe"
-                    src="2/index.html"
-                    title="Result Preview"
-                ></iframe>
+                <div class="iframe-container">
+                    <iframe
+                        class="result-preview-iframe2"
+                        src="2/README.md"
+                        title="Brainstorm/Readme Preview"
+                    ></iframe>
+                    <iframe
+                        class="result-preview-iframe"
+                        src="2/index.html"
+                        title="Generated HTML Preview"
+                    ></iframe>
+                </div>
             </div>
         </section>
 
@@ -1392,6 +1412,7 @@
                 const demoTabsContainer = document.getElementById('demo-tabs-container');
                 const terminalOutput = document.getElementById('terminal-output');
                 const copyrightYear = document.getElementById('copyright-year');
+                const resultIframes = document.querySelectorAll('.iframe-container iframe'); // Select iframes for update
 
                 // --- Initial Setup ---
                 copyrightYear.textContent = new Date().getFullYear();
@@ -1492,6 +1513,28 @@
                         .replace(/'/g, '&#039;');
                 }
 
+                // Function to update iframe sources and reload them
+                function updateResultPreviews(resultDir) {
+                    // Assuming the structure is always /<resultDir>/index.html and /<resultDir>/README.md
+                    const htmlPreviewUrl = `/${resultDir}/index.html`;
+                    const readmePreviewUrl = `/${resultDir}/README.md`;
+
+                    // Find the specific iframes (adjust selectors if needed)
+                    const htmlIframe = document.querySelector('.result-preview-iframe');
+                    const readmeIframe = document.querySelector('.result-preview-iframe2');
+
+                    if (htmlIframe) {
+                        htmlIframe.src = htmlPreviewUrl;
+                        // Optional: Force reload if src doesn't change but content might
+                        // htmlIframe.contentWindow.location.reload();
+                    }
+                    if (readmeIframe) {
+                        readmeIframe.src = readmePreviewUrl;
+                        // Optional: Force reload
+                        // readmeIframe.contentWindow.location.reload();
+                    }
+                }
+
                 async function handleLoopFormSubmit(event) {
                     event.preventDefault();
                     clearStatus();
@@ -1518,7 +1561,6 @@
 
                     displayStatus('Running thinking loop...', 'loading');
                     runLoopBtn.disabled = true;
-                    // runLoopBtn.style.opacity = '0.7'; // Style handled by :disabled selector
 
                     try {
                         const response = await fetch('/api/loop', {
@@ -1530,24 +1572,22 @@
                             body: JSON.stringify({ seed: seed })
                         });
 
-                        // Try to parse JSON regardless of status code for better error messages
                         let data;
                         try {
                             data = await response.json();
                         } catch (jsonError) {
-                            // Handle cases where the response is not valid JSON (e.g., server error page)
                             throw new Error(
                                 `Server returned non-JSON response. Status: ${response.status} ${response.statusText}`
                             );
                         }
 
                         if (!response.ok) {
-                            // Use message from JSON payload if available, otherwise use status text
                             throw new Error(
                                 data?.message || `HTTP error! Status: ${response.status}`
                             );
                         }
 
+                        // Update text results output
                         if (data.results && Array.isArray(data.results)) {
                             if (data.results.length > 0) {
                                 data.results.forEach((result) => {
@@ -1564,7 +1604,7 @@
                                         content.classList.add('iteration-error');
                                         content.textContent = `Error: ${escapeHtml(result.error)}`;
                                     } else if (result.output) {
-                                        content.textContent = escapeHtml(result.output); // Escape HTML in output
+                                        content.textContent = escapeHtml(result.output);
                                     } else {
                                         content.textContent = '(No output or error)';
                                         content.style.fontStyle = 'italic';
@@ -1573,33 +1613,42 @@
                                     resultsOutput.appendChild(iterationDiv);
                                 });
                                 clearStatus();
-                                // Scroll to results
-                                document
-                                    .getElementById('results-section')
-                                    .scrollIntoView({ behavior: 'smooth' });
                             } else {
                                 displayStatus(
-                                    'Loop completed, but no results were returned.',
+                                    'Loop completed, but no text results were returned.',
                                     'info'
                                 );
                             }
                         } else {
-                            console.warn('Received unexpected data format:', data);
+                            console.warn('Received unexpected data format for text results:', data);
                             displayStatus('Received unexpected data format from server.', 'error');
                         }
+
+                        // Update iframe previews if resultDir is provided
+                        if (data.resultDir) {
+                            updateResultPreviews(data.resultDir);
+                        } else {
+                            // Optionally clear or set default src for iframes if no resultDir
+                            updateResultPreviews('2'); // Default or indicate no preview
+                            console.warn('No resultDir received to update previews.');
+                        }
+
+                        // Scroll to results after processing both text and previews
+                        document
+                            .getElementById('results-section')
+                            .scrollIntoView({ behavior: 'smooth' });
                     } catch (error) {
                         console.error('Error running loop:', error);
-                        // Display specific error message (e.g., from backend or fetch failure)
                         displayStatus(`Error: ${error.message}`, 'error');
-                        resultsOutput.innerHTML = ''; // Clear results on error
+                        resultsOutput.innerHTML = ''; // Clear text results on error
+                        // Optionally reset iframes on error
+                        // updateResultPreviews('error-placeholder');
                     } finally {
                         runLoopBtn.disabled = false;
-                        // runLoopBtn.style.opacity = '1'; // Style handled by :disabled selector
                     }
                 }
 
                 function setupDemoTabs() {
-                    // Set initial content based on the default active tab
                     const initialTab = demoTabsContainer.querySelector('.demo-tab.active');
                     if (initialTab) {
                         updateDemoContent(initialTab.dataset.tab);
