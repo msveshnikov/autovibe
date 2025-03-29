@@ -202,6 +202,24 @@
                 height: 300px;
             }
 
+            /* Disabled button style */
+            .cta-button:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3);
+            }
+
+            .cta-button:disabled:hover {
+                transform: none;
+                box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3);
+            }
+
+            .cta-button:disabled::after {
+                width: 0;
+                height: 0;
+            }
+
             .section-title {
                 font-size: 2.5rem;
                 font-weight: 700;
@@ -443,6 +461,11 @@
                 color: var(--primary);
             }
 
+            .status-message.info {
+                background-color: rgba(33, 150, 243, 0.1);
+                color: #2196f3;
+            }
+
             .results-section {
                 padding: 80px 0;
             }
@@ -465,6 +488,29 @@
                 content: 'Results will appear here...';
                 color: var(--text-muted);
                 font-style: italic;
+            }
+
+            .results-output .iteration {
+                margin-bottom: 20px;
+                padding-bottom: 20px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .results-output .iteration:last-child {
+                margin-bottom: 0;
+                padding-bottom: 0;
+                border-bottom: none;
+            }
+
+            .results-output .iteration-header {
+                font-weight: bold;
+                color: var(--primary);
+                margin-bottom: 10px;
+            }
+
+            .results-output .iteration-error {
+                color: var(--error);
+                font-weight: bold;
             }
 
             .api-key-section {
@@ -1373,8 +1419,8 @@
                     } else {
                         displayApiKeyStatus(
                             'API Key not found. Please get one from Google AI Studio and save it.',
-                            'error'
-                        );
+                            'info'
+                        ); // Changed to 'info'
                     }
                 }
 
@@ -1385,7 +1431,7 @@
                         displayApiKeyStatus('API Key saved successfully!', 'success');
                     } else {
                         localStorage.removeItem(API_KEY_STORAGE_KEY);
-                        displayApiKeyStatus('API Key removed.', 'error');
+                        displayApiKeyStatus('API Key removed.', 'info'); // Changed to 'info'
                     }
                 }
 
@@ -1393,10 +1439,7 @@
                     apiKeyStatus.textContent = message;
                     apiKeyStatus.className = `status-message ${type}`;
                     apiKeyStatus.style.display = 'block';
-                    setTimeout(() => {
-                        // Optionally hide after a delay, or keep it visible
-                        // apiKeyStatus.style.display = 'none';
-                    }, 5000);
+                    // Keep it visible until next action
                 }
 
                 function displayStatus(message, type = 'info') {
@@ -1410,20 +1453,31 @@
                     statusMessage.style.display = 'none';
                 }
 
+                // Function to escape HTML characters
+                function escapeHtml(unsafe) {
+                    if (!unsafe) return '';
+                    return unsafe
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#039;');
+                }
+
                 async function handleLoopFormSubmit(event) {
                     event.preventDefault();
                     clearStatus();
-                    resultsOutput.textContent = ''; // Clear previous results
+                    resultsOutput.innerHTML = ''; // Clear previous results using innerHTML
 
                     const seed = seedInput.value.trim();
                     const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
 
                     if (!apiKey) {
                         displayStatus(
-                            'Error: API Key is missing. Please add it in the API Key section.',
+                            'Error: API Key is missing. Please add it in the API Key section below.',
                             'error'
                         );
-                        // Optionally scroll to the API key section
+                        // Scroll to the API key section
                         document.getElementById('api-key').scrollIntoView({ behavior: 'smooth' });
                         return;
                     }
@@ -1436,7 +1490,7 @@
 
                     displayStatus('Running thinking loop...', 'loading');
                     runLoopBtn.disabled = true;
-                    runLoopBtn.style.opacity = '0.7';
+                    // runLoopBtn.style.opacity = '0.7'; // Style handled by :disabled selector
 
                     try {
                         const response = await fetch('/api/loop', {
@@ -1448,34 +1502,71 @@
                             body: JSON.stringify({ seed: seed })
                         });
 
-                        const data = await response.json();
-
-                        if (!response.ok) {
+                        // Try to parse JSON regardless of status code for better error messages
+                        let data;
+                        try {
+                            data = await response.json();
+                        } catch (jsonError) {
+                            // Handle cases where the response is not valid JSON (e.g., server error page)
                             throw new Error(
-                                data.message || `HTTP error! status: ${response.status}`
+                                `Server returned non-JSON response. Status: ${response.status} ${response.statusText}`
                             );
                         }
 
-                        if (data.results && data.results.length > 0) {
-                            resultsOutput.textContent = data.results.join('\n\n');
-                            clearStatus();
-                            // Scroll to results
-                            document
-                                .getElementById('results-section')
-                                .scrollIntoView({ behavior: 'smooth' });
+                        if (!response.ok) {
+                            // Use message from JSON payload if available, otherwise use status text
+                            throw new Error(
+                                data?.message || `HTTP error! Status: ${response.status}`
+                            );
+                        }
+
+                        if (data.results && Array.isArray(data.results)) {
+                            if (data.results.length > 0) {
+                                data.results.forEach((result) => {
+                                    const iterationDiv = document.createElement('div');
+                                    iterationDiv.classList.add('iteration');
+
+                                    const header = document.createElement('div');
+                                    header.classList.add('iteration-header');
+                                    header.textContent = `Iteration ${result.iteration}:`;
+                                    iterationDiv.appendChild(header);
+
+                                    const content = document.createElement('div');
+                                    if (result.error) {
+                                        content.classList.add('iteration-error');
+                                        content.textContent = `Error: ${escapeHtml(result.error)}`;
+                                    } else if (result.output) {
+                                        content.textContent = escapeHtml(result.output); // Escape HTML in output
+                                    } else {
+                                        content.textContent = '(No output or error)';
+                                        content.style.fontStyle = 'italic';
+                                    }
+                                    iterationDiv.appendChild(content);
+                                    resultsOutput.appendChild(iterationDiv);
+                                });
+                                clearStatus();
+                                // Scroll to results
+                                document
+                                    .getElementById('results-section')
+                                    .scrollIntoView({ behavior: 'smooth' });
+                            } else {
+                                displayStatus(
+                                    'Loop completed, but no results were returned.',
+                                    'info'
+                                );
+                            }
                         } else {
-                            displayStatus('Loop completed, but no results were returned.', 'info');
+                            console.warn('Received unexpected data format:', data);
+                            displayStatus('Received unexpected data format from server.', 'error');
                         }
                     } catch (error) {
                         console.error('Error running loop:', error);
-                        displayStatus(
-                            `Error: ${error.message || 'Failed to run loop. Check console.'}`,
-                            'error'
-                        );
-                        resultsOutput.textContent = ''; // Clear results on error
+                        // Display specific error message (e.g., from backend or fetch failure)
+                        displayStatus(`Error: ${error.message}`, 'error');
+                        resultsOutput.innerHTML = ''; // Clear results on error
                     } finally {
                         runLoopBtn.disabled = false;
-                        runLoopBtn.style.opacity = '1';
+                        // runLoopBtn.style.opacity = '1'; // Style handled by :disabled selector
                     }
                 }
 
@@ -1551,7 +1642,7 @@ Iteration 2: Adding basic error handling... Saved as server_v2.js
                         default:
                             content = 'Select a tab to see example content.';
                     }
-                    terminalOutput.innerHTML = content;
+                    terminalOutput.innerHTML = content; // Use innerHTML here as the demo content uses HTML spans
                 }
             });
         </script>
