@@ -8,14 +8,14 @@ by running thousands of "gemini 2.5 thinking" iterations based on an initial see
 
 The platform containerizes the iterative process, offering a secure and consistent environment for
 exploring concepts, refining ideas, and discovering novel solutions. Whether for brainstorming,
-creative writing, or data pattern analysis, thinkloop.run provides the engine for rapid exploration
+creative writing, or data pattern analysis, autovibe.dev provides the engine for rapid exploration
 and idea generation.
 
 ![alt text](image.png)
 
 # DEMO
 
-https://thinkloop.run
+https://autovibe.dev
 
 **Key Goals:**
 
@@ -112,9 +112,9 @@ or batches of iterations in isolated environments. This ensures:
 
 ## Usage Instructions - Getting Started
 
-To start using thinkloop.run:
+To start using autovibe.dev:
 
-1.  **Access the Website:** Navigate to [http://thinkloop.run](http://thinkloop.run).
+1.  **Access the Website:** Navigate to [http://autovibe.dev](http://autovibe.dev).
 2.  **Input Your Seed:** Enter your initial idea, concept, or data into the provided input field on
     the main page (`index.html`).
 3.  **Configure (Optional):** Adjust any available settings for the iteration process.

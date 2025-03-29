@@ -1,3 +1,33 @@
+/* === Base Styles & Variables === */
+:root {
+    --color-background: #006400; /* Dark Green - Casino Felt */
+    --color-table: #004d00; /* Slightly darker green */
+    --color-border: #8B4513; /* Wood-like border */
+    --color-text: #ffffff;
+    --color-text-dark: #333333;
+    --color-card-bg: #ffffff;
+    --color-card-border: #aaaaaa;
+    --color-card-back: #b00000; /* Red back */
+    --color-card-back-pattern: #d00000;
+    --color-suit-red: #ff0000;
+    --color-suit-black: #000000;
+    --color-button-bg: #c49f4a; /* Gold-ish */
+    --color-button-border: #a07f3a;
+    --color-button-text: var(--color-text-dark);
+    --color-button-hover: #d4af5a;
+    --color-button-active: #b48f4a;
+    --color-button-disabled-bg: #888888;
+    --color-button-disabled-border: #666666;
+    --color-button-disabled-text: #bbbbbb;
+    --color-info-bg: rgba(0, 0, 0, 0.2);
+    --color-status-emphasis: #ffeb3b; /* Yellow for emphasis */
+    --font-primary: 'Arial', sans-serif;
+    --card-width: 65px;
+    --card-height: 95px;
+    --card-font-size: 1.8em;
+    --card-border-radius: 5px;
+}
+
 /* Basic Reset */
 * {
     margin: 0;
@@ -6,262 +36,396 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #006400; /* Dark Green - Casino Felt */
-    color: #fff;
+    font-family: var(--font-primary);
+    background-color: var(--color-background);
+    color: var(--color-text);
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* Stack elements vertically */
     align-items: center;
     min-height: 100vh;
-    padding: 20px;
+    padding: 15px;
 }
 
-/* Game Table Layout */
-.game-table {
-    background-color: #004d00; /* Slightly darker green */
-    border: 10px solid #8B4513; /* Wood-like border */
+h1 {
+    margin-bottom: 15px;
+    text-align: center;
+    color: var(--color-status-emphasis);
+}
+
+h2 {
+    font-size: 1.1em;
+    margin-bottom: 8px;
+    color: var(--color-text);
+    opacity: 0.8;
+    text-align: center;
+    width: 100%;
+}
+
+/* === Main Layout Areas === */
+#game-container {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* The 'Table' surface holding dealer, community, pot */
+#table {
+    background-color: var(--color-table);
+    border: 10px solid var(--color-border);
     border-radius: 150px / 75px; /* Oval shape */
-    padding: 40px;
-    width: 90%;
-    max-width: 1000px;
-    min-height: 600px;
-    display: grid;
-    grid-template-areas:
-        "dealer dealer dealer"
-        "community community community"
-        "info player controls";
-    grid-template-rows: auto auto 1fr;
-    grid-template-columns: 1fr 2fr 1fr;
+    padding: 30px 40px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 20px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    min-height: 300px; /* Adjust as needed */
 }
 
-/* Area Styling */
-.dealer-area {
-    grid-area: dealer;
+#dealer-area,
+#community-card-area,
+#pot-area {
+    width: 100%;
     text-align: center;
-    min-height: 100px; /* Placeholder height */
 }
 
-.community-cards {
-    grid-area: community;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    min-height: 100px; /* Placeholder height */
+#community-card-area {
     border: 1px dashed rgba(255, 255, 255, 0.3);
-    border-radius: 5px;
+    border-radius: var(--card-border-radius);
     padding: 10px;
-}
-
-.player-area {
-    grid-area: player;
+    min-height: calc(var(--card-height) + 20px); /* Ensure space for cards */
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
 }
 
-.player-hand {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    min-height: 100px; /* Placeholder height */
+#pot-area {
+    margin-top: 10px;
 }
 
-.controls-area {
-    grid-area: controls;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-.info-area {
-    grid-area: info;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 10px;
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 15px;
-    border-radius: 8px;
-}
-
-/* Card Styling (Basic Unicode/Placeholder) */
-.card {
-    background-color: #fff;
-    color: #333;
-    border: 1px solid #aaa;
+#pot {
+    font-size: 1.2em;
+    font-weight: bold;
+    background-color: var(--color-info-bg);
+    padding: 5px 15px;
     border-radius: 5px;
-    padding: 10px 8px;
-    min-width: 60px;
-    min-height: 90px;
+    display: inline-block;
+}
+
+/* Player Area below the table */
+#player-area {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+#player-info {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+/* Controls Area */
+#controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    width: 100%;
+}
+
+/* Status Message Area */
+#status-message-area {
+    width: 100%;
+    text-align: center;
+    background-color: var(--color-info-bg);
+    padding: 10px;
+    border-radius: 8px;
+    min-height: 4em; /* Ensure space for messages */
+    display: flex; /* Center content vertically */
+    flex-direction: column;
+    justify-content: center;
+}
+
+#status-message {
+    font-weight: bold;
+    color: var(--color-status-emphasis);
+    font-size: 1.1em;
+}
+
+/* === Hand & Card Styling === */
+.hand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Allow cards to wrap if needed */
+    gap: 10px;
+    min-height: var(--card-height);
+    width: 100%;
+}
+
+.card {
+    background-color: var(--color-card-bg);
+    color: var(--color-text-dark);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--card-border-radius);
+    padding: 10px 5px;
+    width: var(--card-width);
+    height: var(--card-height);
     display: inline-flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-between; /* Pushes rank and suit apart */
     align-items: center;
-    font-size: 1.8em;
+    font-size: var(--card-font-size);
     font-weight: bold;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     text-align: center;
+    position: relative; /* For potential future absolute positioning inside */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card .value {
+/* Style for rank (value) */
+.card .rank {
     display: block;
+    line-height: 1;
 }
 
+/* Style for suit */
 .card .suit {
-    font-size: 1.2em; /* Adjust suit size relative to value */
+    font-size: 0.7em; /* Smaller suit symbol */
+    line-height: 1;
 }
 
 /* Suit Colors */
 .card.hearts,
 .card.diamonds {
-    color: #ff0000; /* Red */
+    color: var(--color-suit-red);
 }
 
 .card.spades,
 .card.clubs {
-    color: #000000; /* Black */
+    color: var(--color-suit-black);
 }
 
-/* Specific card back style */
+/* Card back style */
 .card.back {
-    background-color: #b00000; /* Red back */
+    background-color: var(--color-card-back);
     background-image: repeating-linear-gradient(
         45deg,
-        #d00000,
-        #d00000 5px,
-        #b00000 5px,
-        #b00000 10px
-    ); /* Simple pattern */
-    color: transparent; /* Hide text if any */
+        var(--color-card-back-pattern),
+        var(--color-card-back-pattern) 5px,
+        var(--color-card-back) 5px,
+        var(--color-card-back) 10px
+    );
+    color: transparent; /* Hide text/symbols */
+    font-size: 0; /* Further hide content */
+}
+.card.back .rank,
+.card.back .suit {
+    display: none;
+}
+
+/* Placeholder card style */
+.card.placeholder {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    box-shadow: none;
+}
+.card.placeholder .rank,
+.card.placeholder .suit {
+    display: none;
 }
 
 
-/* Button Styling */
+/* === Controls Styling === */
 button {
-    background-color: #c49f4a; /* Gold-ish */
-    color: #333;
-    border: 2px solid #a07f3a;
+    background-color: var(--color-button-bg);
+    color: var(--color-button-text);
+    border: 2px solid var(--color-button-border);
     padding: 10px 20px;
     font-size: 1em;
     font-weight: bold;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    min-width: 100px;
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    min-width: 90px;
+    text-align: center;
 }
 
 button:hover {
-    background-color: #d4af5a;
+    background-color: var(--color-button-hover);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 button:active {
-    background-color: #b48f4a;
+    background-color: var(--color-button-active);
     transform: scale(0.98);
 }
 
 button:disabled,
 button.disabled {
-    background-color: #888;
-    color: #bbb;
-    border-color: #666;
+    background-color: var(--color-button-disabled-bg);
+    color: var(--color-button-disabled-text);
+    border-color: var(--color-button-disabled-border);
     cursor: not-allowed;
     transform: none;
+    box-shadow: none;
 }
 
-/* Information Display Styling */
-#status-message {
-    font-weight: bold;
-    color: #ffeb3b; /* Yellow for emphasis */
-    text-align: center;
-    width: 100%;
-    min-height: 1.2em;
+input[type="number"] {
+    padding: 8px 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 2px solid var(--color-button-border);
+    background-color: var(--color-card-bg);
+    color: var(--color-text-dark);
+    width: 80px;
+    text-align: right;
 }
 
-.info-area p {
-    margin: 5px 0;
-    font-size: 1.1em;
+input[type="number"]:disabled {
+    background-color: var(--color-button-disabled-bg);
+    color: var(--color-button-disabled-text);
+    border-color: var(--color-button-disabled-border);
+    cursor: not-allowed;
 }
 
-.info-area span {
-    font-weight: bold;
-    color: #fff;
+/* === Visual Feedback (Placeholders/Basic) === */
+.active-player { /* Apply this class to #player-area when active */
+    outline: 3px solid var(--color-status-emphasis);
+    box-shadow: 0 0 10px var(--color-status-emphasis);
 }
 
-/* Visual Feedback (Placeholders) */
-.active-player {
-    /* Style for indicating the active player's area */
-    outline: 3px solid #ffeb3b;
-    border-radius: 10px;
+.winning-hand .card { /* Apply .winning-hand to the parent container (.hand) */
+    box-shadow: 0 0 15px 5px var(--color-status-emphasis);
+    transform: scale(1.05);
 }
 
-.winning-hand .card {
-    /* Style for highlighting winning cards */
-    box-shadow: 0 0 15px 5px #ffeb3b;
+/* Simple transition for cards appearing */
+.card {
+    /* Add transition for opacity/transform if cards are added dynamically */
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out, box-shadow 0.2s ease;
+    opacity: 1;
 }
 
-/* Responsiveness */
+/* === Responsiveness === */
 @media (max-width: 768px) {
-    .game-table {
-        grid-template-areas:
-            "dealer"
-            "community"
-            "player"
-            "info"
-            "controls";
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto auto auto;
+    :root {
+        --card-width: 55px;
+        --card-height: 80px;
+        --card-font-size: 1.5em;
+    }
+
+    #table {
         padding: 20px;
-        min-height: auto;
-        border-radius: 20px; /* Less pronounced oval/rectangle */
+        border-radius: 100px / 50px; /* Adjust oval */
+        min-height: 250px;
     }
 
-    .info-area,
-    .controls-area {
-        align-items: center;
-        text-align: center;
+    #player-area {
+        padding: 10px;
     }
 
-    .controls-area {
-       flex-direction: row;
-       flex-wrap: wrap;
-       justify-content: center;
+    #controls {
+        gap: 8px;
     }
 
-    .card {
-        min-width: 50px;
-        min-height: 75px;
-        font-size: 1.5em;
-        padding: 8px 6px;
-    }
-}
-
-@media (max-width: 480px) {
-    body {
-        padding: 5px;
-    }
-    .game-table {
-        padding: 15px;
-        gap: 15px;
-    }
     button {
         padding: 8px 15px;
         font-size: 0.9em;
         min-width: 80px;
     }
-    .card {
-        min-width: 40px;
-        min-height: 60px;
-        font-size: 1.2em;
-        padding: 5px 4px;
+
+    input[type="number"] {
+        padding: 7px 8px;
+        width: 70px;
     }
-    .info-area p {
+
+    h1 {
+        font-size: 1.8em;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --card-width: 45px;
+        --card-height: 65px;
+        --card-font-size: 1.2em;
+    }
+
+    body {
+        padding: 10px;
+    }
+
+    #game-container {
+        gap: 15px;
+    }
+
+    #table {
+        padding: 15px;
+        border-radius: 20px; /* Less oval on small screens */
+        border-width: 5px;
+        min-height: auto;
+    }
+
+    .hand {
+        gap: 5px;
+    }
+
+     #community-card-area {
+        min-height: calc(var(--card-height) + 10px);
+        padding: 5px;
+    }
+
+    #controls {
+        gap: 5px;
+    }
+
+    button {
+        padding: 6px 10px;
+        font-size: 0.8em;
+        min-width: 70px;
+    }
+
+    input[type="number"] {
+        padding: 5px 6px;
+        width: 60px;
+        font-size: 0.9em;
+    }
+
+    #pot {
+        font-size: 1.1em;
+        padding: 4px 10px;
+    }
+
+     #player-info {
         font-size: 1em;
+    }
+
+    #status-message-area {
+        padding: 8px;
+        min-height: 3em;
+    }
+     #status-message {
+        font-size: 1em;
+    }
+
+    h1 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+     h2 {
+        font-size: 1em;
+        margin-bottom: 5px;
     }
 }
