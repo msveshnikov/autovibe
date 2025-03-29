@@ -1,0 +1,267 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #006400; /* Dark Green - Casino Felt */
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Game Table Layout */
+.game-table {
+    background-color: #004d00; /* Slightly darker green */
+    border: 10px solid #8B4513; /* Wood-like border */
+    border-radius: 150px / 75px; /* Oval shape */
+    padding: 40px;
+    width: 90%;
+    max-width: 1000px;
+    min-height: 600px;
+    display: grid;
+    grid-template-areas:
+        "dealer dealer dealer"
+        "community community community"
+        "info player controls";
+    grid-template-rows: auto auto 1fr;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Area Styling */
+.dealer-area {
+    grid-area: dealer;
+    text-align: center;
+    min-height: 100px; /* Placeholder height */
+}
+
+.community-cards {
+    grid-area: community;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    min-height: 100px; /* Placeholder height */
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.player-area {
+    grid-area: player;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.player-hand {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    min-height: 100px; /* Placeholder height */
+}
+
+.controls-area {
+    grid-area: controls;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-area {
+    grid-area: info;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+/* Card Styling (Basic Unicode/Placeholder) */
+.card {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    padding: 10px 8px;
+    min-width: 60px;
+    min-height: 90px;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.8em;
+    font-weight: bold;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.card .value {
+    display: block;
+}
+
+.card .suit {
+    font-size: 1.2em; /* Adjust suit size relative to value */
+}
+
+/* Suit Colors */
+.card.hearts,
+.card.diamonds {
+    color: #ff0000; /* Red */
+}
+
+.card.spades,
+.card.clubs {
+    color: #000000; /* Black */
+}
+
+/* Specific card back style */
+.card.back {
+    background-color: #b00000; /* Red back */
+    background-image: repeating-linear-gradient(
+        45deg,
+        #d00000,
+        #d00000 5px,
+        #b00000 5px,
+        #b00000 10px
+    ); /* Simple pattern */
+    color: transparent; /* Hide text if any */
+}
+
+
+/* Button Styling */
+button {
+    background-color: #c49f4a; /* Gold-ish */
+    color: #333;
+    border: 2px solid #a07f3a;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    min-width: 100px;
+}
+
+button:hover {
+    background-color: #d4af5a;
+}
+
+button:active {
+    background-color: #b48f4a;
+    transform: scale(0.98);
+}
+
+button:disabled,
+button.disabled {
+    background-color: #888;
+    color: #bbb;
+    border-color: #666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Information Display Styling */
+#status-message {
+    font-weight: bold;
+    color: #ffeb3b; /* Yellow for emphasis */
+    text-align: center;
+    width: 100%;
+    min-height: 1.2em;
+}
+
+.info-area p {
+    margin: 5px 0;
+    font-size: 1.1em;
+}
+
+.info-area span {
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Visual Feedback (Placeholders) */
+.active-player {
+    /* Style for indicating the active player's area */
+    outline: 3px solid #ffeb3b;
+    border-radius: 10px;
+}
+
+.winning-hand .card {
+    /* Style for highlighting winning cards */
+    box-shadow: 0 0 15px 5px #ffeb3b;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .game-table {
+        grid-template-areas:
+            "dealer"
+            "community"
+            "player"
+            "info"
+            "controls";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto auto;
+        padding: 20px;
+        min-height: auto;
+        border-radius: 20px; /* Less pronounced oval/rectangle */
+    }
+
+    .info-area,
+    .controls-area {
+        align-items: center;
+        text-align: center;
+    }
+
+    .controls-area {
+       flex-direction: row;
+       flex-wrap: wrap;
+       justify-content: center;
+    }
+
+    .card {
+        min-width: 50px;
+        min-height: 75px;
+        font-size: 1.5em;
+        padding: 8px 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+    .game-table {
+        padding: 15px;
+        gap: 15px;
+    }
+    button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+        min-width: 80px;
+    }
+    .card {
+        min-width: 40px;
+        min-height: 60px;
+        font-size: 1.2em;
+        padding: 5px 4px;
+    }
+    .info-area p {
+        font-size: 1em;
+    }
+}

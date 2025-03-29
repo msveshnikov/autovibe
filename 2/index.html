@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poker Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <h1>Poker Game</h1>
+
+        <div id="table">
+            <div id="dealer-area">
+                <h2>Dealer Hand</h2>
+                <div id="dealer-hand" class="hand">
+                    <!-- Dealer cards will be added here by script.js -->
+                    <div class="card placeholder"></div>
+                    <div class="card placeholder"></div>
+                </div>
+            </div>
+
+            <div id="community-card-area">
+                <h2>Community Cards</h2>
+                <div id="community-cards" class="hand">
+                    <!-- Community cards will be added here by script.js -->
+                    <div class="card placeholder"></div>
+                    <div class="card placeholder"></div>
+                    <div class="card placeholder"></div>
+                    <div class="card placeholder"></div>
+                    <div class="card placeholder"></div>
+                </div>
+            </div>
+
+            <div id="pot-area">
+                <h2>Pot</h2>
+                <div id="pot">Pot: $0</div>
+            </div>
+        </div>
+
+        <div id="player-area">
+            <h2>Player Hand</h2>
+             <div id="player-info">Chips: $1000</div>
+            <div id="player-hand" class="hand">
+                <!-- Player cards will be added here by script.js -->
+                 <div class="card placeholder"></div>
+                 <div class="card placeholder"></div>
+            </div>
+        </div>
+
+        <div id="controls">
+            <button id="deal-button">Deal</button>
+            <button id="check-button" disabled>Check</button>
+            <button id="bet-button" disabled>Bet</button>
+            <input type="number" id="bet-amount" value="10" min="1" step="1" disabled>
+            <button id="call-button" disabled>Call</button>
+            <button id="raise-button" disabled>Raise</button>
+            <button id="fold-button" disabled>Fold</button>
+        </div>
+
+        <div id="status-message-area">
+             <h2>Status</h2>
+            <p id="status-message">Welcome to Poker! Click Deal to start.</p>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

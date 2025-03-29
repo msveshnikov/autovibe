@@ -26,11 +26,11 @@
     --color-text-muted: #7f8c8d; /* Muted text (disclaimer, small text) */
     --color-accent: #3498db; /* Example accent color (blue) */
     --color-focus-ring: #4a90e2; /* Focus outline color */
-    --color-scheme-display-bg: #f9f9f9; /* Background for scheme display */
-    --color-scheme-display-border: #e0e0e0; /* Border for scheme display */
+    --color-scheme-display-bg: #eaf2f8; /* Slightly different background for scheme display */
+    --color-scheme-display-border: #d6eaf8; /* Slightly adjusted border for scheme display */
 
     /* Typography */
-    --font-family-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-family-primary: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     --font-size-base: 16px;
     --line-height-base: 1.6;
 
@@ -183,6 +183,7 @@ button:active {
     margin-top: var(--spacing-lg);
     min-height: 100px; /* Ensure some space even when empty */
     transition: background-color 0.3s ease; /* Smooth transition if background changes */
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); /* Subtle inner shadow */
 }
 
 #scheme-display p {
@@ -218,8 +219,7 @@ button:active {
 /* ---------------------- */
 /* --- 4. Utilities --- */
 /* ---------------------- */
-/* .text-center { text-align: center; }
-.mt-1 { margin-top: var(--spacing-md); } */
+/* Add utility classes here if needed */
 
 /* ------------------------- */
 /* --- 5. Responsiveness --- */
@@ -229,6 +229,7 @@ button:active {
     main {
         width: 95%;
         margin: var(--spacing-lg) auto;
+        padding: var(--spacing-lg);
     }
 }
 
@@ -262,13 +263,15 @@ button:active {
 
 /* Reduced Motion Preference */
 @media (prefers-reduced-motion: reduce) {
+    html {
+       scroll-behavior: auto;
+    }
     *,
     *::before,
     *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
     }
     button:active {
         transform: none;

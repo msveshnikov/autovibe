@@ -227,5 +227,3 @@ License information will be provided upon release.
   monitoring tools to track application performance and errors.
 
 # TODO
-
-- return each loop result to the frontend
