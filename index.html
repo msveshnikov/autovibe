@@ -513,6 +513,15 @@
                 font-weight: bold;
             }
 
+            .result-preview-iframe {
+                width: 100%;
+                height: 800px; /* Adjust height as needed */
+                border: 1px solid var(--light-dark);
+                border-radius: 8px;
+                background-color: var(--card-bg); /* Match theme */
+                margin-top: 30px; /* Add some space above the iframe */
+            }
+
             .api-key-section {
                 padding: 80px 0;
                 background-color: var(--darker);
@@ -1206,6 +1215,11 @@
             <div class="container">
                 <h2 class="section-title">Loop Results</h2>
                 <div id="results-output" class="results-output"></div>
+                <iframe
+                    class="result-preview-iframe"
+                    src="1/index.html"
+                    title="Result Preview"
+                ></iframe>
             </div>
         </section>
 

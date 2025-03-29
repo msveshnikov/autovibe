@@ -23,9 +23,11 @@
     --color-background-light: #f4f4f4; /* Very light grey background */
     --color-background-main: #ffffff; /* White main content background */
     --color-text-dark: #333333; /* Dark text */
-    --color-text-muted: #7f8c8d; /* Muted text (disclaimer) */
-    --color-accent: #3498db; /* Example accent color (blue) - Adjust later */
+    --color-text-muted: #7f8c8d; /* Muted text (disclaimer, small text) */
+    --color-accent: #3498db; /* Example accent color (blue) */
     --color-focus-ring: #4a90e2; /* Focus outline color */
+    --color-scheme-display-bg: #f9f9f9; /* Background for scheme display */
+    --color-scheme-display-border: #e0e0e0; /* Border for scheme display */
 
     /* Typography */
     --font-family-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -53,6 +55,7 @@
 
 html {
     font-size: var(--font-size-base);
+    scroll-behavior: smooth;
 }
 
 body {
@@ -113,6 +116,7 @@ h1 {
     font-size: 2rem;
     margin: 0;
     color: inherit; /* Inherits from header */
+    font-weight: 600;
 }
 
 h2 {
@@ -122,6 +126,7 @@ h2 {
     margin-top: 0;
     margin-bottom: var(--spacing-lg);
     font-size: 1.5rem;
+    font-weight: 500;
 }
 
 /* Paragraphs */
@@ -129,7 +134,7 @@ p {
     margin-bottom: var(--spacing-md);
 }
 
-/* Links (Example - style as needed) */
+/* Links */
 a {
     color: var(--color-accent);
     text-decoration: none;
@@ -142,18 +147,23 @@ a:focus {
     text-decoration: underline;
 }
 
-/* Buttons (Example - style as needed) */
+/* Buttons */
 button {
+    display: inline-block; /* Allows margin and padding */
     background-color: var(--color-accent);
     color: var(--color-background-main);
     border: none;
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-lg); /* More padding for better click target */
     border-radius: var(--border-radius-sm);
     cursor: pointer;
     font-size: 1em;
+    font-weight: 500;
+    text-align: center;
     transition:
         background-color 0.2s ease-in-out,
         transform 0.1s ease;
+    margin-top: var(--spacing-sm); /* Add some space above */
+    margin-bottom: var(--spacing-lg); /* Add space below */
 }
 
 button:hover {
@@ -162,6 +172,30 @@ button:hover {
 
 button:active {
     transform: scale(0.98);
+}
+
+/* Scheme Display Area */
+#scheme-display {
+    background-color: var(--color-scheme-display-bg);
+    border: var(--border-width) solid var(--color-scheme-display-border);
+    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    min-height: 100px; /* Ensure some space even when empty */
+    transition: background-color 0.3s ease; /* Smooth transition if background changes */
+}
+
+#scheme-display p {
+    margin-bottom: var(--spacing-sm); /* Smaller margin inside display */
+}
+
+#scheme-display p:last-child {
+    margin-bottom: 0;
+}
+
+#scheme-display small {
+    color: var(--color-text-muted);
+    font-size: 0.85em;
 }
 
 /* Disclaimer Section */
@@ -184,7 +218,8 @@ button:active {
 /* ---------------------- */
 /* --- 4. Utilities --- */
 /* ---------------------- */
-/* Add utility classes here if needed (e.g., .text-center, .mt-1) */
+/* .text-center { text-align: center; }
+.mt-1 { margin-top: var(--spacing-md); } */
 
 /* ------------------------- */
 /* --- 5. Responsiveness --- */
@@ -218,6 +253,24 @@ button:active {
     h2 {
         font-size: 1.3rem;
     }
+
+    button {
+        width: 100%; /* Make button full width on small screens */
+        padding: var(--spacing-md); /* Adjust padding for full width */
+    }
 }
 
-/* Add more specific styles based on README Design Ideas as the project evolves */
+/* Reduced Motion Preference */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    button:active {
+        transform: none;
+    }
+}
