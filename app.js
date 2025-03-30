@@ -3,6 +3,7 @@ import { exec } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { writeFileSync } from 'fs';
 
 // Helper to get __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -64,13 +65,16 @@ const callGeminiFlash = async (seed, apiKey) => {
 };
 
 // Function to call AutoCode CLI (placeholder for iterative logic)
-const callAutoCodeCLI = (seed) =>
-    new Promise((resolve, reject) => {
+const callAutoCodeCLI = (seed, apiKey) =>
+    new Promise((resolve) => {
         // Basic input sanitization for shell command
         const sanitizedSeed = seed.replace(/"/g, '\\"').replace(/`/g, '\\`').replace(/\$/g, '\\$'); // Basic sanitization
+        // save seed to a README.md file in dedicated (new) directory
+        writeFileSync('3/README.md', sanitizedSeed);
+
         // In a real scenario, consider more robust sanitization or alternative execution methods
         // Ensure AutoCode CLI is installed or use npx
-        const command = `npx autocode generate "${sanitizedSeed}"`; // Assuming 'autocode' is in PATH or use 'npx autocode-ai generate ...'
+        const command = `npx autocode generate gemini-2.0-flash-thinking-exp-01-21 ${apiKey}`;
         console.log(`Executing AutoCode CLI: ${command}`);
         exec(command, (error, stdout, stderr) => {
             if (error) {
