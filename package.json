@@ -5,7 +5,7 @@
     "main": "app.js",
     "type": "module",
     "scripts": {
-        "dev": "nodemon app.js",
+        "start": "bun app.js",
         "lint": "eslint .",
         "format": "prettier --write .",
         "autocode": "bunx autocode-ai"

@@ -103,8 +103,7 @@ To start using autovibe.dev:
 2.  **Input Your Seed:** Enter your initial idea, concept, or data into the provided input field on
     the main page (`index.html`).
 3.  **Configure API key:** Enter it in the provided field.
-4.  **Run the Loop:** Click the "Run" or "Start" button. If key not enetered, show message to user
-    and scroll to key section. Observe any loading indicators.
+4.  **Run the Loop:** Click the "Run" or "Start" button. Observe any loading indicators.
 5.  **Explore Output:** Wait for the results to appear. Explore the generated ideas and outcomes
     displayed on the page.
 6.  **Stop:** If you want to stop the process, click the "Stop" button. The loop will terminate, and
@@ -128,7 +127,7 @@ To set up the project for local development:
 4.  **Run the Application:**
 
     ```bash
-    bun run dev
+    bun run start
 
     ```
 
@@ -144,5 +143,3 @@ guidelines on submitting bug reports, feature requests, and pull requests.
 MIT
 
 # TODO
-
-- after kickoff, I can't see iframes updated, please fix

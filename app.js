@@ -54,7 +54,7 @@ const runSingleIteration = (folderPath, apiKey) =>
 
         // Command: bunx autocode generate <model> <apiKey>
         // AutoCode CLI is expected to read README.md and update files in the CWD.
-        const command = `bunx autocode generate ${modelName} ${apiKey}`;
+        const command = `bunx autocode-ai generate ${modelName} ${apiKey}`;
 
         console.log(`Executing in ${folderPath}: ${command.replace(apiKey, '****')}`); // Log command safely
 
