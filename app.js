@@ -14,6 +14,14 @@ const projectsDir = path.join(__dirname, 'projects');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Allowed models (add more as needed)
+const ALLOWED_MODELS = [
+    'gemini-2.0-flash-thinking-exp-01-21', // Default/Fast
+    'gemini-2.5-pro-exp-03-25' // Better/Slower
+    // Add future model names here
+];
+const DEFAULT_MODEL = ALLOWED_MODELS[0];
+
 // --- Helper Functions ---
 
 // Ensure projects directory exists and is writable on startup
@@ -44,19 +52,24 @@ const ensureProjectsDir = async () => {
 };
 
 // Function to run a single AutoCode CLI iteration within a specific folder
-const runSingleIteration = (folderPath, apiKey) =>
+const runSingleIteration = (folderPath, apiKey, modelName) =>
     new Promise((resolve, reject) => {
         // Basic input sanitization for API key in command line
         // A more secure approach would involve environment variables or stdin if AutoCode supports it.
 
-        // Ensure the model name is safe if it were dynamic (it's hardcoded here)
-        const modelName = 'gemini-2.0-flash-thinking-exp-01-21'; // TODO: Make configurable?
+        // Validate model name against allowed list (already done in API handler, but good defense in depth)
+        const validatedModelName = ALLOWED_MODELS.includes(modelName) ? modelName : DEFAULT_MODEL;
 
-        // Command: bunx autocode generate <model> <apiKey>
+        // Command: bunx autocode-ai generate <model> <apiKey>
         // AutoCode CLI is expected to read README.md and update files in the CWD.
-        const command = `bunx autocode-ai generate ${modelName} ${apiKey}`;
+        // Ensure apiKey is treated as a single argument even if it contains special characters (less likely here, but good practice)
+        // Using template literals is generally safe for constructing commands like this unless the variables contain malicious shell characters.
+        // Since apiKey and modelName come from controlled input (validated), this is reasonably safe.
+        const command = `bunx autocode-ai generate ${validatedModelName} ${apiKey}`;
 
-        console.log(`Executing in ${folderPath}: ${command.replace(apiKey, '****')}`); // Log command safely
+        console.log(
+            `Executing in ${folderPath} with model ${validatedModelName}: ${command.replace(apiKey, '****')}`
+        ); // Log command safely
 
         // Set a timeout for the CLI command (e.g., 600 seconds)
         const executionTimeout = 600000; // 600 seconds in milliseconds
@@ -87,8 +100,8 @@ const runSingleIteration = (folderPath, apiKey) =>
     });
 
 // --- Middleware ---
-app.use(express.json());
-app.use(morgan('dev'));
+app.use(express.json()); // For parsing application/json
+app.use(morgan('dev')); // Logging HTTP requests
 
 // --- Static File Serving ---
 // Serve root static files (index.html, css, js, images)
@@ -113,9 +126,10 @@ app.use(
         }
 
         // Check if the file exists before trying to serve
+        // Note: express.static handles this, but checking here can add logging or custom logic if needed.
         if (!existsSync(normalizedPath)) {
-            // Let express.static handle 404 eventually, but log it here if needed
             // console.log(`Project file not found: ${normalizedPath}`);
+            // Let express.static handle the 404
         }
 
         // Continue to the static middleware
@@ -135,8 +149,9 @@ app.post('/api/kickoff', async (req, res) => {
         });
     }
     const apiKey = authHeader.split(' ')[1];
-    if (!apiKey) {
-        return res.status(401).json({ message: 'Unauthorized: Missing API key.' });
+    if (!apiKey || !apiKey.trim()) {
+        // Also check if the key is just whitespace
+        return res.status(401).json({ message: 'Unauthorized: Missing or invalid API key.' });
     }
 
     const { seed } = req.body;
@@ -193,7 +208,7 @@ console.log('Project ${folderName} script loaded.');`
         // Attempt cleanup? Might be complex if partially successful. Log error.
         res.status(500).json({
             message: 'Internal Server Error during kickoff.',
-            error: error.message
+            error: error.message // Provide error message in response (consider if this is safe for prod)
         });
     }
 });
@@ -207,20 +222,30 @@ app.post('/api/loop', async (req, res) => {
         });
     }
     const apiKey = authHeader.split(' ')[1];
-    if (!apiKey) {
-        return res.status(401).json({ message: 'Unauthorized: Missing API key.' });
+    if (!apiKey || !apiKey.trim()) {
+        return res.status(401).json({ message: 'Unauthorized: Missing or invalid API key.' });
     }
 
-    const { folderName } = req.body;
+    const { folderName, model } = req.body; // Expect modelName from frontend
+
+    // Validate folderName
     if (!folderName || typeof folderName !== 'string' || !folderName.trim()) {
         return res.status(400).json({ message: 'Bad Request: Missing or invalid "folderName".' });
     }
-
-    // Validate folderName format (e.g., ensure it's just a timestamp or simple name to prevent traversal)
     // Allow only digits (timestamps) or basic alphanumeric/hyphen/underscore
     if (!/^\d+$/.test(folderName) && !/^[a-zA-Z0-9_-]+$/.test(folderName)) {
         console.warn(`Invalid folderName format received: ${folderName}`);
         return res.status(400).json({ message: 'Bad Request: Invalid "folderName" format.' });
+    }
+
+    // Validate modelName
+    const selectedModel = model && ALLOWED_MODELS.includes(model) ? model : DEFAULT_MODEL;
+    if (!model) {
+        console.warn(`Model name not provided by client, using default: ${DEFAULT_MODEL}`);
+    } else if (!ALLOWED_MODELS.includes(model)) {
+        console.warn(
+            `Invalid model name "${model}" received from client, using default: ${DEFAULT_MODEL}`
+        );
     }
 
     const folderPath = path.join(projectsDir, folderName);
@@ -244,7 +269,8 @@ app.post('/api/loop', async (req, res) => {
     }
 
     try {
-        const result = await runSingleIteration(folderPath, apiKey);
+        // Pass the validated/defaulted model name to the iteration function
+        const result = await runSingleIteration(folderPath, apiKey, selectedModel);
         // AutoCode CLI modifies files directly within the folder.
         // We just report success back to the client so it can refresh the iframes.
         res.json({
@@ -260,6 +286,7 @@ app.post('/api/loop', async (req, res) => {
         const errorMessage = error.message || 'Iteration failed due to an unknown error.';
         let statusCode = 500; // Default to Internal Server Error
 
+        // Check for specific error patterns
         if (
             errorMessage.includes('Invalid API Key') ||
             errorMessage.includes('API key is invalid') ||
@@ -268,21 +295,27 @@ app.post('/api/loop', async (req, res) => {
             statusCode = 401; // Unauthorized
         } else if (
             errorMessage.includes('Content generation blocked') ||
-            errorMessage.includes('SAFETY_BLOCK')
+            errorMessage.includes('SAFETY_BLOCK') ||
+            errorMessage.includes('SAFETY_SETTINGS')
         ) {
-            statusCode = 400; // Bad Request (content issue)
+            statusCode = 400; // Bad Request (content/safety issue)
         } else if (errorMessage.includes('timed out')) {
             statusCode = 504; // Gateway Timeout (if the CLI process timed out)
         } else if (errorMessage.includes('command not found') || errorMessage.includes('ENOENT')) {
-            // Error executing the CLI itself (e.g., 'bunx' or 'autocode' not found)
+            // Error executing the CLI itself (e.g., 'bunx' or 'autocode-ai' not found)
             statusCode = 500; // Internal server error (configuration issue)
+            console.error(
+                'Potential setup issue: Check if "bunx" and "autocode-ai" are accessible in the environment.'
+            );
+        } else if (errorMessage.includes('RESOURCE_EXHAUSTED')) {
+            statusCode = 429; // Too Many Requests (Rate limit)
         }
         // Add more specific checks based on potential AutoCode CLI error patterns if known
 
         res.status(statusCode).json({
             success: false,
             message: 'Iteration failed.',
-            error: errorMessage
+            error: errorMessage // Send back the specific error message
         });
     }
 });
@@ -291,7 +324,34 @@ app.post('/api/loop', async (req, res) => {
 // Serve index.html for the root path. Static middleware might handle this too,
 // but an explicit route ensures it works as expected.
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    // Check if the request accepts HTML, otherwise it might be an API call expecting JSON
+    // Although specific API routes are defined, this adds robustness.
+    const acceptsHtml = req.accepts('html');
+    if (acceptsHtml) {
+        res.sendFile(path.join(__dirname, 'index.html'));
+    } else {
+        // If it's not accepting HTML (e.g., API client), send a 404 or appropriate response
+        res.status(404).json({ message: 'Resource not found or invalid request type for /' });
+    }
+});
+
+// --- Catch-all for 404 Not Found (API routes) ---
+// This should come after all other routes
+app.use('/api/*', (req, res) => {
+    res.status(404).json({ message: 'API endpoint not found.' });
+});
+
+// --- Global Error Handler (Optional but recommended) ---
+// Catches errors passed via next(error)
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+    console.error('Unhandled Error:', err);
+    // Avoid sending stack trace in production
+    const message = process.env.NODE_ENV === 'production' ? 'Internal Server Error' : err.message;
+    res.status(err.status || 500).json({
+        message: 'An unexpected error occurred.',
+        error: message
+    });
 });
 
 // --- Server Start ---
@@ -302,6 +362,7 @@ ensureProjectsDir()
             console.log(`Server is running on http://localhost:${port}`);
             console.log(`Serving static files from root: ${__dirname}`);
             console.log(`Serving project files from: ${projectsDir}`);
+            console.log(`Allowed models: ${ALLOWED_MODELS.join(', ')} (Default: ${DEFAULT_MODEL})`);
         });
     })
     .catch((err) => {

@@ -1,4 +1,3 @@
-````markdown
 ## Email Marketing Campaign for AutoVibe
 
 This document outlines a 3-email marketing campaign designed to introduce users to AutoVibe,
@@ -37,6 +36,7 @@ Best regards,
 
 The AutoVibe Team
 ```
+
 ````
 
 ---
@@ -78,7 +78,6 @@ for yourself.
 Best regards,
 
 The AutoVibe Team
-```
 
 ---
 
@@ -88,7 +87,6 @@ The AutoVibe Team
 
 **Body:**
 
-```markdown
 Hello,
 
 Over the past two emails, we've introduced you to AutoVibe and highlighted its powerful rapid
@@ -116,4 +114,4 @@ We're confident that AutoVibe will become your go-to tool for unlocking your cre
 Happy Vibing!
 
 The AutoVibe Team
-```
+````

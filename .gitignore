@@ -30,4 +30,4 @@ server/google.json
 # Sentry Config File
 .env.sentry-build-plugin
 deploy.cmd
-# projects
+projects

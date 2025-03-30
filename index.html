@@ -436,7 +436,8 @@
             }
 
             .form-input,
-            .form-textarea {
+            .form-textarea,
+            .form-select {
                 width: 100%;
                 padding: 12px 15px;
                 font-size: 1rem;
@@ -454,10 +455,26 @@
             }
 
             .form-input:focus,
-            .form-textarea:focus {
+            .form-textarea:focus,
+            .form-select:focus {
                 outline: none;
                 border-color: var(--primary);
                 box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
+            }
+
+            /* Style select dropdown arrow */
+            .form-select {
+                appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23ccc' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 15px center;
+                background-size: 16px 12px;
+                padding-right: 40px; /* Make space for the arrow */
+            }
+            /* Style select options */
+            .form-select option {
+                background-color: var(--dark);
+                color: var(--text);
             }
 
             .form-help {
@@ -542,7 +559,7 @@
             .iframe-container iframe {
                 flex: 1; /* Each iframe takes up equal available space */
                 min-width: 300px; /* Minimum width before wrapping */
-                height: 800px; 
+                height: 800px;
                 border: 1px solid var(--light-dark);
                 border-radius: 8px;
                 background-color: #ccc;
@@ -550,9 +567,8 @@
 
             /* Style for README iframe: Dark background, let browser handle text color */
             .result-preview-iframe-readme {
-                background-color: #777;
+                background-color: #333; /* Darker background for README */
                 color: white; /* Default text color for the iframe */
-                /* Removed color property to allow browser default text color on dark bg */
             }
 
             .api-key-section {
@@ -1098,8 +1114,8 @@
                         <div class="step-number">1</div>
                         <h3 class="step-title">Provide Seed & Key</h3>
                         <p class="step-description">
-                            Input your initial idea (seed) and your Google AI API key. The seed
-                            guides the process, the key enables it.
+                            Input your initial idea (seed), your Google AI API key, and select a
+                            model. The seed guides the process, the key enables it.
                         </p>
                     </div>
                     <div class="step-item">
@@ -1107,7 +1123,8 @@
                         <h3 class="step-title">Kickoff & Iterate</h3>
                         <p class="step-description">
                             Start the loop. The system creates a project space and iteratively runs
-                            AutoCode, refining content based on previous steps.
+                            AutoCode with the chosen model, refining content based on previous
+                            steps.
                         </p>
                     </div>
                     <div class="step-item">
@@ -1140,6 +1157,24 @@
                                 This will be saved as the initial README.md in your project folder.
                             </p>
                         </div>
+
+                        <div class="form-group">
+                            <label for="model-select" class="form-label">Select Model</label>
+                            <select id="model-select" class="form-select" required>
+                                <option value="gemini-2.0-flash-thinking-exp-01-21" selected>
+                                    Gemini Flash (Fast, Default)
+                                </option>
+                                <option value="gemini-2.5-pro-exp-03-25">
+                                    Gemini Pro (Slower, More Capable)
+                                </option>
+                                <!-- Add more models here as needed -->
+                            </select>
+                            <p class="form-help">
+                                Choose the AI model for the iterative process. Flash is quicker, Pro
+                                might yield more complex results.
+                            </p>
+                        </div>
+
                         <button type="submit" id="run-loop-btn" class="cta-button">
                             <i class="fas fa-play"></i> Run Vibing Loop
                         </button>
@@ -1190,7 +1225,7 @@
                 </div>
                 <p style="text-align: center; margin-top: 20px; color: var(--text-muted)">
                     Previews update after each successful iteration. Interaction with the HTML
-                    preview is enabled.
+                    preview is enabled. README preview has a dark background.
                 </p>
             </div>
         </section>
@@ -1331,6 +1366,7 @@
                 const apiKeyStatus = document.getElementById('api-key-status');
                 const loopForm = document.getElementById('loop-form');
                 const seedInput = document.getElementById('seed-input');
+                const modelSelect = document.getElementById('model-select'); // New
                 const runLoopBtn = document.getElementById('run-loop-btn');
                 const stopLoopBtn = document.getElementById('stop-loop-btn');
                 const statusMessage = document.getElementById('status-message');
@@ -1456,28 +1492,23 @@
                     if (readmePreviewIframe) {
                         // Try reloading the iframe content
                         try {
-                            readmePreviewIframe.contentWindow.location.replace(readmeUrl);
-                        } catch (e) {
-                            // Fallback for potential cross-origin issues or if contentWindow is not accessible yet
+                            // Using src assignment is generally safer for cross-origin scenarios or frequent updates
                             readmePreviewIframe.src = readmeUrl;
-                            console.warn(
-                                'Could not use location.replace for README iframe, using src instead.',
-                                e
-                            );
+                            // readmePreviewIframe.contentWindow.location.replace(readmeUrl); // Can sometimes cause issues
+                        } catch (e) {
+                            readmePreviewIframe.src = readmeUrl; // Fallback
+                            console.warn('Error reloading README iframe, using src.', e);
                         }
                     } else {
                         console.error('README preview iframe not found.');
                     }
                     if (htmlPreviewIframe) {
                         try {
-                            htmlPreviewIframe.contentWindow.location.replace(htmlUrl);
-                        } catch (e) {
-                            // Fallback
                             htmlPreviewIframe.src = htmlUrl;
-                            console.warn(
-                                'Could not use location.replace for HTML iframe, using src instead.',
-                                e
-                            );
+                            // htmlPreviewIframe.contentWindow.location.replace(htmlUrl);
+                        } catch (e) {
+                            htmlPreviewIframe.src = htmlUrl; // Fallback
+                            console.warn('Error reloading HTML iframe, using src.', e);
                         }
                     } else {
                         console.error('HTML preview iframe not found.');
@@ -1494,6 +1525,7 @@
 
                     const seed = seedInput.value.trim();
                     const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+                    const selectedModel = modelSelect.value; // Get selected model
 
                     if (!apiKey) {
                         displayStatus(
@@ -1511,6 +1543,12 @@
                     if (!seed) {
                         displayStatus('Error: Seed input cannot be empty.', 'error');
                         seedInput.focus();
+                        return;
+                    }
+
+                    if (!selectedModel) {
+                        displayStatus('Error: Please select a model.', 'error');
+                        modelSelect.focus();
                         return;
                     }
 
@@ -1532,25 +1570,27 @@
                                 'Content-Type': 'application/json',
                                 Authorization: `Bearer ${apiKey}`
                             },
-                            body: JSON.stringify({ seed: seed })
+                            // Include model in kickoff, though backend might not use it yet
+                            body: JSON.stringify({ seed: seed, model: selectedModel })
                         });
 
-                        const data = await response.json();
-
+                        // Check if response is ok BEFORE trying to parse JSON
                         if (!response.ok) {
-                            throw new Error(
-                                data?.message || `Kickoff failed: ${response.statusText}`
-                            );
+                            // Throw the response itself to be caught by the catch block
+                            throw response;
                         }
 
+                        const data = await response.json(); // Now safe to parse
+
                         if (!data.folderName) {
-                            throw new Error('Kickoff response missing project directory.');
+                            // If backend responds 2xx but misses folderName, treat as error
+                            throw new Error('Kickoff response OK but missing project directory.');
                         }
 
                         currentfolderName = data.folderName;
                         console.log(`Kickoff successful. Project Directory: ${currentfolderName}`);
 
-                        // Initial preview update after kickoff (backend should have created initial files)
+                        // Initial preview update after kickoff
                         updateResultPreviews(currentfolderName);
 
                         // Scroll to results section
@@ -1563,7 +1603,21 @@
                         runIteration();
                     } catch (error) {
                         console.error('Error during kickoff:', error);
-                        displayStatus(`Kickoff Error: ${error.message}`, 'error');
+                        let errorMessage = 'Kickoff failed. Please check console for details.';
+                        // Try to get specific message from backend if available
+                        if (error instanceof Response) {
+                            try {
+                                const errorData = await error.json();
+                                errorMessage = `Kickoff Error (${error.status}): ${
+                                    errorData.message || error.statusText
+                                }`;
+                            } catch (parseError) {
+                                errorMessage = `Kickoff Error (${error.status}): ${error.statusText}. Could not parse error response.`;
+                            }
+                        } else if (error instanceof Error) {
+                            errorMessage = `Kickoff Error: ${error.message}`;
+                        }
+                        displayStatus(errorMessage, 'error');
                         stopLoop(); // Reset state on kickoff failure
                     }
                 }
@@ -1573,11 +1627,10 @@
                         console.log(
                             'Loop stopped or project directory missing. Halting iteration.'
                         );
-                        // Ensure UI reflects stopped state if loop was unexpectedly terminated
                         if (!isLoopRunning) {
-                            stopLoop(); // Call stopLoop to clean up UI properly
+                            stopLoop(); // Ensure UI cleanup
                         }
-                        return; // Stop if flag is false or no project dir
+                        return;
                     }
 
                     currentIteration++;
@@ -1585,11 +1638,17 @@
                     iterationStatusDiv.style.display = 'flex'; // Show counter and spinner
                     spinner.style.display = 'block';
                     displayStatus(`Running iteration ${currentIteration}...`, 'loading');
-                    // REMOVED: stopLoopBtn.disabled = true; // Keep stop button enabled
 
                     const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+                    const selectedModel = modelSelect.value; // Get current model selection
+
                     if (!apiKey) {
                         displayStatus('Error: API Key missing during iteration.', 'error');
+                        stopLoop();
+                        return;
+                    }
+                    if (!selectedModel) {
+                        displayStatus('Error: Model selection missing during iteration.', 'error');
                         stopLoop();
                         return;
                     }
@@ -1602,7 +1661,11 @@
                                 'Content-Type': 'application/json',
                                 Authorization: `Bearer ${apiKey}`
                             },
-                            body: JSON.stringify({ folderName: currentfolderName })
+                            // Pass folderName and selectedModel
+                            body: JSON.stringify({
+                                folderName: currentfolderName,
+                                model: selectedModel
+                            })
                         });
 
                         // Check immediately if the loop was stopped while waiting for the response
@@ -1615,13 +1678,14 @@
                             return;
                         }
 
-                        const data = await response.json();
-
+                        // Check if response is ok BEFORE trying to parse JSON
                         if (!response.ok) {
-                            throw new Error(
-                                data?.message || `Iteration failed: ${response.statusText}`
-                            );
+                            // Throw the response itself to be caught by the catch block
+                            throw response;
                         }
+
+                        // eslint-disable-next-line no-unused-vars
+                        const data = await response.json(); // Parse response (might contain CLI output)
 
                         // Iteration successful
                         console.log(`Iteration ${currentIteration} completed successfully.`);
@@ -1635,8 +1699,7 @@
 
                         // Schedule next iteration only if loop is still running
                         if (isLoopRunning) {
-                            // REMOVED: stopLoopBtn.disabled = false; // Stop button remains enabled
-                            loopTimeoutId = setTimeout(runIteration, 500); // Delay before next iteration (e.g., 500ms)
+                            loopTimeoutId = setTimeout(runIteration, 500); // Delay before next iteration
                         } else {
                             console.log(
                                 'Loop stopped after successful iteration',
@@ -1646,16 +1709,25 @@
                         }
                     } catch (error) {
                         console.error(`Error during iteration ${currentIteration}:`, error);
-                        displayStatus(
-                            `Error in iteration ${currentIteration}: ${error.message}`,
-                            'error'
-                        );
+                        let errorMessage = `Iteration ${currentIteration} failed. Please check console.`;
+                        if (error instanceof Response) {
+                            try {
+                                const errorData = await error.json();
+                                errorMessage = `Iteration Error (${error.status}): ${
+                                    errorData.message || error.statusText
+                                }`;
+                            } catch (parseError) {
+                                errorMessage = `Iteration Error (${error.status}): ${error.statusText}. Could not parse error response.`;
+                            }
+                        } else if (error instanceof Error) {
+                            errorMessage = `Iteration Error: ${error.message}`;
+                        }
+                        displayStatus(errorMessage, 'error');
                         stopLoop(); // Stop the loop on error
                     } finally {
                         // Ensure spinner stops if loop terminates for any reason
                         if (!isLoopRunning) {
                             spinner.style.display = 'none';
-                            // REMOVED: stopLoopBtn.disabled = true; // Handled in stopLoop
                         }
                     }
                 }
@@ -1674,16 +1746,14 @@
                         // Only show "stopped" message if a loop was actually running and initiated
                         displayStatus(`Loop stopped after iteration ${currentIteration}.`, 'info');
                     } else if (!currentfolderName && !wasRunning) {
-                        // If stopped due to kickoff error or before starting
-                        // Keep the kickoff error message or clear status
-                        // clearStatus(); // Or let the existing error message persist
+                        // If stopped due to kickoff error or before starting, keep error message
                     } else {
                         // If stopped before kickoff finished but after button press
                         clearStatus();
                     }
 
                     console.log('Loop stopped.');
-                    // currentfolderName = null; // Optionally reset project dir, but maybe keep it for viewing results? Let's keep it.
+                    // Keep currentfolderName to allow viewing last results
                 }
             });
         </script>
