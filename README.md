@@ -143,9 +143,6 @@ guidelines on submitting bug reports, feature requests, and pull requests.
 
 MIT
 
-## General & Operational
-
-- **CI/CD:** Set up a Continuous Integration/Continuous Deployment pipeline (using GitHub Actions)
-  for automated testing and deployment.
-
 # TODO
+
+- implement kickoff, loop, and project folder logic both in index and in app.js
