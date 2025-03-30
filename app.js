@@ -58,8 +58,8 @@ const runSingleIteration = (folderPath, apiKey) =>
 
         console.log(`Executing in ${folderPath}: ${command.replace(apiKey, '****')}`); // Log command safely
 
-        // Set a timeout for the CLI command (e.g., 60 seconds)
-        const executionTimeout = 60000; // 60 seconds in milliseconds
+        // Set a timeout for the CLI command (e.g., 600 seconds)
+        const executionTimeout = 600000; // 600 seconds in milliseconds
 
         // eslint-disable-next-line no-unused-vars
         const child = exec(
