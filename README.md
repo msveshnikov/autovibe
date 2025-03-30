@@ -38,14 +38,10 @@ https://autovibe.dev
         - Generating and managing the output from the iterative processes.
         - Sending results back to the frontend via standard HTTP responses.
 - **Frontend (`index.html`):**
-    - A single HTML file, potentially including inline or linked CSS and JavaScript.
+    - A single HTML file, including inline or linked CSS and JavaScript.
     - Provides the user interface for inputting the seed and initiating the loop.
     - Communicates with the backend API (`app.js`) to send requests and receive results.
     - Displays the generated html and markdown outputs to the user.
-- **Configuration (`package.json`, `.prettierrc`):**
-    - `package.json`: Defines project metadata, dependencies (like Express), and scripts (e.g.,
-      `start`).
-    - `.prettierrc`: Ensures consistent code formatting.
 - **File system storage**
     - Each user session created new folder on server
     - AutoCode CLI is run inside this folder iteratively.
@@ -100,14 +96,15 @@ https://autovibe.dev
 To start using autovibe.dev:
 
 1.  **Access the Website:** Navigate to [https://autovibe.dev](https://autovibe.dev).
-2.  **Input Your Seed:** Enter your initial idea, concept, or data into the provided input field on
+2.  **Configure API key:** Enter it in the provided field.
+3.  **Input Your Seed:** Enter your initial idea, concept, or data into the provided input field on
     the main page (`index.html`).
-3.  **Configure API key:** Enter it in the provided field.
 4.  **Run the Loop:** Click the "Run" or "Start" button. Observe any loading indicators.
 5.  **Explore Output:** Wait for the results to appear. Explore the generated ideas and outcomes
     displayed on the page.
 6.  **Stop:** If you want to stop the process, click the "Stop" button. The loop will terminate, and
     you can review and download the results generated up to that point.
+7.  Share your results with others or use them for further exploration.
 
 ## Installation (Local Development)
 
