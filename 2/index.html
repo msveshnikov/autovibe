@@ -1,81 +1,80 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Poker Game - 5 Card Draw</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poker Game - 5 Card Draw</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <body>
+        <div class="game-table">
+            <!-- Dealer Area -->
+            <div class="dealer-area">
+                <h2>Dealer Hand</h2>
+                <div id="dealer-hand" class="hand">
+                    <!-- Dealer cards (initially hidden) -->
+                    <div class="card back"></div>
+                    <div class="card back"></div>
+                    <div class="card back"></div>
+                    <div class="card back"></div>
+                    <div class="card back"></div>
+                </div>
+            </div>
 
-<body>
-    <div class="game-table">
-        <!-- Dealer Area -->
-        <div class="dealer-area">
-            <h2>Dealer Hand</h2>
-            <div id="dealer-hand" class="hand">
-                <!-- Dealer cards (initially hidden) -->
-                <div class="card back"></div>
-                <div class="card back"></div>
-                <div class="card back"></div>
-                <div class="card back"></div>
-                <div class="card back"></div>
+            <!-- Discard Pile Area (Repurposing community area visually) -->
+            <div class="community-cards">
+                <!-- Using this class for layout -->
+                <h2>Discard Pile</h2>
+                <div id="discard-pile" class="hand">
+                    <!-- Discarded cards will appear here -->
+                    <span style="color: rgba(255, 255, 255, 0.5)">(Empty)</span>
+                </div>
+            </div>
+
+            <!-- Player Area -->
+            <div class="player-area">
+                <h2>Player Hand</h2>
+                <div id="player-hand" class="hand">
+                    <!-- Player cards -->
+                    <div class="card back"></div>
+                    <div class="card back"></div>
+                    <div class="card back"></div>
+                    <div class="card back"></div>
+                    <div class="card back"></div>
+                </div>
+            </div>
+
+            <!-- Info Area -->
+            <div class="info-area">
+                <div id="pot-area">
+                    <h2>Pot</h2>
+                    <p id="pot">Pot: $<span id="pot-amount">0</span></p>
+                </div>
+                <div id="player-info-area">
+                    <h2>Chips</h2>
+                    <p id="player-info">Chips: $<span id="player-chips-amount">1000</span></p>
+                </div>
+            </div>
+
+            <!-- Controls Area -->
+            <div class="controls-area">
+                <button id="deal-button">Deal</button>
+                <button id="draw-button" disabled>Draw/Discard</button>
+                <button id="check-button" disabled>Check</button>
+                <input type="number" id="bet-amount" value="10" min="1" step="1" disabled />
+                <button id="bet-button" disabled>Bet</button>
+                <button id="fold-button" disabled>Fold</button>
+                <!-- Removed Call/Raise for 5-Card Draw simplicity -->
             </div>
         </div>
+        <!-- end .game-table -->
 
-        <!-- Discard Pile Area (Repurposing community area visually) -->
-        <div class="community-cards"> <!-- Using this class for layout -->
-             <h2>Discard Pile</h2>
-             <div id="discard-pile" class="hand">
-                 <!-- Discarded cards will appear here -->
-                 <span style="color: rgba(255,255,255,0.5);">(Empty)</span>
-             </div>
+        <div id="status-message-area" style="text-align: center; margin-top: 20px">
+            <h2>Status</h2>
+            <p id="status-message">Welcome to 5 Card Draw! Click Deal to start.</p>
         </div>
 
-        <!-- Player Area -->
-        <div class="player-area">
-            <h2>Player Hand</h2>
-            <div id="player-hand" class="hand">
-                <!-- Player cards -->
-                <div class="card back"></div>
-                <div class="card back"></div>
-                <div class="card back"></div>
-                <div class="card back"></div>
-                <div class="card back"></div>
-            </div>
-        </div>
-
-        <!-- Info Area -->
-        <div class="info-area">
-             <div id="pot-area">
-                 <h2>Pot</h2>
-                 <p id="pot">Pot: $<span id="pot-amount">0</span></p>
-             </div>
-             <div id="player-info-area">
-                 <h2>Chips</h2>
-                 <p id="player-info">Chips: $<span id="player-chips-amount">1000</span></p>
-             </div>
-        </div>
-
-        <!-- Controls Area -->
-        <div class="controls-area">
-            <button id="deal-button">Deal</button>
-            <button id="draw-button" disabled>Draw/Discard</button>
-            <button id="check-button" disabled>Check</button>
-            <input type="number" id="bet-amount" value="10" min="1" step="1" disabled>
-            <button id="bet-button" disabled>Bet</button>
-            <button id="fold-button" disabled>Fold</button>
-            <!-- Removed Call/Raise for 5-Card Draw simplicity -->
-        </div>
-
-    </div> <!-- end .game-table -->
-
-    <div id="status-message-area" style="text-align: center; margin-top: 20px;">
-        <h2>Status</h2>
-        <p id="status-message">Welcome to 5 Card Draw! Click Deal to start.</p>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-
+        <script src="script.js"></script>
+    </body>
 </html>
