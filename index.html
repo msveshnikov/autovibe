@@ -1,3 +1,4 @@
+<!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
@@ -25,6 +26,7 @@
                 --text-muted: #777;
                 --error: #f44336;
                 --success: #4caf50;
+                --spinner-color: var(--primary);
             }
 
             * {
@@ -175,6 +177,7 @@
                 opacity: 0;
                 cursor: pointer;
                 border: none;
+                margin-right: 10px; /* Space between buttons */
             }
 
             .cta-button:hover {
@@ -208,6 +211,7 @@
                 cursor: not-allowed;
                 transform: none;
                 box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3);
+                background: linear-gradient(45deg, var(--primary), var(--primary-dark));
             }
 
             .cta-button:disabled:hover {
@@ -218,6 +222,25 @@
             .cta-button:disabled::after {
                 width: 0;
                 height: 0;
+            }
+
+            /* Stop button specific style */
+            #stop-loop-btn {
+                background: linear-gradient(45deg, var(--error), #c62828); /* Red gradient */
+                box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+            }
+
+            #stop-loop-btn:hover {
+                box-shadow: 0 8px 20px rgba(244, 67, 54, 0.4);
+            }
+
+            #stop-loop-btn:disabled {
+                background: linear-gradient(
+                    45deg,
+                    var(--error),
+                    #c62828
+                ); /* Keep red when disabled */
+                box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
             }
 
             .section-title {
@@ -438,12 +461,19 @@
                 margin-top: 5px;
             }
 
-            .status-message {
+            .status-container {
+                display: flex;
+                align-items: center;
+                gap: 10px;
                 margin-top: 20px;
-                padding: 10px;
+            }
+
+            .status-message {
+                padding: 10px 15px;
                 border-radius: 8px;
-                text-align: center;
                 font-weight: 500;
+                flex-grow: 1;
+                text-align: left;
             }
 
             .status-message.error {
@@ -466,51 +496,32 @@
                 color: #2196f3;
             }
 
-            .results-section {
-                padding: 80px 0;
-            }
-
-            .results-output {
-                margin-top: 30px;
-                background-color: var(--card-bg);
-                border-radius: 15px;
-                padding: 30px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-                min-height: 100px;
-                white-space: pre-wrap; /* Preserve whitespace and line breaks */
-                word-wrap: break-word; /* Break long words */
-                font-family: 'Courier New', monospace;
-                font-size: 0.95rem;
+            .iteration-status {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 500;
                 color: var(--text-secondary);
             }
 
-            .results-output:empty::before {
-                content: 'Results will appear here...';
-                color: var(--text-muted);
-                font-style: italic;
+            .spinner {
+                width: 20px;
+                height: 20px;
+                border: 3px solid rgba(0, 188, 212, 0.3);
+                border-top-color: var(--spinner-color);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                display: none; /* Hidden by default */
             }
 
-            .results-output .iteration {
-                margin-bottom: 20px;
-                padding-bottom: 20px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
             }
 
-            .results-output .iteration:last-child {
-                margin-bottom: 0;
-                padding-bottom: 0;
-                border-bottom: none;
-            }
-
-            .results-output .iteration-header {
-                font-weight: bold;
-                color: var(--primary);
-                margin-bottom: 10px;
-            }
-
-            .results-output .iteration-error {
-                color: var(--error);
-                font-weight: bold;
+            .results-section {
+                padding: 80px 0;
             }
 
             .iframe-container {
@@ -526,14 +537,12 @@
                 height: 800px; /* Adjust height as needed */
                 border: 1px solid var(--light-dark);
                 border-radius: 8px;
-            }
-
-            .result-preview-iframe2 {
-                background-color: #ebf1f2; /* Specific background for this iframe */
-            }
-
-            .result-preview-iframe {
                 background-color: var(--card-bg); /* Match theme */
+            }
+
+            .result-preview-iframe-readme {
+                background-color: #ebf1f2; /* Specific background for readme iframe */
+                color: #333; /* Ensure text is readable on light background */
             }
 
             .api-key-section {
@@ -549,93 +558,6 @@
                 background-color: var(--light-dark);
                 border-radius: 15px;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            }
-
-            .demo-section {
-                padding: 100px 0;
-                text-align: center;
-                background-color: var(--light-dark);
-            }
-
-            .demo-container {
-                max-width: 900px;
-                margin: 0 auto;
-                padding: 30px;
-                background-color: var(--card-bg);
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            }
-
-            .demo-tabs {
-                display: flex;
-                justify-content: center;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                margin-bottom: 30px;
-            }
-
-            .demo-tab {
-                padding: 10px 20px;
-                margin: 0 10px;
-                font-weight: 500;
-                color: var(--text-secondary);
-                cursor: pointer;
-                position: relative;
-                transition: all 0.3s ease;
-                border: none;
-                background: none;
-                font-size: 1rem;
-            }
-
-            .demo-tab.active {
-                color: var(--primary);
-            }
-
-            .demo-tab::after {
-                content: '';
-                position: absolute;
-                bottom: -1px;
-                left: 0;
-                width: 0;
-                height: 3px;
-                background-color: var(--primary);
-                transition: width 0.3s ease;
-            }
-
-            .demo-tab.active::after {
-                width: 100%;
-            }
-
-            .demo-content {
-                padding: 20px 0;
-            }
-
-            .terminal {
-                background-color: var(--darker);
-                border-radius: 8px;
-                padding: 20px;
-                font-family: 'Courier New', monospace;
-                color: var(--text);
-                text-align: left;
-                overflow: auto;
-                max-height: 400px;
-                white-space: pre;
-            }
-
-            .terminal-line {
-                line-height: 1.6;
-                margin-bottom: 5px;
-            }
-
-            .prompt {
-                color: var(--primary);
-            }
-
-            .command {
-                color: var(--text);
-            }
-
-            .output {
-                color: var(--text-secondary);
             }
 
             .cta-section {
@@ -1052,6 +974,7 @@
                 .secondary-button {
                     width: 100%;
                     margin-bottom: 15px;
+                    margin-right: 0; /* Remove margin for stacked buttons */
                 }
 
                 .cta-buttons {
@@ -1060,13 +983,6 @@
 
                 .section-title {
                     font-size: 1.8rem;
-                }
-
-                .demo-tabs {
-                    flex-wrap: wrap;
-                }
-                .demo-tab {
-                    margin: 5px;
                 }
 
                 .iframe-container iframe {
@@ -1185,26 +1101,26 @@
                 <div class="how-it-works-steps">
                     <div class="step-item">
                         <div class="step-number">1</div>
-                        <h3 class="step-title">Provide Your Seed</h3>
+                        <h3 class="step-title">Provide Seed & Key</h3>
                         <p class="step-description">
-                            Input your initial idea, concept, or data as the seed for the flash
-                            loop. The more specific your seed, the more focused your results.
+                            Input your initial idea (seed) and your Google AI API key. The seed
+                            guides the process, the key enables it.
                         </p>
                     </div>
                     <div class="step-item">
                         <div class="step-number">2</div>
-                        <h3 class="step-title">Run the Loop</h3>
+                        <h3 class="step-title">Kickoff & Iterate</h3>
                         <p class="step-description">
-                            Our containerized system runs thousands of iterations of flash thinking
-                            on your seed, exploring possibilities and connections.
+                            Start the loop. The system creates a project space and iteratively runs
+                            AutoCode, refining content based on previous steps.
                         </p>
                     </div>
                     <div class="step-item">
                         <div class="step-number">3</div>
-                        <h3 class="step-title">Explore the Output</h3>
+                        <h3 class="step-title">Preview & Stop</h3>
                         <p class="step-description">
-                            After iterations complete, examine the generated results and discover
-                            unexpected outcomes, insights, and creative solutions.
+                            Watch the live previews update with each iteration. Stop the process
+                            anytime to review the current state.
                         </p>
                     </div>
                 </div>
@@ -1221,18 +1137,40 @@
                             <textarea
                                 id="seed-input"
                                 class="form-textarea"
-                                placeholder="Enter your initial idea, concept, or data..."
+                                placeholder="Describe the initial idea or goal for the project..."
                                 rows="4"
                                 required
                             ></textarea>
                             <p class="form-help">
-                                This is the starting point for the iterative process.
+                                This will be saved as the initial README.md in your project folder.
                             </p>
                         </div>
                         <button type="submit" id="run-loop-btn" class="cta-button">
-                            Run Vibing Loop <i class="fas fa-play"></i>
+                            <i class="fas fa-play"></i> Run Vibing Loop
                         </button>
-                        <div id="status-message" class="status-message" style="display: none"></div>
+                        <button
+                            type="button"
+                            id="stop-loop-btn"
+                            class="cta-button"
+                            style="display: none"
+                        >
+                            <i class="fas fa-stop"></i> Stop Loop
+                        </button>
+                        <div class="status-container">
+                            <div
+                                id="status-message"
+                                class="status-message"
+                                style="display: none"
+                            ></div>
+                            <div
+                                id="iteration-status"
+                                class="iteration-status"
+                                style="display: none"
+                            >
+                                <div id="spinner" class="spinner"></div>
+                                <span id="iteration-counter">Iteration 0</span>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -1240,19 +1178,25 @@
 
         <section class="results-section" id="results-section">
             <div class="container">
-                <h2 class="section-title">Loop Results & Previews</h2>
+                <h2 class="section-title">Live Previews</h2>
                 <div class="iframe-container">
                     <iframe
-                        class="result-preview-iframe2"
-                        src="projects/2/README.txt"
-                        title="Brainstorm/Readme Preview"
+                        id="readme-preview"
+                        class="result-preview-iframe-readme"
+                        src="about:blank"
+                        title="README Preview"
                     ></iframe>
                     <iframe
+                        id="html-preview"
                         class="result-preview-iframe"
-                        src="projects/2/index.html"
+                        src="about:blank"
                         title="Generated HTML Preview"
                     ></iframe>
                 </div>
+                <p style="text-align: center; margin-top: 20px; color: var(--text-muted)">
+                    Previews update after each successful iteration. Interaction with the HTML
+                    preview is enabled.
+                </p>
             </div>
         </section>
 
@@ -1276,7 +1220,7 @@
                                 rel="noopener noreferrer"
                                 style="color: var(--primary)"
                                 >Google AI Studio</a
-                            >. Your key is stored locally in your browser.
+                            >. Your key is stored locally in your browser's Local Storage.
                         </p>
                     </div>
                     <button id="save-api-key-btn" class="cta-button">Save API Key</button>
@@ -1336,7 +1280,6 @@
                             <li><a href="#how-it-works">How it Works</a></li>
                             <li><a href="#loop-input-section">Start Loop</a></li>
                             <li><a href="#api-key">API Key</a></li>
-                            <li><a href="#demo">Demo</a></li>
                         </ul>
                     </div>
                     <div class="footer-column">
@@ -1390,17 +1333,26 @@
                 const loopForm = document.getElementById('loop-form');
                 const seedInput = document.getElementById('seed-input');
                 const runLoopBtn = document.getElementById('run-loop-btn');
+                const stopLoopBtn = document.getElementById('stop-loop-btn');
                 const statusMessage = document.getElementById('status-message');
-                const resultsOutput = document.getElementById('results-output');
-                const demoTabsContainer = document.getElementById('demo-tabs-container');
-                const terminalOutput = document.getElementById('terminal-output');
+                const iterationStatusDiv = document.getElementById('iteration-status');
+                const iterationCounterSpan = document.getElementById('iteration-counter');
+                const spinner = document.getElementById('spinner');
+                const readmePreviewIframe = document.getElementById('readme-preview');
+                const htmlPreviewIframe = document.getElementById('html-preview');
                 const copyrightYear = document.getElementById('copyright-year');
-                const resultIframes = document.querySelectorAll('.iframe-container iframe'); // Select iframes for update
+
+                // --- State ---
+                let isLoopRunning = false;
+                let currentfolderName = null;
+                let currentIteration = 0;
+                let loopTimeoutId = null; // To control the loop timing
 
                 // --- Initial Setup ---
                 copyrightYear.textContent = new Date().getFullYear();
                 loadApiKey();
-                setupDemoTabs(); // Initialize demo tabs
+                stopLoopBtn.style.display = 'none'; // Ensure stop button is hidden initially
+                iterationStatusDiv.style.display = 'none'; // Hide iteration status initially
 
                 // --- Event Listeners ---
 
@@ -1420,7 +1372,13 @@
 
                 // Close mobile menu when a link is clicked
                 nav.querySelectorAll('a').forEach((link) => {
-                    link.addEventListener('click', () => {
+                    link.addEventListener('click', (e) => {
+                        // Smooth scroll for internal links
+                        const targetId = link.getAttribute('href');
+                        if (targetId && targetId.startsWith('#')) {
+                            e.preventDefault();
+                            document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+                        }
                         if (nav.classList.contains('active')) {
                             nav.classList.remove('active');
                         }
@@ -1435,8 +1393,11 @@
                     }
                 });
 
-                // Run Loop Form Submission
-                loopForm.addEventListener('submit', handleLoopFormSubmit);
+                // Run Loop Form Submission (Kickoff)
+                loopForm.addEventListener('submit', handleKickoff);
+
+                // Stop Loop Button
+                stopLoopBtn.addEventListener('click', stopLoop);
 
                 // --- Functions ---
 
@@ -1449,7 +1410,7 @@
                         displayApiKeyStatus(
                             'API Key not found. Please get one from Google AI Studio and save it.',
                             'info'
-                        ); // Changed to 'info'
+                        );
                     }
                 }
 
@@ -1460,7 +1421,7 @@
                         displayApiKeyStatus('API Key saved successfully!', 'success');
                     } else {
                         localStorage.removeItem(API_KEY_STORAGE_KEY);
-                        displayApiKeyStatus('API Key removed.', 'info'); // Changed to 'info'
+                        displayApiKeyStatus('API Key removed.', 'info');
                     }
                 }
 
@@ -1468,7 +1429,6 @@
                     apiKeyStatus.textContent = message;
                     apiKeyStatus.className = `status-message ${type}`;
                     apiKeyStatus.style.display = 'block';
-                    // Keep it visible until next action
                 }
 
                 function displayStatus(message, type = 'info') {
@@ -1482,54 +1442,44 @@
                     statusMessage.style.display = 'none';
                 }
 
-                // Function to escape HTML characters
-                function escapeHtml(unsafe) {
-                    if (!unsafe) return '';
-                    return unsafe
-                        .replace(/&/g, '&amp;')
-                        .replace(/</g, '&lt;')
-                        .replace(/>/g, '&gt;')
-                        .replace(/"/g, '&quot;')
-                        .replace(/'/g, '&#039;');
+                function updateResultPreviews(folderName) {
+                    if (!folderName) return;
+                    // Add a cache-busting query parameter to force reload
+                    const cacheBuster = `?t=${Date.now()}`;
+                    const readmeUrl = `/projects/${folderName}/README.md${cacheBuster}`;
+                    const htmlUrl = `/projects/${folderName}/index.html${cacheBuster}`;
+
+                    // Check if iframes exist before setting src
+                    if (readmePreviewIframe) {
+                        readmePreviewIframe.src = readmeUrl;
+                    } else {
+                        console.error('README preview iframe not found.');
+                    }
+                    if (htmlPreviewIframe) {
+                        htmlPreviewIframe.src = htmlUrl;
+                    } else {
+                        console.error('HTML preview iframe not found.');
+                    }
+                    console.log(`Updating previews: README -> ${readmeUrl}, HTML -> ${htmlUrl}`);
                 }
 
-                // Function to update iframe sources and reload them
-                function updateResultPreviews(resultDir) {
-                    // Assuming the structure is always /<resultDir>/index.html and /<resultDir>/README.md
-                    const htmlPreviewUrl = `/${resultDir}/index.html`;
-                    const readmePreviewUrl = `/${resultDir}/README.md`;
-
-                    // Find the specific iframes (adjust selectors if needed)
-                    const htmlIframe = document.querySelector('.result-preview-iframe');
-                    const readmeIframe = document.querySelector('.result-preview-iframe2');
-
-                    if (htmlIframe) {
-                        htmlIframe.src = htmlPreviewUrl;
-                        // Optional: Force reload if src doesn't change but content might
-                        // htmlIframe.contentWindow.location.reload();
-                    }
-                    if (readmeIframe) {
-                        readmeIframe.src = readmePreviewUrl;
-                        // Optional: Force reload
-                        // readmeIframe.contentWindow.location.reload();
-                    }
-                }
-
-                async function handleLoopFormSubmit(event) {
+                async function handleKickoff(event) {
                     event.preventDefault();
+                    if (isLoopRunning) return; // Prevent starting multiple loops
+
                     clearStatus();
-                    resultsOutput.innerHTML = ''; // Clear previous results using innerHTML
+                    clearTimeout(loopTimeoutId); // Clear any pending loop timeouts
 
                     const seed = seedInput.value.trim();
                     const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
 
                     if (!apiKey) {
                         displayStatus(
-                            'Error: API Key is missing. Please add it in the API Key section below.',
+                            'Error: API Key is missing. Please add it below and save.',
                             'error'
                         );
-                        // Scroll to the API key section
                         document.getElementById('api-key').scrollIntoView({ behavior: 'smooth' });
+                        apiKeyInput.focus();
                         return;
                     }
 
@@ -1539,11 +1489,17 @@
                         return;
                     }
 
-                    displayStatus('Running vibing loop...', 'loading');
+                    displayStatus('Kicking off the loop...', 'loading');
                     runLoopBtn.disabled = true;
+                    stopLoopBtn.style.display = 'inline-block';
+                    stopLoopBtn.disabled = false;
+                    iterationStatusDiv.style.display = 'none'; // Hide iteration counter initially
+                    isLoopRunning = true;
+                    currentIteration = 0;
 
                     try {
-                        const response = await fetch('/api/loop', {
+                        // --- Call Kickoff API ---
+                        const response = await fetch('/api/kickoff', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -1552,80 +1508,122 @@
                             body: JSON.stringify({ seed: seed })
                         });
 
-                        let data;
-                        try {
-                            data = await response.json();
-                        } catch (jsonError) {
-                            throw new Error(
-                                `Server returned non-JSON response. Status: ${response.status} ${response.statusText}`
-                            );
-                        }
+                        const data = await response.json();
 
                         if (!response.ok) {
                             throw new Error(
-                                data?.message || `HTTP error! Status: ${response.status}`
+                                data?.message || `Kickoff failed: ${response.statusText}`
                             );
                         }
 
-                        // Update text results output
-                        if (data.results && Array.isArray(data.results)) {
-                            if (data.results.length > 0) {
-                                data.results.forEach((result) => {
-                                    const iterationDiv = document.createElement('div');
-                                    iterationDiv.classList.add('iteration');
-
-                                    const header = document.createElement('div');
-                                    header.classList.add('iteration-header');
-                                    header.textContent = `Iteration ${result.iteration}:`;
-                                    iterationDiv.appendChild(header);
-
-                                    const content = document.createElement('div');
-                                    if (result.error) {
-                                        content.classList.add('iteration-error');
-                                        content.textContent = `Error: ${escapeHtml(result.error)}`;
-                                    } else if (result.output) {
-                                        content.textContent = escapeHtml(result.output);
-                                    } else {
-                                        content.textContent = '(No output or error)';
-                                        content.style.fontStyle = 'italic';
-                                    }
-                                    iterationDiv.appendChild(content);
-                                    resultsOutput.appendChild(iterationDiv);
-                                });
-                                clearStatus();
-                            } else {
-                                displayStatus(
-                                    'Loop completed, but no text results were returned.',
-                                    'info'
-                                );
-                            }
-                        } else {
-                            console.warn('Received unexpected data format for text results:', data);
-                            displayStatus('Received unexpected data format from server.', 'error');
+                        if (!data.folderName) {
+                            throw new Error('Kickoff response missing project directory.');
                         }
 
-                        // Update iframe previews if resultDir is provided
-                        if (data.resultDir) {
-                            updateResultPreviews(data.resultDir);
-                        } else {
-                            // Optionally clear or set default src for iframes if no resultDir
-                            updateResultPreviews('2'); // Default or indicate no preview
-                            console.warn('No resultDir received to update previews.');
-                        }
+                        currentfolderName = data.folderName;
+                        console.log(`Kickoff successful. Project Directory: ${currentfolderName}`);
 
-                        // Scroll to results after processing both text and previews
+                        // Initial preview update after kickoff (backend should have created initial files)
+                        updateResultPreviews(currentfolderName);
+
+                        // Scroll to results section
                         document
                             .getElementById('results-section')
                             .scrollIntoView({ behavior: 'smooth' });
+
+                        // Start the first iteration
+                        runIteration();
                     } catch (error) {
-                        console.error('Error running loop:', error);
-                        displayStatus(`Error: ${error.message}`, 'error');
-                        resultsOutput.innerHTML = ''; // Clear text results on error
-                        // Optionally reset iframes on error
-                        // updateResultPreviews('error-placeholder');
-                    } finally {
-                        runLoopBtn.disabled = false;
+                        console.error('Error during kickoff:', error);
+                        displayStatus(`Kickoff Error: ${error.message}`, 'error');
+                        stopLoop(); // Reset state on kickoff failure
                     }
+                }
+
+                async function runIteration() {
+                    if (!isLoopRunning || !currentfolderName) {
+                        console.log('Loop stopped or project directory missing.');
+                        return; // Stop if flag is false or no project dir
+                    }
+
+                    currentIteration++;
+                    iterationCounterSpan.textContent = `Iteration ${currentIteration}`;
+                    iterationStatusDiv.style.display = 'flex'; // Show counter and spinner
+                    spinner.style.display = 'block';
+                    displayStatus(`Running iteration ${currentIteration}...`, 'loading');
+                    stopLoopBtn.disabled = true; // Disable stop briefly during API call
+
+                    const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+                    if (!apiKey) {
+                        displayStatus('Error: API Key missing during iteration.', 'error');
+                        stopLoop();
+                        return;
+                    }
+
+                    try {
+                        // --- Call Loop API ---
+                        const response = await fetch('/api/loop', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${apiKey}`
+                            },
+                            body: JSON.stringify({ folderName: currentfolderName })
+                        });
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(
+                                data?.message || `Iteration failed: ${response.statusText}`
+                            );
+                        }
+
+                        // Iteration successful
+                        console.log(`Iteration ${currentIteration} completed successfully.`);
+                        displayStatus(
+                            `Iteration ${currentIteration} finished. Updating previews...`,
+                            'success'
+                        );
+
+                        // Update previews
+                        updateResultPreviews(currentfolderName);
+
+                        // Schedule next iteration after a short delay
+                        stopLoopBtn.disabled = false; // Re-enable stop button
+                        loopTimeoutId = setTimeout(runIteration, 500); // Delay before next iteration (e.g., 500ms)
+                    } catch (error) {
+                        console.error(`Error during iteration ${currentIteration}:`, error);
+                        displayStatus(
+                            `Error in iteration ${currentIteration}: ${error.message}`,
+                            'error'
+                        );
+                        stopLoop(); // Stop the loop on error
+                    } finally {
+                        // Ensure spinner stops if loop terminates unexpectedly
+                        if (!isLoopRunning) {
+                            spinner.style.display = 'none';
+                        }
+                    }
+                }
+
+                function stopLoop() {
+                    isLoopRunning = false;
+                    clearTimeout(loopTimeoutId); // Cancel any scheduled next iteration
+                    runLoopBtn.disabled = false;
+                    stopLoopBtn.disabled = true;
+                    stopLoopBtn.style.display = 'none'; // Hide stop button
+                    spinner.style.display = 'none';
+                    if (currentfolderName) {
+                        // Only show "stopped" message if a loop was actually running
+                        displayStatus(`Loop stopped after iteration ${currentIteration}.`, 'info');
+                    } else {
+                        // If stopped due to kickoff error, clear status or show specific message
+                        clearStatus(); // Or displayStatus('Loop initiation failed.', 'error');
+                    }
+                    iterationStatusDiv.style.display = 'none'; // Hide iteration status
+                    console.log('Loop stopped by user or error.');
+                    // currentfolderName = null; // Optionally reset project dir
                 }
             });
         </script>

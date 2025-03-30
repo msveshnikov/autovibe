@@ -145,4 +145,4 @@ MIT
 
 # TODO
 
-- implement kickoff, loop, and project folder logic both in index and in app.js
+- after kickoff, I can't see iframes updated, please fix
