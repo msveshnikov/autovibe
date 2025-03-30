@@ -6,7 +6,8 @@ COPY package.json bun.lockb ./
 RUN bun install 
 
 # Copy source code
-ADD . .
+COPY . .
+COPY ./projects /app/projects
 
 # Expose the port
 EXPOSE 3000
