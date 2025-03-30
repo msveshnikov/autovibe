@@ -230,7 +230,9 @@
                 box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
             }
 
-            #stop-loop-btn:hover {
+            #stop-loop-btn:hover:not(:disabled) {
+                /* Apply hover only when not disabled */
+                transform: translateY(-3px);
                 box-shadow: 0 8px 20px rgba(244, 67, 54, 0.4);
             }
 
@@ -241,6 +243,9 @@
                     #c62828
                 ); /* Keep red when disabled */
                 box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+                opacity: 0.7; /* Standard disabled opacity */
+                cursor: not-allowed;
+                transform: none; /* Remove hover effect when disabled */
             }
 
             .section-title {
@@ -466,6 +471,7 @@
                 align-items: center;
                 gap: 10px;
                 margin-top: 20px;
+                flex-wrap: wrap; /* Allow wrap if needed */
             }
 
             .status-message {
@@ -474,6 +480,7 @@
                 font-weight: 500;
                 flex-grow: 1;
                 text-align: left;
+                min-width: 200px; /* Ensure it doesn't get too small */
             }
 
             .status-message.error {
@@ -502,6 +509,7 @@
                 gap: 10px;
                 font-weight: 500;
                 color: var(--text-secondary);
+                flex-shrink: 0; /* Prevent shrinking */
             }
 
             .spinner {
@@ -537,12 +545,14 @@
                 height: 800px; /* Adjust height as needed */
                 border: 1px solid var(--light-dark);
                 border-radius: 8px;
-                background-color: var(--card-bg); /* Match theme */
+                background-color: #ccc;
             }
 
+            /* Style for README iframe: Dark background, let browser handle text color */
             .result-preview-iframe-readme {
-                background-color: #ebf1f2; /* Specific background for readme iframe */
-                color: #333; /* Ensure text is readable on light background */
+                background-color: #777;
+                color: white; /* Default text color for the iframe */
+                /* Removed color property to allow browser default text color on dark bg */
             }
 
             .api-key-section {
@@ -1018,7 +1028,7 @@
                             <li><a href="#how-it-works">How it Works</a></li>
                             <li><a href="#loop-input-section">Start Loop</a></li>
                             <li><a href="#api-key">API Key</a></li>
-                            <li><a href="#demo">Demo</a></li>
+                            <li><a href="#results-section">Demo</a></li>
                             <li>
                                 <a
                                     href="https://github.com/msveshnikov/autovibe"
@@ -1217,7 +1227,11 @@
                         </p>
                     </div>
                     <button id="save-api-key-btn" class="cta-button">Save API Key</button>
-                    <div id="api-key-status" class="status-message" style="display: none"></div>
+                    <div
+                        id="api-key-status"
+                        class="status-message"
+                        style="display: none; margin-top: 15px"
+                    ></div>
                 </div>
             </div>
         </section>
@@ -1345,6 +1359,7 @@
                 copyrightYear.textContent = new Date().getFullYear();
                 loadApiKey();
                 stopLoopBtn.style.display = 'none'; // Ensure stop button is hidden initially
+                stopLoopBtn.disabled = true; // Ensure stop button is disabled initially
                 iterationStatusDiv.style.display = 'none'; // Hide iteration status initially
 
                 // --- Event Listeners ---
@@ -1370,7 +1385,10 @@
                         const targetId = link.getAttribute('href');
                         if (targetId && targetId.startsWith('#')) {
                             e.preventDefault();
-                            document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+                            const targetElement = document.querySelector(targetId);
+                            if (targetElement) {
+                                targetElement.scrollIntoView({ behavior: 'smooth' });
+                            }
                         }
                         if (nav.classList.contains('active')) {
                             nav.classList.remove('active');
@@ -1444,12 +1462,31 @@
 
                     // Check if iframes exist before setting src
                     if (readmePreviewIframe) {
-                        readmePreviewIframe.src = readmeUrl;
+                        // Try reloading the iframe content
+                        try {
+                            readmePreviewIframe.contentWindow.location.replace(readmeUrl);
+                        } catch (e) {
+                            // Fallback for potential cross-origin issues or if contentWindow is not accessible yet
+                            readmePreviewIframe.src = readmeUrl;
+                            console.warn(
+                                'Could not use location.replace for README iframe, using src instead.',
+                                e
+                            );
+                        }
                     } else {
                         console.error('README preview iframe not found.');
                     }
                     if (htmlPreviewIframe) {
-                        htmlPreviewIframe.src = htmlUrl;
+                        try {
+                            htmlPreviewIframe.contentWindow.location.replace(htmlUrl);
+                        } catch (e) {
+                            // Fallback
+                            htmlPreviewIframe.src = htmlUrl;
+                            console.warn(
+                                'Could not use location.replace for HTML iframe, using src instead.',
+                                e
+                            );
+                        }
                     } else {
                         console.error('HTML preview iframe not found.');
                     }
@@ -1471,7 +1508,10 @@
                             'Error: API Key is missing. Please add it below and save.',
                             'error'
                         );
-                        document.getElementById('api-key').scrollIntoView({ behavior: 'smooth' });
+                        const apiKeySection = document.getElementById('api-key');
+                        if (apiKeySection) {
+                            apiKeySection.scrollIntoView({ behavior: 'smooth' });
+                        }
                         apiKeyInput.focus();
                         return;
                     }
@@ -1485,10 +1525,12 @@
                     displayStatus('Kicking off the loop...', 'loading');
                     runLoopBtn.disabled = true;
                     stopLoopBtn.style.display = 'inline-block';
-                    stopLoopBtn.disabled = false;
+                    stopLoopBtn.disabled = false; // Enable stop button immediately
                     iterationStatusDiv.style.display = 'none'; // Hide iteration counter initially
+                    spinner.style.display = 'none'; // Hide spinner initially
                     isLoopRunning = true;
                     currentIteration = 0;
+                    iterationCounterSpan.textContent = `Iteration 0`; // Reset counter text
 
                     try {
                         // --- Call Kickoff API ---
@@ -1520,9 +1562,10 @@
                         updateResultPreviews(currentfolderName);
 
                         // Scroll to results section
-                        document
-                            .getElementById('results-section')
-                            .scrollIntoView({ behavior: 'smooth' });
+                        const resultsSection = document.getElementById('results-section');
+                        if (resultsSection) {
+                            resultsSection.scrollIntoView({ behavior: 'smooth' });
+                        }
 
                         // Start the first iteration
                         runIteration();
@@ -1535,7 +1578,13 @@
 
                 async function runIteration() {
                     if (!isLoopRunning || !currentfolderName) {
-                        console.log('Loop stopped or project directory missing.');
+                        console.log(
+                            'Loop stopped or project directory missing. Halting iteration.'
+                        );
+                        // Ensure UI reflects stopped state if loop was unexpectedly terminated
+                        if (!isLoopRunning) {
+                            stopLoop(); // Call stopLoop to clean up UI properly
+                        }
                         return; // Stop if flag is false or no project dir
                     }
 
@@ -1544,7 +1593,7 @@
                     iterationStatusDiv.style.display = 'flex'; // Show counter and spinner
                     spinner.style.display = 'block';
                     displayStatus(`Running iteration ${currentIteration}...`, 'loading');
-                    stopLoopBtn.disabled = true; // Disable stop briefly during API call
+                    // REMOVED: stopLoopBtn.disabled = true; // Keep stop button enabled
 
                     const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
                     if (!apiKey) {
@@ -1564,6 +1613,16 @@
                             body: JSON.stringify({ folderName: currentfolderName })
                         });
 
+                        // Check immediately if the loop was stopped while waiting for the response
+                        if (!isLoopRunning) {
+                            console.log(
+                                'Loop stopped during API call for iteration',
+                                currentIteration
+                            );
+                            stopLoop(); // Ensure cleanup
+                            return;
+                        }
+
                         const data = await response.json();
 
                         if (!response.ok) {
@@ -1582,9 +1641,17 @@
                         // Update previews
                         updateResultPreviews(currentfolderName);
 
-                        // Schedule next iteration after a short delay
-                        stopLoopBtn.disabled = false; // Re-enable stop button
-                        loopTimeoutId = setTimeout(runIteration, 500); // Delay before next iteration (e.g., 500ms)
+                        // Schedule next iteration only if loop is still running
+                        if (isLoopRunning) {
+                            // REMOVED: stopLoopBtn.disabled = false; // Stop button remains enabled
+                            loopTimeoutId = setTimeout(runIteration, 500); // Delay before next iteration (e.g., 500ms)
+                        } else {
+                            console.log(
+                                'Loop stopped after successful iteration',
+                                currentIteration
+                            );
+                            stopLoop(); // Ensure cleanup if stopped exactly here
+                        }
                     } catch (error) {
                         console.error(`Error during iteration ${currentIteration}:`, error);
                         displayStatus(
@@ -1593,30 +1660,38 @@
                         );
                         stopLoop(); // Stop the loop on error
                     } finally {
-                        // Ensure spinner stops if loop terminates unexpectedly
+                        // Ensure spinner stops if loop terminates for any reason
                         if (!isLoopRunning) {
                             spinner.style.display = 'none';
+                            // REMOVED: stopLoopBtn.disabled = true; // Handled in stopLoop
                         }
                     }
                 }
 
                 function stopLoop() {
+                    const wasRunning = isLoopRunning; // Check if it was running before stopping
                     isLoopRunning = false;
                     clearTimeout(loopTimeoutId); // Cancel any scheduled next iteration
-                    runLoopBtn.disabled = false;
-                    stopLoopBtn.disabled = true;
+                    runLoopBtn.disabled = false; // Re-enable run button
+                    stopLoopBtn.disabled = true; // Disable stop button as loop is now stopped
                     stopLoopBtn.style.display = 'none'; // Hide stop button
-                    spinner.style.display = 'none';
-                    if (currentfolderName) {
-                        // Only show "stopped" message if a loop was actually running
-                        displayStatus(`Loop stopped after iteration ${currentIteration}.`, 'info');
-                    } else {
-                        // If stopped due to kickoff error, clear status or show specific message
-                        clearStatus(); // Or displayStatus('Loop initiation failed.', 'error');
-                    }
+                    spinner.style.display = 'none'; // Hide spinner
                     iterationStatusDiv.style.display = 'none'; // Hide iteration status
-                    console.log('Loop stopped by user or error.');
-                    // currentfolderName = null; // Optionally reset project dir
+
+                    if (wasRunning && currentfolderName) {
+                        // Only show "stopped" message if a loop was actually running and initiated
+                        displayStatus(`Loop stopped after iteration ${currentIteration}.`, 'info');
+                    } else if (!currentfolderName && !wasRunning) {
+                        // If stopped due to kickoff error or before starting
+                        // Keep the kickoff error message or clear status
+                        // clearStatus(); // Or let the existing error message persist
+                    } else {
+                        // If stopped before kickoff finished but after button press
+                        clearStatus();
+                    }
+
+                    console.log('Loop stopped.');
+                    // currentfolderName = null; // Optionally reset project dir, but maybe keep it for viewing results? Let's keep it.
                 }
             });
         </script>

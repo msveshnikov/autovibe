@@ -143,6 +143,3 @@ guidelines on submitting bug reports, feature requests, and pull requests.
 MIT
 
 # TODO
-
-- stop button should not be disabled, I should be able to press it any time
-- fix font color in readme iframe (make white! on dark grey background)
