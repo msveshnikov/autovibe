@@ -16,8 +16,8 @@ https://autovibe.dev
 
 **Key Goals:**
 
-- **Bring your free API key**: Get your own free API key from [here](https://aistudio.google.com/apikey).
-  Secure handling of API keys is paramount.
+- **Bring your free API key**: Get your own free API key from
+  [here](https://aistudio.google.com/apikey). Secure handling of API keys is paramount.
 - **Seed-Based Creativity:** Allow users to guide the exploration with initial seed inputs.
 - **Accessibility:** Offer a free core model for unrestricted exploration and adhere to WCAG
   guidelines.
@@ -143,3 +143,7 @@ guidelines on submitting bug reports, feature requests, and pull requests.
 MIT
 
 # TODO
+
+- add model selection and pass to API:
+    - gemini-2.0-flash-thinking-exp-01-21 (fast, default)
+    - gemini-2.5-pro-exp-03-25 (better but slower)
