@@ -1285,6 +1285,14 @@
                             <button id="share-btn" class="share-button" disabled>
                                 <i class="fas fa-share-alt"></i> Share Project Link
                             </button>
+                            <button
+                                id="open-html-btn"
+                                class="share-button"
+                                style="margin-left: 10px"
+                                disabled
+                            >
+                                <i class="fas fa-external-link-alt"></i> Open HTML
+                            </button>
                             <span
                                 id="share-feedback"
                                 style="
@@ -1450,6 +1458,7 @@
                 const readmePreviewIframe = document.getElementById('readme-preview');
                 const htmlPreviewIframe = document.getElementById('html-preview');
                 const shareBtn = document.getElementById('share-btn');
+                const openHtmlBtn = document.getElementById('open-html-btn'); // New button
                 const shareFeedback = document.getElementById('share-feedback');
                 const copyrightYear = document.getElementById('copyright-year');
 
@@ -1466,6 +1475,7 @@
                 stopLoopBtn.disabled = true;
                 iterationStatusDiv.style.display = 'none';
                 shareBtn.disabled = true; // Disable share button initially
+                openHtmlBtn.disabled = true; // Disable open button initially
 
                 // --- Event Listeners ---
 
@@ -1516,6 +1526,9 @@
 
                 // Share Button
                 shareBtn.addEventListener('click', handleShare);
+
+                // Open HTML Button
+                openHtmlBtn.addEventListener('click', handleOpenHtml);
 
                 // --- Functions ---
 
@@ -1584,8 +1597,10 @@
                                 // Create a full HTML document for srcdoc with basic dark theme styling
                                 const iframeHtml = `
                             <!DOCTYPE html>
-                            <html>
+                            <html lang="en">
                             <head>
+                                <meta charset="UTF-8">
+                                <meta name="viewport" content="width=device-width, initial-scale=1.0">
                                 <style>
                                     body {
                                         background-color: #333;
@@ -1595,7 +1610,7 @@
                                         line-height: 1.6;
                                     }
                                     a { color: #00bcd4; }
-                                    pre { background-color: #2c2c2c; padding: 10px; border-radius: 4px; overflow-x: auto; }
+                                    pre { background-color: #2c2c2c; padding: 10px; border-radius: 4px; overflow-x: auto; color: #eee; }
                                     code { font-family: monospace; }
                                     blockquote { border-left: 3px solid #555; padding-left: 10px; margin-left: 0; color: #ccc; }
                                     table { border-collapse: collapse; width: 100%; margin-bottom: 1em; }
@@ -1622,8 +1637,9 @@
                     }
 
                     console.log(`Updating previews: README fetched, HTML -> ${htmlUrl}`);
-                    // Enable share button now that folder name is confirmed
+                    // Enable share and open buttons now that folder name is confirmed
                     shareBtn.disabled = false;
+                    openHtmlBtn.disabled = false;
                 }
 
                 async function handleKickoff(event) {
@@ -1633,6 +1649,7 @@
                     clearStatus();
                     clearTimeout(loopTimeoutId);
                     shareBtn.disabled = true; // Disable share button during kickoff
+                    openHtmlBtn.disabled = true; // Disable open button during kickoff
                     shareFeedback.style.display = 'none'; // Hide feedback
 
                     const seed = seedInput.value.trim();
@@ -1686,7 +1703,7 @@
                         });
 
                         if (!response.ok) {
-                            throw response;
+                            throw response; // Throw the response object itself for detailed error handling
                         }
 
                         const data = await response.json();
@@ -1773,16 +1790,16 @@
                                 'Loop stopped during API call for iteration',
                                 currentIteration
                             );
-                            stopLoop();
+                            stopLoop(); // Call stopLoop to ensure state is reset
                             return;
                         }
 
                         if (!response.ok) {
-                            throw response;
+                            throw response; // Throw the response object itself
                         }
 
                         // eslint-disable-next-line no-unused-vars
-                        const data = await response.json(); // Parse response
+                        const data = await response.json(); // Parse response (optional, might contain info)
 
                         console.log(`Iteration ${currentIteration} completed successfully.`);
                         displayStatus(
@@ -1794,13 +1811,15 @@
                         await updateResultPreviews(currentfolderName); // Use await here
 
                         if (isLoopRunning) {
+                            // Schedule next iteration only if loop is still running
                             loopTimeoutId = setTimeout(runIteration, 500);
                         } else {
+                            // If loop was stopped *after* successful API call but *before* scheduling next one
                             console.log(
                                 'Loop stopped after successful iteration',
                                 currentIteration
                             );
-                            stopLoop();
+                            stopLoop(); // Ensure state is fully reset
                         }
                     } catch (error) {
                         console.error(`Error during iteration ${currentIteration}:`, error);
@@ -1818,8 +1837,9 @@
                             errorMessage = `Iteration Error: ${error.message}`;
                         }
                         displayStatus(errorMessage, 'error');
-                        stopLoop();
+                        stopLoop(); // Stop the loop on error
                     } finally {
+                        // Ensure spinner is hidden if the loop is no longer meant to be running
                         if (!isLoopRunning) {
                             spinner.style.display = 'none';
                         }
@@ -1829,7 +1849,7 @@
                 function stopLoop() {
                     const wasRunning = isLoopRunning;
                     isLoopRunning = false;
-                    clearTimeout(loopTimeoutId);
+                    clearTimeout(loopTimeoutId); // Clear any pending iteration
                     runLoopBtn.disabled = false;
                     stopLoopBtn.disabled = true;
                     stopLoopBtn.style.display = 'none';
@@ -1837,15 +1857,20 @@
                     iterationStatusDiv.style.display = 'none';
                     shareFeedback.style.display = 'none'; // Hide feedback on stop
 
+                    // Determine final status message and button states
                     if (wasRunning && currentfolderName) {
                         displayStatus(`Loop stopped after iteration ${currentIteration}.`, 'info');
                         shareBtn.disabled = false; // Keep share enabled if stopped normally
+                        openHtmlBtn.disabled = false; // Keep open enabled if stopped normally
                     } else if (!currentfolderName && !wasRunning) {
                         // Keep error message if stopped due to kickoff error
                         shareBtn.disabled = true; // Ensure share is disabled
+                        openHtmlBtn.disabled = true; // Ensure open is disabled
                     } else {
+                        // Clear status if stopped before kickoff or for other reasons
                         clearStatus();
                         shareBtn.disabled = !currentfolderName; // Enable only if folder exists
+                        openHtmlBtn.disabled = !currentfolderName; // Enable only if folder exists
                     }
 
                     console.log('Loop stopped.');
@@ -1875,6 +1900,12 @@
                             shareFeedback.style.display = 'none';
                         }, 2000);
                     }
+                }
+
+                function handleOpenHtml() {
+                    if (!currentfolderName || openHtmlBtn.disabled) return;
+                    const htmlUrl = `/projects/${currentfolderName}/index.html`;
+                    window.open(htmlUrl, '_blank');
                 }
             });
         </script>

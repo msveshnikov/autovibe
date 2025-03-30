@@ -37,6 +37,9 @@ https://autovibe.dev
         - Interfacing with external services or tools like the AutoCode CLI.
         - Generating and managing the output from the iterative processes.
         - Sending results back to the frontend via standard HTTP responses.
+    - ALLOWED_MODELS
+        - 'gemini-2.0-flash-thinking-exp-01-21', // Default/Fast
+        - 'gemini-2.5-pro-exp-03-25' // Better/Slower
 - **Frontend (`index.html`):**
     - A single HTML file, including inline or linked CSS and JavaScript.
     - Provides the user interface for inputting the seed and initiating the loop.
@@ -104,7 +107,7 @@ To start using autovibe.dev:
     displayed on the page.
 6.  **Stop:** If you want to stop the process, click the "Stop" button. The loop will terminate, and
     you can review and download the results generated up to that point.
-7.  Share your results with others or use them for further exploration.
+7.  **Share** your results with others or use them for further exploration.
 
 ## Installation (Local Development)
 
@@ -125,7 +128,6 @@ To set up the project for local development:
 
     ```bash
     bun run start
-
     ```
 
 5.  **Access:** Open your web browser and navigate to `http://localhost:3000`.
@@ -136,8 +138,6 @@ This section outlines potential improvements and future directions for AutoVibe:
 
 **User Interface & Experience (UI/UX):**
 
-- **Real-time Updates:** Transition from polling to WebSockets for immediate feedback during
-  iterations, displaying changes in `README.md` and `index.html` previews without manual refreshes.
 - **Enhanced Progress Visualization:** Implement a more informative progress indicator showing the
   current iteration number, total planned iterations (if applicable), and potentially estimated time
   remaining.
@@ -153,19 +153,11 @@ This section outlines potential improvements and future directions for AutoVibe:
 
 **Backend & Architecture:**
 
-- **Asynchronous Job Queue:** Replace direct loop handling in API requests with a dedicated job
-  queue (e.g., BullMQ, Redis Queue) to manage iterative tasks robustly, improving scalability and
-  decoupling the API from long-running processes.
 - **Database Integration:** Consider replacing file-system storage for session data and results with
-  a database (e.g., PostgreSQL, MongoDB) for better querying, persistence, and management,
-  especially if user accounts or saved sessions are introduced.
+  a database (e.g., MongoDB) for better querying, persistence, and management, especially if user
+  accounts or saved sessions are introduced.
 - **State Management:** Implement more explicit state management for each running loop (e.g.,
   `pending`, `running`, `completed`, `failed`, `stopped`) tracked in the backend.
-- **Scalability Planning:** Design backend components (API server, job workers) with horizontal
-  scaling in mind to handle increasing numbers of concurrent users.
-- **Resource Isolation:** Implement mechanisms (e.g., container limits, careful process management)
-  to limit resource consumption (CPU, memory, disk) per user session/loop to prevent abuse and
-  ensure stability.
 
 **Feature Enhancements:**
 
@@ -173,12 +165,8 @@ This section outlines potential improvements and future directions for AutoVibe:
   potentially requiring different API keys or configurations.
 - **Seed Templates:** Offer pre-defined seed examples or templates for common use cases (e.g.,
   landing page generation, component design, documentation writing) to help users get started.
-- **Result Sharing:** Implement functionality to generate shareable links to specific session
-  results (read-only view).
 - **Session Persistence:** Explore options for users to save their sessions (seed, configuration,
   generated results) and resume them later (likely requires user authentication).
-- **Direct AutoCode Interaction:** Investigate if AutoCode offers APIs for more direct integration
-  beyond the CLI, potentially allowing for finer control and better error reporting.
 
 **Operational:**
 
@@ -198,3 +186,5 @@ bug reports, feature requests, and pull requests.
 MIT
 
 # TODO
+
+- add "open in new tab" button to html iframe
