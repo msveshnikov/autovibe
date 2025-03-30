@@ -1285,22 +1285,6 @@
             </div>
         </section>
 
-        <section class="demo-section" id="demo">
-            <div class="container">
-                <h2 class="section-title">See AutoVibe in Action</h2>
-                <div class="demo-container">
-                    <div class="demo-tabs" id="demo-tabs-container">
-                        <button class="demo-tab active" data-tab="basic">Basic Example</button>
-                        <button class="demo-tab" data-tab="advanced">Advanced Usage</button>
-                        <button class="demo-tab" data-tab="cli">CLI Mode</button>
-                    </div>
-                    <div class="demo-content" id="demo-content-container">
-                        <div id="terminal-output" class="terminal"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section class="cta-section">
             <div class="container">
                 <div class="cta-content">
@@ -1453,9 +1437,6 @@
 
                 // Run Loop Form Submission
                 loopForm.addEventListener('submit', handleLoopFormSubmit);
-
-                // Demo Tabs
-                demoTabsContainer.addEventListener('click', handleDemoTabClick);
 
                 // --- Functions ---
 
@@ -1646,81 +1627,6 @@
                         runLoopBtn.disabled = false;
                     }
                 }
-
-                function setupDemoTabs() {
-                    const initialTab = demoTabsContainer.querySelector('.demo-tab.active');
-                    if (initialTab) {
-                        updateDemoContent(initialTab.dataset.tab);
-                    }
-                }
-
-                function handleDemoTabClick(event) {
-                    if (event.target.classList.contains('demo-tab')) {
-                        const tabs = demoTabsContainer.querySelectorAll('.demo-tab');
-                        tabs.forEach((tab) => tab.classList.remove('active'));
-                        event.target.classList.add('active');
-                        updateDemoContent(event.target.dataset.tab);
-                    }
-                }
-
-                function updateDemoContent(tabName) {
-                    let content = '';
-                    switch (tabName) {
-                        case 'basic':
-                            content = `<span class="prompt">$</span> <span class="command">autovibe --seed "Generate 3 creative blog post titles about sustainable travel"</span>
-<span class="output">
-Iteration 1: Generated Title: "Eco-Wanderlust: 5 Ways to Explore the World Responsibly"
-Iteration 2: Generated Title: "Beyond the Tourist Trail: Unforgettable Sustainable Adventures"
-Iteration 3: Generated Title: "Green Getaways: Planning Your Next Eco-Friendly Vacation"
-</span>
-<span class="prompt">$</span>`;
-                            break;
-                        case 'advanced':
-                            content = `<span class="prompt">$</span> <span class="command">autovibe --seed "Analyze sentiment in recent customer reviews for product X" --iterations 100 --model gemini-pro</span>
-<span class="output">
-Processing 100 iterations with gemini-pro...
-Iteration 1: Review 123 - Positive sentiment detected. Keywords: "love", "excellent", "fast delivery".
-...
-Iteration 50: Review 456 - Negative sentiment detected. Keywords: "disappointed", "broken", "slow support".
-...
-Iteration 100: Review 789 - Neutral sentiment detected. Keywords: "okay", "average", "works as expected".
-
-Summary: Overall positive sentiment (75%), Negative (15%), Neutral (10%).
-Common positive themes: quality, speed. Common negative themes: support response time.
-</span>
-<span class="prompt">$</span>`;
-                            break;
-                        case 'cli':
-                            content = `<span class="prompt">$</span> <span class="command"># Example using AutoCode CLI integration within the loop</span>
-<span class="prompt">$</span> <span class="command">autovibe --seed "Create a simple Node.js Express server boilerplate" --use-autocode</span>
-<span class="output">
-Calling AutoCode CLI: autocode generate "Create a simple Node.js Express server boilerplate"
-AutoCode Output Received:
-\`\`\`javascript
-const express = require('express');
-const app = express();
-const port = 3000;
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
-app.listen(port, () => {
-  console.log(\`Example app listening at http://localhost:\${port}\`);
-});
-\`\`\`
-Iteration 1: Processing AutoCode output... Saved as server_v1.js
-Iteration 2: Adding basic error handling... Saved as server_v2.js
-...
-</span>
-<span class="prompt">$</span>`;
-                            break;
-                        default:
-                            content = 'Select a tab to see example content.';
-                    }
-                    terminalOutput.innerHTML = content; // Use innerHTML here as the demo content uses HTML spans
-                }
-            });
         </script>
     </body>
 </html>

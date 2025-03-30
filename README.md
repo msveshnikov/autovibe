@@ -69,7 +69,7 @@ https://autovibe.dev
     - `app.js` receives the request via its API endpoint.
     - It validates the input and initiates the thinking loop process asynchronously returns unique
       folder name (e.g., `autovibe.dev/${unixTimestamp}`).
-    - It creates a unique folder on the server to store the seed to README.md.
+    - It creates a unique folder on the server (inside ./projects) to store the seed to README.md.
     - It creates empty index.html file in the same folder, as well as style.css and script.js files.
     - It immediately responds to the frontend (e.g., with a unique folder name).
     - Frontend show content of this folder to user in iframes (README.md and index.html, side by

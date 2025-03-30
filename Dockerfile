@@ -7,7 +7,6 @@ RUN bun install
 
 # Copy source code
 COPY . .
-COPY ./projects /app/projects
 
 # Expose the port
 EXPOSE 3000
