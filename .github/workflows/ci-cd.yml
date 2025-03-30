@@ -1,0 +1,63 @@
+name: autovibe CI/CD
+
+on:
+    push:
+        branches: [main]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@master
+
+            - name: copy file via ssh
+              uses: garygrossgarten/github-action-scp@master
+              with:
+                  host: autovibe.dev
+                  username: ubuntu
+                  privateKey: ${{ secrets.DEPLOY_KEY }}
+                  local: './docker-compose.yml'
+                  remote: 'autovibe/docker-compose.yml'
+
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
+              with:
+                  bun-version: latest
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@master
+
+            - name: Log in to Docker Hub
+              uses: docker/login-action@master
+              with:
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
+
+            - name: Build and Push Backend Image (arm64)
+              run: |
+                  docker buildx build \
+                  --platform linux/arm64/v8 \
+                  --output "type=image,push=true" \
+                  --tag ${{ secrets.DOCKER_USERNAME }}/auto \
+                  .
+
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Deploy to SSH Host
+              env:
+                  SSH_KEY: ${{ secrets.DEPLOY_KEY }}
+              run: |
+                  mkdir -p ~/.ssh/
+                  echo "$SSH_KEY" > ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/id_rsa
+                  ssh-keyscan -H AutoVibe.dev >> ~/.ssh/known_hosts
+                  ssh ubuntu@AutoVibe.dev '
+                    docker pull ${{ secrets.DOCKER_USERNAME }}/autovibe
+                    cd autovibe
+                    docker-compose down
+                    docker-compose up -d
+                  '
