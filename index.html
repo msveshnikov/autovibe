@@ -1105,7 +1105,7 @@
                             <li><a href="#demo">Demo</a></li>
                             <li>
                                 <a
-                                    href="https://github.com/msveshnikov/thinkloop"
+                                    href="https://github.com/msveshnikov/autovibe"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     class="secondary-button"
@@ -1181,7 +1181,7 @@
 
         <section class="how-it-works" id="how-it-works">
             <div class="container">
-                <h2 class="section-title">How thinkloop Works</h2>
+                <h2 class="section-title">How AutoVibe Works</h2>
                 <div class="how-it-works-steps">
                     <div class="step-item">
                         <div class="step-number">1</div>
@@ -1288,7 +1288,7 @@
 
         <section class="demo-section" id="demo">
             <div class="container">
-                <h2 class="section-title">See thinkloop in Action</h2>
+                <h2 class="section-title">See AutoVibe in Action</h2>
                 <div class="demo-container">
                     <div class="demo-tabs" id="demo-tabs-container">
                         <button class="demo-tab active" data-tab="basic">Basic Example</button>
@@ -1315,7 +1315,7 @@
                             >Start Looping Now <i class="fas fa-arrow-right"></i
                         ></a>
                         <a
-                            href="https://github.com/msveshnikov/thinkloop#installation-local-development"
+                            href="https://github.com/msveshnikov/autovibe#installation-local-development"
                             target="_blank"
                             rel="noopener noreferrer"
                             class="secondary-button"
@@ -1336,7 +1336,7 @@
                         </p>
                         <div class="social-links">
                             <a
-                                href="https://github.com/msveshnikov/thinkloop"
+                                href="https://github.com/msveshnikov/autovibe"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="social-link"
@@ -1369,7 +1369,7 @@
                             </li>
                             <li>
                                 <a
-                                    href="https://github.com/msveshnikov/thinkloop"
+                                    href="https://github.com/msveshnikov/autovibe"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     >GitHub Repository</a
@@ -1395,7 +1395,7 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                const API_KEY_STORAGE_KEY = 'thinkloopApiKey';
+                const API_KEY_STORAGE_KEY = 'AutoVibeApiKey';
 
                 // --- Elements ---
                 const header = document.getElementById('header');
@@ -1668,7 +1668,7 @@
                     let content = '';
                     switch (tabName) {
                         case 'basic':
-                            content = `<span class="prompt">$</span> <span class="command">thinkloop --seed "Generate 3 creative blog post titles about sustainable travel"</span>
+                            content = `<span class="prompt">$</span> <span class="command">autovibe --seed "Generate 3 creative blog post titles about sustainable travel"</span>
 <span class="output">
 Iteration 1: Generated Title: "Eco-Wanderlust: 5 Ways to Explore the World Responsibly"
 Iteration 2: Generated Title: "Beyond the Tourist Trail: Unforgettable Sustainable Adventures"
@@ -1677,7 +1677,7 @@ Iteration 3: Generated Title: "Green Getaways: Planning Your Next Eco-Friendly V
 <span class="prompt">$</span>`;
                             break;
                         case 'advanced':
-                            content = `<span class="prompt">$</span> <span class="command">thinkloop --seed "Analyze sentiment in recent customer reviews for product X" --iterations 100 --model gemini-pro</span>
+                            content = `<span class="prompt">$</span> <span class="command">autovibe --seed "Analyze sentiment in recent customer reviews for product X" --iterations 100 --model gemini-pro</span>
 <span class="output">
 Processing 100 iterations with gemini-pro...
 Iteration 1: Review 123 - Positive sentiment detected. Keywords: "love", "excellent", "fast delivery".
@@ -1693,7 +1693,7 @@ Common positive themes: quality, speed. Common negative themes: support response
                             break;
                         case 'cli':
                             content = `<span class="prompt">$</span> <span class="command"># Example using AutoCode CLI integration within the loop</span>
-<span class="prompt">$</span> <span class="command">thinkloop --seed "Create a simple Node.js Express server boilerplate" --use-autocode</span>
+<span class="prompt">$</span> <span class="command">autovibe --seed "Create a simple Node.js Express server boilerplate" --use-autocode</span>
 <span class="output">
 Calling AutoCode CLI: autocode generate "Create a simple Node.js Express server boilerplate"
 AutoCode Output Received:

@@ -2,9 +2,9 @@
 
 ## Overview
 
-`index.html` is the primary and sole file of the ThinkLoop project, serving as the frontend user
+`index.html` is the primary and sole file of the AutoVibe project, serving as the frontend user
 interface for a web application designed to facilitate rapid iterative thinking. This application,
-named "ThinkLoop," allows users to input a seed idea and an API key (presumably for accessing a
+named "AutoVibe," allows users to input a seed idea and an API key (presumably for accessing a
 language model or similar service) to generate iterative outputs. The current version is a frontend
 demonstration, showcasing the user interface and basic client-side logic. It is designed to be
 expanded with backend integration to enable actual processing and idea iteration.
@@ -14,11 +14,11 @@ expanded with backend integration to enable actual processing and idea iteration
 The project consists of a single file:
 
 - `index.html`: Contains the HTML structure, CSS styling, and client-side JavaScript for the
-  ThinkLoop application's user interface.
+  AutoVibe application's user interface.
 
 ## File: `index.html`
 
-This file is responsible for rendering the user interface of the ThinkLoop application in a web
+This file is responsible for rendering the user interface of the AutoVibe application in a web
 browser. It is structured using standard HTML5 conventions and includes embedded CSS for styling and
 JavaScript for client-side interactivity.
 
@@ -29,8 +29,8 @@ The HTML document is divided into the following key sections within the `<body>`
 1.  **`<div class="container">`**: This is the main container for all the content on the page,
     providing layout and styling.
 
-    - **`<header>`**: Contains the title "ThinkLoop" (`<h1>`) and a tagline (`<p>`).
-    - **`<section id="features">`**: Highlights the key features of the ThinkLoop application.
+    - **`<header>`**: Contains the title "AutoVibe" (`<h1>`) and a tagline (`<p>`).
+    - **`<section id="features">`**: Highlights the key features of the AutoVibe application.
         - **`<h2>Key Features</h2>`**: Section heading.
         - **`<div class="features-grid">`**: A grid layout containing feature items.
             - **`<div class="feature-item">`**: Each item describes a feature with `<h3>` for the
@@ -38,7 +38,7 @@ The HTML document is divided into the following key sections within the `<body>`
               Containerized Power, Seed-Based Creativity, Free Model Access, Intuitive Interface,
               and Scalable Infrastructure.
     - **`<section id="getting-started">`**: Provides the input area for users to interact with
-      ThinkLoop.
+      AutoVibe.
         - **`<h2>Get Started</h2>`**: Section heading.
         - **`<div class="input-area">`**: Container for input elements.
             - **`<div class="api-key-input">`**: Input area for the API Key.
@@ -49,9 +49,9 @@ The HTML document is divided into the following key sections within the `<body>`
             - **`<label for="seed-input">`**: Label for the seed idea input area.
             - **`<textarea id="seed-input" rows="5" placeholder="Type your initial idea here...">`**:
               Textarea for the user to input their seed idea.
-            - **`<button id="run-loop">Run ThinkLoop</button>`**: Button to trigger the ThinkLoop
+            - **`<button id="run-loop">Run AutoVibe</button>`**: Button to trigger the AutoVibe
               process (client-side demonstration in this version).
-    - **`<section id="output">`**: Displays the output or results of the ThinkLoop process.
+    - **`<section id="output">`**: Displays the output or results of the AutoVibe process.
         - **`<h2>Output</h2>`**: Section heading.
         - **`<div id="output-area">`**: Container to display the output text. Initially contains
           placeholder text: `<p>Results will be displayed here.</p>`.
@@ -76,7 +76,7 @@ Key styling aspects include:
   spacing.
 - **Textarea (`textarea`)**: Styling for the seed input textarea, including background, text color,
   border, padding, rounded corners, and vertical resizing.
-- **Button (`button`)**: Styling for the "Run ThinkLoop" button, including background color, text
+- **Button (`button`)**: Styling for the "Run AutoVibe" button, including background color, text
   color, border removal, padding, rounded corners, cursor style, and hover effect.
 - **Output Area (`#output-area`)**: Styling for the output display area, including background color,
   border, padding, rounded corners, and `white-space: pre-wrap` to preserve text formatting.
@@ -87,6 +87,6 @@ Key styling aspects include:
 ### JavaScript Functionality (`<script>` block before `</body>`)
 
 The `<script>` block contains JavaScript code to handle user interaction, specifically the click
-event of the "Run ThinkLoop" button (`#run-loop`).
+event of the "Run AutoVibe" button (`#run-loop`).
 
-**Event Listener for "Run ThinkLoop" Button:**
+**Event Listener for "Run AutoVibe" Button:**

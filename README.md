@@ -1,10 +1,10 @@
-﻿# ThinkLoop - Project Documentation
+﻿# AutoVibe - Project Documentation
 
 ## Project Overview
 
-**ThinkLoop** is a web platform designed to empower users with rapid iterative thinking
-capabilities. It enables users to explore ideas and generate unexpected outcomes at lightning speed
-by running thousands of "gemini 2.5 thinking" iterations based on an initial seed input.
+**AutoVibe** is a web platform designed to empower users with rapid iterative thinking capabilities.
+It enables users to explore ideas and generate unexpected outcomes at lightning speed by running
+thousands of "gemini 2.5 thinking" iterations based on an initial seed input.
 
 The platform containerizes the iterative process, offering a secure and consistent environment for
 exploring concepts, refining ideas, and discovering novel solutions. Whether for brainstorming,

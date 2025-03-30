@@ -1,15 +1,14 @@
 {
-    "name": "thinkloop",
+    "name": "autovibe",
     "version": "1.0.0",
     "description": "A web platform designed to empower users with rapid iterative thinking capabilities.",
     "main": "app.js",
     "type": "module",
     "scripts": {
-        "start": "node app.js",
         "dev": "nodemon app.js",
         "lint": "eslint .",
         "format": "prettier --write .",
-        "autocode": "bunx autocode"
+        "autocode": "bunx autocode-ai"
     },
     "author": "MaxSoft",
     "license": "ISC",
