@@ -135,15 +135,11 @@ To set up the project for local development:
 
 ## Contributing
 
-Contributions are welcomed! Please refer to the `CONTRIBUTING.md` file (to be created) for
-guidelines on submitting bug reports, feature requests, and pull requests.
+Contributions are welcomed! Please refer to the `CONTRIBUTING.md` file for guidelines on submitting
+bug reports, feature requests, and pull requests.
 
 ## License
 
 MIT
 
 # TODO
-
-- add model selection and pass to API:
-    - gemini-2.0-flash-thinking-exp-01-21 (fast, default)
-    - gemini-2.5-pro-exp-03-25 (better but slower)
