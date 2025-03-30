@@ -12,6 +12,8 @@
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
         />
+        <!-- Include marked.js for Markdown rendering -->
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
         <style>
             :root {
                 --primary: #00bcd4;
@@ -549,26 +551,64 @@
                 padding: 80px 0;
             }
 
+            .iframe-wrapper {
+                flex: 1;
+                min-width: 300px; /* Minimum width before wrapping */
+                display: flex;
+                flex-direction: column;
+                gap: 10px; /* Space between iframe and button */
+            }
+
             .iframe-container {
                 display: flex;
-                gap: 20px; /* Adjust spacing between iframes */
+                gap: 20px; /* Adjust spacing between iframe wrappers */
                 margin-top: 30px; /* Space above the iframe container */
                 flex-wrap: wrap; /* Allow wrapping on smaller screens if needed */
             }
 
             .iframe-container iframe {
-                flex: 1; /* Each iframe takes up equal available space */
-                min-width: 300px; /* Minimum width before wrapping */
+                width: 100%; /* Take full width of wrapper */
                 height: 800px;
                 border: 1px solid var(--light-dark);
                 border-radius: 8px;
-                background-color: #ccc;
+                background-color: #ccc; /* Default light background */
             }
 
-            /* Style for README iframe: Dark background, let browser handle text color */
+            /* Style for README iframe: Dark background handled by srcdoc */
             .result-preview-iframe-readme {
-                background-color: #333; /* Darker background for README */
-                color: white; /* Default text color for the iframe */
+                background-color: #333; /* Fallback background */
+            }
+
+            .share-button-container {
+                text-align: center;
+            }
+
+            .share-button {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                color: var(--primary);
+                background-color: transparent;
+                border: 1px solid var(--primary);
+                border-radius: 20px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .share-button:hover:not(:disabled) {
+                background-color: var(--primary);
+                color: var(--text);
+            }
+
+            .share-button:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                border-color: var(--text-muted);
+                color: var(--text-muted);
+            }
+
+            .share-button i {
+                margin-right: 5px;
             }
 
             .api-key-section {
@@ -962,10 +1002,18 @@
                 }
 
                 .iframe-container {
-                    width: 100%;
+                    /* width: 100%; */
                     flex-direction: column; /* Stack iframes vertically on smaller screens */
                     gap: 15px;
-                    height: 1000px;
+                    /* height: 1000px; */ /* Let height be determined by content/iframe height */
+                }
+
+                .iframe-wrapper {
+                    min-width: 100%; /* Take full width when stacked */
+                }
+
+                .iframe-container iframe {
+                    height: 600px; /* Adjust height for smaller screens */
                 }
 
                 .cta-title {
@@ -1038,7 +1086,7 @@
                             <li><a href="#how-it-works">How it Works</a></li>
                             <li><a href="#loop-input-section">Start Loop</a></li>
                             <li><a href="#api-key">API Key</a></li>
-                            <li><a href="#results-section">Demo</a></li>
+                            <li><a href="#results-section">Previews</a></li>
                             <li>
                                 <a
                                     href="https://github.com/msveshnikov/autovibe"
@@ -1212,22 +1260,41 @@
             <div class="container">
                 <h2 class="section-title">Live Previews</h2>
                 <div class="iframe-container">
-                    <iframe
-                        id="readme-preview"
-                        class="result-preview-iframe-readme"
-                        src="about:blank"
-                        title="README Preview"
-                    ></iframe>
-                    <iframe
-                        id="html-preview"
-                        class="result-preview-iframe"
-                        src="about:blank"
-                        title="Generated HTML Preview"
-                    ></iframe>
+                    <div class="iframe-wrapper">
+                        <iframe
+                            id="readme-preview"
+                            class="result-preview-iframe-readme"
+                            src="about:blank"
+                            title="README Preview"
+                        ></iframe>
+                        <!-- No share button for README -->
+                    </div>
+                    <div class="iframe-wrapper">
+                        <iframe
+                            id="html-preview"
+                            class="result-preview-iframe"
+                            src="about:blank"
+                            title="Generated HTML Preview"
+                        ></iframe>
+                        <div class="share-button-container">
+                            <button id="share-btn" class="share-button" disabled>
+                                <i class="fas fa-share-alt"></i> Share Project Link
+                            </button>
+                            <span
+                                id="share-feedback"
+                                style="
+                                    margin-left: 10px;
+                                    font-size: 0.9em;
+                                    color: var(--success);
+                                    display: none;
+                                "
+                            ></span>
+                        </div>
+                    </div>
                 </div>
                 <p style="text-align: center; margin-top: 20px; color: var(--text-muted)">
                     Previews update after each successful iteration. Interaction with the HTML
-                    preview is enabled. README preview has a dark background.
+                    preview is enabled. README preview renders Markdown content.
                 </p>
             </div>
         </section>
@@ -1368,7 +1435,7 @@
                 const apiKeyStatus = document.getElementById('api-key-status');
                 const loopForm = document.getElementById('loop-form');
                 const seedInput = document.getElementById('seed-input');
-                const modelSelect = document.getElementById('model-select'); // New
+                const modelSelect = document.getElementById('model-select');
                 const runLoopBtn = document.getElementById('run-loop-btn');
                 const stopLoopBtn = document.getElementById('stop-loop-btn');
                 const statusMessage = document.getElementById('status-message');
@@ -1377,6 +1444,8 @@
                 const spinner = document.getElementById('spinner');
                 const readmePreviewIframe = document.getElementById('readme-preview');
                 const htmlPreviewIframe = document.getElementById('html-preview');
+                const shareBtn = document.getElementById('share-btn');
+                const shareFeedback = document.getElementById('share-feedback');
                 const copyrightYear = document.getElementById('copyright-year');
 
                 // --- State ---
@@ -1388,9 +1457,10 @@
                 // --- Initial Setup ---
                 copyrightYear.textContent = new Date().getFullYear();
                 loadApiKey();
-                stopLoopBtn.style.display = 'none'; // Ensure stop button is hidden initially
-                stopLoopBtn.disabled = true; // Ensure stop button is disabled initially
-                iterationStatusDiv.style.display = 'none'; // Hide iteration status initially
+                stopLoopBtn.style.display = 'none';
+                stopLoopBtn.disabled = true;
+                iterationStatusDiv.style.display = 'none';
+                shareBtn.disabled = true; // Disable share button initially
 
                 // --- Event Listeners ---
 
@@ -1411,7 +1481,6 @@
                 // Close mobile menu when a link is clicked
                 nav.querySelectorAll('a').forEach((link) => {
                     link.addEventListener('click', (e) => {
-                        // Smooth scroll for internal links
                         const targetId = link.getAttribute('href');
                         if (targetId && targetId.startsWith('#')) {
                             e.preventDefault();
@@ -1440,6 +1509,9 @@
                 // Stop Loop Button
                 stopLoopBtn.addEventListener('click', stopLoop);
 
+                // Share Button
+                shareBtn.addEventListener('click', handleShare);
+
                 // --- Functions ---
 
                 function loadApiKey() {
@@ -1449,7 +1521,7 @@
                         displayApiKeyStatus('API Key loaded from local storage.', 'success');
                     } else {
                         displayApiKeyStatus(
-                            'API Key not found. Please get one from Google AI Studio and save it.',
+                            'API Key not found. Get one from Google AI Studio and save it.',
                             'info'
                         );
                     }
@@ -1483,51 +1555,84 @@
                     statusMessage.style.display = 'none';
                 }
 
-                function updateResultPreviews(folderName) {
+                async function updateResultPreviews(folderName) {
                     if (!folderName) return;
-                    // Add a cache-busting query parameter to force reload
+
                     const cacheBuster = `?t=${Date.now()}`;
                     const readmeUrl = `/projects/${folderName}/README.md${cacheBuster}`;
                     const htmlUrl = `/projects/${folderName}/index.html${cacheBuster}`;
 
-                    // Check if iframes exist before setting src
+                    // Update HTML Preview Iframe
+                    if (htmlPreviewIframe) {
+                        htmlPreviewIframe.src = htmlUrl;
+                    } else {
+                        console.error('HTML preview iframe not found.');
+                    }
+
+                    // Fetch and render README Markdown
                     if (readmePreviewIframe) {
-                        // Try reloading the iframe content
                         try {
-                            // Using src assignment is generally safer for cross-origin scenarios or frequent updates
-                            readmePreviewIframe.src = readmeUrl;
-                            // readmePreviewIframe.contentWindow.location.replace(readmeUrl); // Can sometimes cause issues
-                        } catch (e) {
-                            readmePreviewIframe.src = readmeUrl; // Fallback
-                            console.warn('Error reloading README iframe, using src.', e);
+                            const response = await fetch(readmeUrl);
+                            if (response.ok) {
+                                const markdown = await response.text();
+                                const htmlContent = marked.parse(markdown);
+                                // Create a full HTML document for srcdoc with basic dark theme styling
+                                const iframeHtml = `
+                            <!DOCTYPE html>
+                            <html>
+                            <head>
+                                <style>
+                                    body {
+                                        background-color: #333;
+                                        color: #eee;
+                                        font-family: sans-serif;
+                                        padding: 15px;
+                                        line-height: 1.6;
+                                    }
+                                    a { color: #00bcd4; }
+                                    pre { background-color: #2c2c2c; padding: 10px; border-radius: 4px; overflow-x: auto; }
+                                    code { font-family: monospace; }
+                                    blockquote { border-left: 3px solid #555; padding-left: 10px; margin-left: 0; color: #ccc; }
+                                    table { border-collapse: collapse; width: 100%; margin-bottom: 1em; }
+                                    th, td { border: 1px solid #555; padding: 8px; text-align: left; }
+                                    th { background-color: #444; }
+                                    img { max-width: 100%; height: auto; }
+                                </style>
+                            </head>
+                            <body>${htmlContent}</body>
+                            </html>`;
+                                readmePreviewIframe.srcdoc = iframeHtml;
+                            } else {
+                                console.error(
+                                    `Failed to fetch README: ${response.status} ${response.statusText}`
+                                );
+                                readmePreviewIframe.srcdoc = `<html lang="en"><body style="background-color:#333; color:#f44336; padding: 15px;">Error loading README.md: ${response.status}</body></html>`;
+                            }
+                        } catch (error) {
+                            console.error('Error fetching or rendering README:', error);
+                            readmePreviewIframe.srcdoc = `<html lang="en"><body style="background-color:#333; color:#f44336; padding: 15px;">Error loading README.md. Check console.</body></html>`;
                         }
                     } else {
                         console.error('README preview iframe not found.');
                     }
-                    if (htmlPreviewIframe) {
-                        try {
-                            htmlPreviewIframe.src = htmlUrl;
-                            // htmlPreviewIframe.contentWindow.location.replace(htmlUrl);
-                        } catch (e) {
-                            htmlPreviewIframe.src = htmlUrl; // Fallback
-                            console.warn('Error reloading HTML iframe, using src.', e);
-                        }
-                    } else {
-                        console.error('HTML preview iframe not found.');
-                    }
-                    console.log(`Updating previews: README -> ${readmeUrl}, HTML -> ${htmlUrl}`);
+
+                    console.log(`Updating previews: README fetched, HTML -> ${htmlUrl}`);
+                    // Enable share button now that folder name is confirmed
+                    shareBtn.disabled = false;
                 }
 
                 async function handleKickoff(event) {
                     event.preventDefault();
-                    if (isLoopRunning) return; // Prevent starting multiple loops
+                    if (isLoopRunning) return;
 
                     clearStatus();
-                    clearTimeout(loopTimeoutId); // Clear any pending loop timeouts
+                    clearTimeout(loopTimeoutId);
+                    shareBtn.disabled = true; // Disable share button during kickoff
+                    shareFeedback.style.display = 'none'; // Hide feedback
 
                     const seed = seedInput.value.trim();
                     const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
-                    const selectedModel = modelSelect.value; // Get selected model
+                    const selectedModel = modelSelect.value;
 
                     if (!apiKey) {
                         displayStatus(
@@ -1557,56 +1662,49 @@
                     displayStatus('Kicking off the loop...', 'loading');
                     runLoopBtn.disabled = true;
                     stopLoopBtn.style.display = 'inline-block';
-                    stopLoopBtn.disabled = false; // Enable stop button immediately
-                    iterationStatusDiv.style.display = 'none'; // Hide iteration counter initially
-                    spinner.style.display = 'none'; // Hide spinner initially
+                    stopLoopBtn.disabled = false;
+                    iterationStatusDiv.style.display = 'none';
+                    spinner.style.display = 'none';
                     isLoopRunning = true;
                     currentIteration = 0;
-                    iterationCounterSpan.textContent = `Iteration 0`; // Reset counter text
+                    iterationCounterSpan.textContent = `Iteration 0`;
+                    currentfolderName = null; // Reset folder name
 
                     try {
-                        // --- Call Kickoff API ---
                         const response = await fetch('/api/kickoff', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                                 Authorization: `Bearer ${apiKey}`
                             },
-                            // Include model in kickoff, though backend might not use it yet
                             body: JSON.stringify({ seed: seed, model: selectedModel })
                         });
 
-                        // Check if response is ok BEFORE trying to parse JSON
                         if (!response.ok) {
-                            // Throw the response itself to be caught by the catch block
                             throw response;
                         }
 
-                        const data = await response.json(); // Now safe to parse
+                        const data = await response.json();
 
                         if (!data.folderName) {
-                            // If backend responds 2xx but misses folderName, treat as error
                             throw new Error('Kickoff response OK but missing project directory.');
                         }
 
                         currentfolderName = data.folderName;
                         console.log(`Kickoff successful. Project Directory: ${currentfolderName}`);
 
-                        // Initial preview update after kickoff
-                        updateResultPreviews(currentfolderName);
+                        // Initial preview update
+                        await updateResultPreviews(currentfolderName); // Use await here
 
-                        // Scroll to results section
                         const resultsSection = document.getElementById('results-section');
                         if (resultsSection) {
                             resultsSection.scrollIntoView({ behavior: 'smooth' });
                         }
 
-                        // Start the first iteration
                         runIteration();
                     } catch (error) {
                         console.error('Error during kickoff:', error);
                         let errorMessage = 'Kickoff failed. Please check console for details.';
-                        // Try to get specific message from backend if available
                         if (error instanceof Response) {
                             try {
                                 const errorData = await error.json();
@@ -1626,23 +1724,20 @@
 
                 async function runIteration() {
                     if (!isLoopRunning || !currentfolderName) {
-                        console.log(
-                            'Loop stopped or project directory missing. Halting iteration.'
-                        );
-                        if (!isLoopRunning) {
-                            stopLoop(); // Ensure UI cleanup
-                        }
+                        console.log('Loop stopped or project directory missing. Halting.');
+                        if (!isLoopRunning) stopLoop();
                         return;
                     }
 
                     currentIteration++;
                     iterationCounterSpan.textContent = `Iteration ${currentIteration}`;
-                    iterationStatusDiv.style.display = 'flex'; // Show counter and spinner
+                    iterationStatusDiv.style.display = 'flex';
                     spinner.style.display = 'block';
                     displayStatus(`Running iteration ${currentIteration}...`, 'loading');
+                    shareFeedback.style.display = 'none'; // Hide feedback during iteration
 
                     const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
-                    const selectedModel = modelSelect.value; // Get current model selection
+                    const selectedModel = modelSelect.value;
 
                     if (!apiKey) {
                         displayStatus('Error: API Key missing during iteration.', 'error');
@@ -1656,40 +1751,34 @@
                     }
 
                     try {
-                        // --- Call Loop API ---
                         const response = await fetch('/api/loop', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                                 Authorization: `Bearer ${apiKey}`
                             },
-                            // Pass folderName and selectedModel
                             body: JSON.stringify({
                                 folderName: currentfolderName,
                                 model: selectedModel
                             })
                         });
 
-                        // Check immediately if the loop was stopped while waiting for the response
                         if (!isLoopRunning) {
                             console.log(
                                 'Loop stopped during API call for iteration',
                                 currentIteration
                             );
-                            stopLoop(); // Ensure cleanup
+                            stopLoop();
                             return;
                         }
 
-                        // Check if response is ok BEFORE trying to parse JSON
                         if (!response.ok) {
-                            // Throw the response itself to be caught by the catch block
                             throw response;
                         }
 
                         // eslint-disable-next-line no-unused-vars
-                        const data = await response.json(); // Parse response (might contain CLI output)
+                        const data = await response.json(); // Parse response
 
-                        // Iteration successful
                         console.log(`Iteration ${currentIteration} completed successfully.`);
                         displayStatus(
                             `Iteration ${currentIteration} finished. Updating previews...`,
@@ -1697,17 +1786,16 @@
                         );
 
                         // Update previews
-                        updateResultPreviews(currentfolderName);
+                        await updateResultPreviews(currentfolderName); // Use await here
 
-                        // Schedule next iteration only if loop is still running
                         if (isLoopRunning) {
-                            loopTimeoutId = setTimeout(runIteration, 500); // Delay before next iteration
+                            loopTimeoutId = setTimeout(runIteration, 500);
                         } else {
                             console.log(
                                 'Loop stopped after successful iteration',
                                 currentIteration
                             );
-                            stopLoop(); // Ensure cleanup if stopped exactly here
+                            stopLoop();
                         }
                     } catch (error) {
                         console.error(`Error during iteration ${currentIteration}:`, error);
@@ -1725,9 +1813,8 @@
                             errorMessage = `Iteration Error: ${error.message}`;
                         }
                         displayStatus(errorMessage, 'error');
-                        stopLoop(); // Stop the loop on error
+                        stopLoop();
                     } finally {
-                        // Ensure spinner stops if loop terminates for any reason
                         if (!isLoopRunning) {
                             spinner.style.display = 'none';
                         }
@@ -1735,27 +1822,54 @@
                 }
 
                 function stopLoop() {
-                    const wasRunning = isLoopRunning; // Check if it was running before stopping
+                    const wasRunning = isLoopRunning;
                     isLoopRunning = false;
-                    clearTimeout(loopTimeoutId); // Cancel any scheduled next iteration
-                    runLoopBtn.disabled = false; // Re-enable run button
-                    stopLoopBtn.disabled = true; // Disable stop button as loop is now stopped
-                    stopLoopBtn.style.display = 'none'; // Hide stop button
-                    spinner.style.display = 'none'; // Hide spinner
-                    iterationStatusDiv.style.display = 'none'; // Hide iteration status
+                    clearTimeout(loopTimeoutId);
+                    runLoopBtn.disabled = false;
+                    stopLoopBtn.disabled = true;
+                    stopLoopBtn.style.display = 'none';
+                    spinner.style.display = 'none';
+                    iterationStatusDiv.style.display = 'none';
+                    shareFeedback.style.display = 'none'; // Hide feedback on stop
 
                     if (wasRunning && currentfolderName) {
-                        // Only show "stopped" message if a loop was actually running and initiated
                         displayStatus(`Loop stopped after iteration ${currentIteration}.`, 'info');
+                        shareBtn.disabled = false; // Keep share enabled if stopped normally
                     } else if (!currentfolderName && !wasRunning) {
-                        // If stopped due to kickoff error or before starting, keep error message
+                        // Keep error message if stopped due to kickoff error
+                        shareBtn.disabled = true; // Ensure share is disabled
                     } else {
-                        // If stopped before kickoff finished but after button press
                         clearStatus();
+                        shareBtn.disabled = !currentfolderName; // Enable only if folder exists
                     }
 
                     console.log('Loop stopped.');
-                    // Keep currentfolderName to allow viewing last results
+                }
+
+                async function handleShare() {
+                    if (!currentfolderName || shareBtn.disabled) return;
+
+                    // Construct the URL based on the current window location
+                    // Assumes the projects are served relative to the root
+                    const projectUrl = `${window.location.origin}/projects/${currentfolderName}/`;
+
+                    try {
+                        await navigator.clipboard.writeText(projectUrl);
+                        shareFeedback.textContent = 'Link copied!';
+                        shareFeedback.style.color = 'var(--success)';
+                        shareFeedback.style.display = 'inline';
+                        setTimeout(() => {
+                            shareFeedback.style.display = 'none';
+                        }, 2000); // Hide after 2 seconds
+                    } catch (err) {
+                        console.error('Failed to copy link: ', err);
+                        shareFeedback.textContent = 'Copy failed!';
+                        shareFeedback.style.color = 'var(--error)';
+                        shareFeedback.style.display = 'inline';
+                        setTimeout(() => {
+                            shareFeedback.style.display = 'none';
+                        }, 2000);
+                    }
                 }
             });
         </script>
