@@ -186,5 +186,3 @@ bug reports, feature requests, and pull requests.
 MIT
 
 # TODO
-
-- improve design, make awesome and functional!🍉

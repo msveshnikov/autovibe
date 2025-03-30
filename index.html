@@ -3,7 +3,54 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>autovibe.dev - Unleash Iterative Creativity</title>
+
+        <!-- SEO Meta Tags -->
+        <title>autovibe.dev - AI-Powered Iterative Coding & Creativity</title>
+        <meta
+            name="description"
+            content="Experience rapid-fire AI thinking with AutoVibe.dev. Run thousands of iterations in containerized loops using your Google AI API key to generate code, content, and creative solutions. Unleash iterative creativity."
+        />
+        <meta
+            name="keywords"
+            content="AI development, iterative coding, vibe coding, LLM, code generation, rapid prototyping, AI tools, Google Gemini, AutoCode, creative AI, AI coding assistant"
+        />
+        <link rel="canonical" href="https://autovibe.dev/" />
+
+        <!-- Open Graph Meta Tags (for social sharing) -->
+        <meta
+            property="og:title"
+            content="autovibe.dev - AI-Powered Iterative Coding & Creativity"
+        />
+        <meta
+            property="og:description"
+            content="Run thousands of AI iterations in containerized loops using your API key to generate code, content, and creative solutions."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://autovibe.dev/" />
+        <meta property="og:image" content="https://autovibe.dev/og-image.png" />
+        <!-- Make sure this image exists -->
+        <meta property="og:site_name" content="autovibe.dev" />
+
+        <!-- Twitter Card Meta Tags -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+            name="twitter:title"
+            content="autovibe.dev - AI-Powered Iterative Coding & Creativity"
+        />
+        <meta
+            name="twitter:description"
+            content="Run thousands of AI iterations in containerized loops using your API key to generate code, content, and creative solutions."
+        />
+        <meta name="twitter:image" content="https://autovibe.dev/og-image.png" />
+        <!-- Make sure this image exists -->
+        <!-- Optional: <meta name="twitter:site" content="@YourTwitterHandle"> -->
+        <!-- Optional: <meta name="twitter:creator" content="@CreatorTwitterHandle"> -->
+
+        <!-- Favicon (optional but recommended) -->
+        <!-- <link rel="icon" href="/favicon.ico" sizes="any"> -->
+        <!-- <link rel="icon" href="/favicon.svg" type="image/svg+xml"> -->
+        <!-- <link rel="apple-touch-icon" href="/apple-touch-icon.png"> -->
+
         <link
             href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
             rel="stylesheet"
@@ -11,7 +58,11 @@
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+            integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
         />
+        <link rel="manifest" href="/site.webmanifest">
         <!-- Include marked.js for Markdown rendering -->
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
         <!-- Google tag (gtag.js) -->
@@ -138,6 +189,8 @@
                 cursor: pointer;
                 font-size: 1.5rem;
                 color: var(--text);
+                background: none;
+                border: none;
             }
 
             .hero {
@@ -711,6 +764,7 @@
                 color: var(--primary);
                 margin-bottom: 15px;
                 display: block;
+                text-decoration: none; /* Added for consistency */
             }
 
             .footer-description {
@@ -760,6 +814,7 @@
                 color: var(--text);
                 text-decoration: none;
                 transition: all 0.3s ease;
+                font-size: 1.2rem; /* Added for icon sizing */
             }
 
             .social-link:hover {
@@ -816,6 +871,7 @@
                 height: 100%;
                 pointer-events: none;
                 z-index: -1;
+                overflow: hidden; /* Prevent scrollbars from animation */
             }
 
             .circle {
@@ -916,6 +972,7 @@
                 }
             }
 
+            /* Responsive Styles */
             @media (max-width: 992px) {
                 .hero-title {
                     font-size: 2.8rem;
@@ -972,6 +1029,13 @@
                     margin: 15px 0;
                 }
 
+                nav ul li a.secondary-button {
+                    /* Adjust GitHub button in mobile nav */
+                    margin-left: 0;
+                    display: inline-block; /* Ensure it behaves like a button */
+                    margin-top: 10px;
+                }
+
                 .hero {
                     padding: 150px 0 100px;
                 }
@@ -1007,10 +1071,8 @@
                 }
 
                 .iframe-container {
-                    /* width: 100%; */
-                    flex-direction: column; /* Stack iframes vertically on smaller screens */
+                    flex-direction: column; /* Stack iframes vertically */
                     gap: 15px;
-                    /* height: 1000px; */ /* Let height be determined by content/iframe height */
                 }
 
                 .iframe-wrapper {
@@ -1056,16 +1118,34 @@
 
                 .cta-buttons {
                     flex-direction: column;
+                    align-items: center; /* Center stacked buttons */
                 }
 
                 .section-title {
                     font-size: 1.8rem;
                 }
+
+                .footer-logo {
+                    text-align: center;
+                }
+                .footer-description {
+                    text-align: center;
+                    max-width: none;
+                }
+                .social-links {
+                    justify-content: center;
+                }
+                .footer-column {
+                    text-align: center;
+                }
+                .footer-links {
+                    padding-left: 0; /* Remove default list padding */
+                }
             }
         </style>
     </head>
     <body>
-        <div class="background-animation">
+        <div class="background-animation" aria-hidden="true">
             <div class="circle"></div>
             <div class="circle"></div>
             <div class="circle"></div>
@@ -1081,11 +1161,19 @@
         <header id="header">
             <div class="container">
                 <div class="header-inner">
-                    <a href="#" class="logo"><i class="fas fa-brain"></i>autovibe.dev</a>
-                    <div class="mobile-menu-btn" id="mobile-menu-btn">
-                        <i class="fas fa-bars"></i>
-                    </div>
-                    <nav id="nav">
+                    <a href="#" class="logo"
+                        ><i class="fas fa-brain" aria-hidden="true"></i>autovibe.dev</a
+                    >
+                    <button
+                        class="mobile-menu-btn"
+                        id="mobile-menu-btn"
+                        aria-label="Toggle Menu"
+                        aria-expanded="false"
+                        aria-controls="nav"
+                    >
+                        <i class="fas fa-bars" aria-hidden="true"></i>
+                    </button>
+                    <nav id="nav" aria-label="Main Navigation">
                         <ul>
                             <li><a href="#features">Features</a></li>
                             <li><a href="#how-it-works">How it Works</a></li>
@@ -1104,8 +1192,13 @@
                                         margin-left: 15px;
                                         border-width: 1px;
                                     "
-                                    >GitHub</a
-                                >
+                                    >GitHub
+                                    <i
+                                        class="fab fa-github"
+                                        aria-hidden="true"
+                                        style="margin-left: 5px"
+                                    ></i
+                                ></a>
                             </li>
                         </ul>
                     </nav>
@@ -1113,267 +1206,306 @@
             </div>
         </header>
 
-        <section class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <h1 class="hero-title">Unleash Iterative Creativity</h1>
-                    <p class="hero-subtitle">
-                        Experience rapid-fire thinking in containerized loops, generating thousands
-                        of iterations to build anything you can dream up.
-                    </p>
-                    <a href="#loop-input-section" class="cta-button"
-                        >Start Your Vibe Coding <i class="fas fa-arrow-right"></i
-                    ></a>
-                </div>
-            </div>
-        </section>
-
-        <section class="features" id="features">
-            <div class="container">
-                <h2 class="section-title">Powerful Features</h2>
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <div class="feature-icon"><i class="fas fa-bolt"></i></div>
-                        <h3 class="feature-title">Rapid Iteration</h3>
-                        <p class="feature-description">
-                            Experience thousands of iterations in moments, refining your ideas at
-                            lightning speed to discover solutions you never imagined.
+        <main>
+            <section class="hero" aria-labelledby="hero-title">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1 id="hero-title" class="hero-title">Unleash Iterative Creativity</h1>
+                        <p class="hero-subtitle">
+                            Experience rapid-fire thinking in containerized loops, generating
+                            thousands of iterations to build anything you can dream up.
                         </p>
-                    </div>
-
-                    <div class="feature-item">
-                        <div class="feature-icon"><i class="fas fa-seedling"></i></div>
-                        <h3 class="feature-title">Seed-Based Creativity</h3>
-                        <p class="feature-description">
-                            Control the starting point with your seed input and watch as unique,
-                            unexpected outputs emerge through the iterative process.
-                        </p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon"><i class="fas fa-unlock-alt"></i></div>
-                        <h3 class="feature-title">Bring Your API Key</h3>
-                        <p class="feature-description">
-                            Use your own API key from providers like Google AI Studio for enhanced
-                            capabilities and control over the models used.
-                        </p>
+                        <a href="#loop-input-section" class="cta-button"
+                            >Start Your Vibe Coding
+                            <i class="fas fa-arrow-right" aria-hidden="true"></i
+                        ></a>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="how-it-works" id="how-it-works">
-            <div class="container">
-                <h2 class="section-title">How AutoVibe Works</h2>
-                <div class="how-it-works-steps">
-                    <div class="step-item">
-                        <div class="step-number">1</div>
-                        <h3 class="step-title">Provide Seed & Key</h3>
-                        <p class="step-description">
-                            Input your initial idea (seed), your Google AI API key, and select a
-                            model. The seed guides the process, the key enables it.
-                        </p>
-                    </div>
-                    <div class="step-item">
-                        <div class="step-number">2</div>
-                        <h3 class="step-title">Kickoff & Iterate</h3>
-                        <p class="step-description">
-                            Start the loop. The system creates a project space and iteratively runs
-                            AutoCode with the chosen model, refining content based on previous
-                            steps.
-                        </p>
-                    </div>
-                    <div class="step-item">
-                        <div class="step-number">3</div>
-                        <h3 class="step-title">Preview & Stop</h3>
-                        <p class="step-description">
-                            Watch the live previews update with each iteration. Stop the process
-                            anytime to review the current state.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="loop-input-section" id="loop-input-section">
-            <div class="container">
-                <h2 class="section-title">Start Your Loop</h2>
-                <div class="loop-form">
-                    <form id="loop-form">
-                        <div class="form-group">
-                            <label for="seed-input" class="form-label">Enter Your Seed</label>
-                            <textarea
-                                id="seed-input"
-                                class="form-textarea"
-                                placeholder="Describe the initial idea or goal for the project..."
-                                rows="4"
-                                required
-                            ></textarea>
-                            <p class="form-help">
-                                This will be saved as the initial README.md in your project folder.
-                            </p>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="model-select" class="form-label">Select Model</label>
-                            <select id="model-select" class="form-select" required>
-                                <option value="gemini-2.0-flash-thinking-exp-01-21" selected>
-                                    Gemini Flash (Fast, Default)
-                                </option>
-                                <option value="gemini-2.5-pro-exp-03-25">
-                                    Gemini Pro (Slower, More Capable)
-                                </option>
-                                <!-- Add more models here as needed -->
-                            </select>
-                            <p class="form-help">
-                                Choose the AI model for the iterative process. Flash is quicker, Pro
-                                might yield more complex results.
-                            </p>
-                        </div>
-
-                        <button type="submit" id="run-loop-btn" class="cta-button">
-                            <i class="fas fa-play"></i> Run Vibing Loop
-                        </button>
-                        <button
-                            type="button"
-                            id="stop-loop-btn"
-                            class="cta-button"
-                            style="display: none"
-                        >
-                            <i class="fas fa-stop"></i> Stop Loop
-                        </button>
-                        <div class="status-container">
-                            <div
-                                id="status-message"
-                                class="status-message"
-                                style="display: none"
-                            ></div>
-                            <div
-                                id="iteration-status"
-                                class="iteration-status"
-                                style="display: none"
-                            >
-                                <div id="spinner" class="spinner"></div>
-                                <span id="iteration-counter">Iteration 0</span>
+            <section class="features" id="features" aria-labelledby="features-title">
+                <div class="container">
+                    <h2 id="features-title" class="section-title">Powerful Features</h2>
+                    <div class="features-grid">
+                        <article class="feature-item" aria-labelledby="feature-title-1">
+                            <div class="feature-icon" aria-hidden="true">
+                                <i class="fas fa-bolt"></i>
                             </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </section>
+                            <h3 id="feature-title-1" class="feature-title">Rapid Iteration</h3>
+                            <p class="feature-description">
+                                Experience thousands of iterations in moments, refining your ideas
+                                at lightning speed to discover solutions you never imagined.
+                            </p>
+                        </article>
 
-        <section class="results-section" id="results-section">
-            <div class="container">
-                <h2 class="section-title">Live Previews</h2>
-                <div class="iframe-container">
-                    <div class="iframe-wrapper">
-                        <iframe
-                            id="readme-preview"
-                            class="result-preview-iframe-readme"
-                            src="about:blank"
-                            title="README Preview"
-                        ></iframe>
-                        <!-- No share button for README -->
+                        <article class="feature-item" aria-labelledby="feature-title-2">
+                            <div class="feature-icon" aria-hidden="true">
+                                <i class="fas fa-seedling"></i>
+                            </div>
+                            <h3 id="feature-title-2" class="feature-title">
+                                Seed-Based Creativity
+                            </h3>
+                            <p class="feature-description">
+                                Control the starting point with your seed input and watch as unique,
+                                unexpected outputs emerge through the iterative process.
+                            </p>
+                        </article>
+                        <article class="feature-item" aria-labelledby="feature-title-3">
+                            <div class="feature-icon" aria-hidden="true">
+                                <i class="fas fa-unlock-alt"></i>
+                            </div>
+                            <h3 id="feature-title-3" class="feature-title">Bring Your API Key</h3>
+                            <p class="feature-description">
+                                Use your own API key from providers like Google AI Studio for
+                                enhanced capabilities and control over the models used.
+                            </p>
+                        </article>
                     </div>
-                    <div class="iframe-wrapper">
-                        <iframe
-                            id="html-preview"
-                            class="result-preview-iframe"
-                            src="about:blank"
-                            title="Generated HTML Preview"
-                        ></iframe>
-                        <div class="share-button-container">
-                            <button id="share-btn" class="share-button" disabled>
-                                <i class="fas fa-share-alt"></i> Share Project Link
+                </div>
+            </section>
+
+            <section class="how-it-works" id="how-it-works" aria-labelledby="how-it-works-title">
+                <div class="container">
+                    <h2 id="how-it-works-title" class="section-title">How AutoVibe Works</h2>
+                    <div class="how-it-works-steps">
+                        <article class="step-item" aria-labelledby="step-title-1">
+                            <div class="step-number" aria-hidden="true">1</div>
+                            <h3 id="step-title-1" class="step-title">Provide Seed & Key</h3>
+                            <p class="step-description">
+                                Input your initial idea (seed), your Google AI API key, and select a
+                                model. The seed guides the process, the key enables it.
+                            </p>
+                        </article>
+                        <article class="step-item" aria-labelledby="step-title-2">
+                            <div class="step-number" aria-hidden="true">2</div>
+                            <h3 id="step-title-2" class="step-title">Kickoff & Iterate</h3>
+                            <p class="step-description">
+                                Start the loop. The system creates a project space and iteratively
+                                runs AutoCode with the chosen model, refining content based on
+                                previous steps.
+                            </p>
+                        </article>
+                        <article class="step-item" aria-labelledby="step-title-3">
+                            <div class="step-number" aria-hidden="true">3</div>
+                            <h3 id="step-title-3" class="step-title">Preview & Stop</h3>
+                            <p class="step-description">
+                                Watch the live previews update with each iteration. Stop the process
+                                anytime to review the current state.
+                            </p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section
+                class="loop-input-section"
+                id="loop-input-section"
+                aria-labelledby="loop-input-title"
+            >
+                <div class="container">
+                    <h2 id="loop-input-title" class="section-title">Start Your Loop</h2>
+                    <div class="loop-form">
+                        <form id="loop-form">
+                            <div class="form-group">
+                                <label for="seed-input" class="form-label">Enter Your Seed</label>
+                                <textarea
+                                    id="seed-input"
+                                    class="form-textarea"
+                                    placeholder="Describe the initial idea or goal for the project..."
+                                    rows="4"
+                                    required
+                                    aria-required="true"
+                                    aria-describedby="seed-help"
+                                ></textarea>
+                                <p id="seed-help" class="form-help">
+                                    This will be saved as the initial README.md in your project
+                                    folder.
+                                </p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="model-select" class="form-label">Select Model</label>
+                                <select
+                                    id="model-select"
+                                    class="form-select"
+                                    required
+                                    aria-required="true"
+                                    aria-describedby="model-help"
+                                >
+                                    <option value="gemini-2.0-flash-thinking-exp-01-21" selected>
+                                        Gemini Flash (Fast, Default)
+                                    </option>
+                                    <option value="gemini-2.5-pro-exp-03-25">
+                                        Gemini Pro (Slower, More Capable)
+                                    </option>
+                                    <!-- Add more models here as needed -->
+                                </select>
+                                <p id="model-help" class="form-help">
+                                    Choose the AI model for the iterative process. Flash is quicker,
+                                    Pro might yield more complex results.
+                                </p>
+                            </div>
+
+                            <button type="submit" id="run-loop-btn" class="cta-button">
+                                <i class="fas fa-play" aria-hidden="true"></i> Run Vibing Loop
                             </button>
                             <button
-                                id="open-html-btn"
-                                class="share-button"
-                                style="margin-left: 10px"
-                                disabled
+                                type="button"
+                                id="stop-loop-btn"
+                                class="cta-button"
+                                style="display: none"
                             >
-                                <i class="fas fa-external-link-alt"></i> Open HTML
+                                <i class="fas fa-stop" aria-hidden="true"></i> Stop Loop
                             </button>
-                            <span
-                                id="share-feedback"
-                                style="
-                                    margin-left: 10px;
-                                    font-size: 0.9em;
-                                    color: var(--success);
-                                    display: none;
-                                "
-                            ></span>
+                            <div class="status-container" role="status" aria-live="polite">
+                                <div
+                                    id="status-message"
+                                    class="status-message"
+                                    style="display: none"
+                                ></div>
+                                <div
+                                    id="iteration-status"
+                                    class="iteration-status"
+                                    style="display: none"
+                                >
+                                    <div
+                                        id="spinner"
+                                        class="spinner"
+                                        aria-label="Loading iteration"
+                                    ></div>
+                                    <span id="iteration-counter">Iteration 0</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <section class="results-section" id="results-section" aria-labelledby="results-title">
+                <div class="container">
+                    <h2 id="results-title" class="section-title">Live Previews</h2>
+                    <div class="iframe-container">
+                        <div class="iframe-wrapper">
+                            <iframe
+                                id="readme-preview"
+                                class="result-preview-iframe-readme"
+                                src="about:blank"
+                                title="README Preview"
+                                aria-label="Live preview of the generated README.md file"
+                            ></iframe>
+                            <!-- No share button for README -->
+                        </div>
+                        <div class="iframe-wrapper">
+                            <iframe
+                                id="html-preview"
+                                class="result-preview-iframe"
+                                src="about:blank"
+                                title="Generated HTML Preview"
+                                aria-label="Live preview of the generated index.html file"
+                            ></iframe>
+                            <div class="share-button-container">
+                                <button id="share-btn" class="share-button" disabled>
+                                    <i class="fas fa-share-alt" aria-hidden="true"></i> Share
+                                    Project Link
+                                </button>
+                                <button
+                                    id="open-html-btn"
+                                    class="share-button"
+                                    style="margin-left: 10px"
+                                    disabled
+                                >
+                                    <i class="fas fa-external-link-alt" aria-hidden="true"></i> Open
+                                    HTML
+                                </button>
+                                <span
+                                    id="share-feedback"
+                                    role="alert"
+                                    style="
+                                        margin-left: 10px;
+                                        font-size: 0.9em;
+                                        color: var(--success);
+                                        display: none;
+                                    "
+                                ></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 20px; color: var(--text-muted)">
+                        Previews update after each successful iteration. Interaction with the HTML
+                        preview is enabled.
+                    </p>
+                </div>
+            </section>
+
+            <section class="api-key-section" id="api-key" aria-labelledby="api-key-title">
+                <div class="container">
+                    <h2 id="api-key-title" class="section-title">Manage API Key</h2>
+                    <div class="api-form">
+                        <div class="form-group">
+                            <label for="api-key-input" class="form-label"
+                                >Your Google AI API Key</label
+                            >
+                            <input
+                                type="password"
+                                id="api-key-input"
+                                class="form-input"
+                                placeholder="Paste your API key here"
+                                aria-describedby="api-key-help api-key-status"
+                            />
+                            <p id="api-key-help" class="form-help">
+                                Get your key from
+                                <a
+                                    href="https://aistudio.google.com/apikey"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style="color: var(--primary)"
+                                    >Google AI Studio</a
+                                >. Your key is stored locally in your browser's Local Storage.
+                            </p>
+                        </div>
+                        <button id="save-api-key-btn" class="cta-button">Save API Key</button>
+                        <div
+                            id="api-key-status"
+                            class="status-message"
+                            style="display: none; margin-top: 15px"
+                            role="status"
+                            aria-live="polite"
+                        ></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cta-section" aria-labelledby="cta-title">
+                <div class="container">
+                    <div class="cta-content">
+                        <h2 id="cta-title" class="cta-title">Ready to Explore?</h2>
+                        <p class="cta-subtitle">
+                            Dive into the world of rapid iterative thinking. Set up your environment
+                            or start looping now.
+                        </p>
+                        <div class="cta-buttons">
+                            <a href="#loop-input-section" class="cta-button"
+                                >Start Looping Now
+                                <i class="fas fa-arrow-right" aria-hidden="true"></i
+                            ></a>
+                            <a
+                                href="https://github.com/msveshnikov/autovibe#installation-local-development"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="secondary-button"
+                                >View Setup Guide</a
+                            >
                         </div>
                     </div>
                 </div>
-                <p style="text-align: center; margin-top: 20px; color: var(--text-muted)">
-                    Previews update after each successful iteration. Interaction with the HTML
-                    preview is enabled.
-                </p>
-            </div>
-        </section>
-
-        <section class="api-key-section" id="api-key">
-            <div class="container">
-                <h2 class="section-title">Manage API Key</h2>
-                <div class="api-form">
-                    <div class="form-group">
-                        <label for="api-key-input" class="form-label">Your Google AI API Key</label>
-                        <input
-                            type="password"
-                            id="api-key-input"
-                            class="form-input"
-                            placeholder="Paste your API key here"
-                        />
-                        <p class="form-help">
-                            Get your key from
-                            <a
-                                href="https://aistudio.google.com/apikey"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style="color: var(--primary)"
-                                >Google AI Studio</a
-                            >. Your key is stored locally in your browser's Local Storage.
-                        </p>
-                    </div>
-                    <button id="save-api-key-btn" class="cta-button">Save API Key</button>
-                    <div
-                        id="api-key-status"
-                        class="status-message"
-                        style="display: none; margin-top: 15px"
-                    ></div>
-                </div>
-            </div>
-        </section>
-
-        <section class="cta-section">
-            <div class="container">
-                <div class="cta-content">
-                    <h2 class="cta-title">Ready to Explore?</h2>
-                    <p class="cta-subtitle">
-                        Dive into the world of rapid iterative thinking. Set up your environment or
-                        start looping now.
-                    </p>
-                    <div class="cta-buttons">
-                        <a href="#loop-input-section" class="cta-button"
-                            >Start Looping Now <i class="fas fa-arrow-right"></i
-                        ></a>
-                        <a
-                            href="https://github.com/msveshnikov/autovibe#installation-local-development"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="secondary-button"
-                            >View Setup Guide</a
-                        >
-                    </div>
-                </div>
-            </div>
-        </section>
+            </section>
+        </main>
 
         <footer>
             <div class="container">
                 <div class="footer-content">
                     <div class="footer-column">
-                        <span class="footer-logo">autovibe.dev</span>
+                        <a href="#" class="footer-logo">autovibe.dev</a>
                         <p class="footer-description">
                             Empowering rapid iterative thinking through containerized loops.
                         </p>
@@ -1383,8 +1515,8 @@
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="social-link"
-                                aria-label="GitHub"
-                                ><i class="fab fa-github"></i
+                                aria-label="GitHub Repository"
+                                ><i class="fab fa-github" aria-hidden="true"></i
                             ></a>
                             <!-- Add other social links here -->
                         </div>
@@ -1490,22 +1622,46 @@
 
                 // Mobile menu toggle
                 mobileMenuBtn.addEventListener('click', () => {
-                    nav.classList.toggle('active');
+                    const isExpanded = nav.classList.toggle('active');
+                    mobileMenuBtn.setAttribute('aria-expanded', isExpanded);
                 });
 
-                // Close mobile menu when a link is clicked
+                // Close mobile menu when a link is clicked or focus moves outside
                 nav.querySelectorAll('a').forEach((link) => {
                     link.addEventListener('click', (e) => {
                         const targetId = link.getAttribute('href');
+                        // Check if it's an internal link
                         if (targetId && targetId.startsWith('#')) {
-                            e.preventDefault();
+                            e.preventDefault(); // Prevent default jump
                             const targetElement = document.querySelector(targetId);
                             if (targetElement) {
+                                // Smooth scroll to target
                                 targetElement.scrollIntoView({ behavior: 'smooth' });
+
+                                // Wait a bit for scroll to finish before focusing (adjust time if needed)
+                                setTimeout(() => {
+                                    targetElement.focus(); // Focus the section for accessibility
+                                    // Try focusing first focusable element if section itself isn't focusable
+                                    if (document.activeElement !== targetElement) {
+                                        const firstFocusable = targetElement.querySelector(
+                                            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                                        );
+                                        if (firstFocusable) firstFocusable.focus();
+                                    }
+                                }, 500);
                             }
-                        }
-                        if (nav.classList.contains('active')) {
-                            nav.classList.remove('active');
+                            // Close nav if it's active (for mobile)
+                            if (nav.classList.contains('active')) {
+                                nav.classList.remove('active');
+                                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                                mobileMenuBtn.focus(); // Return focus to menu button
+                            }
+                        } else {
+                            // If it's an external link (like GitHub), just close the nav if open
+                            if (nav.classList.contains('active')) {
+                                nav.classList.remove('active');
+                                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                            }
                         }
                     });
                 });
@@ -1609,14 +1765,21 @@
                                         padding: 15px;
                                         line-height: 1.6;
                                     }
-                                    a { color: #00bcd4; }
-                                    pre { background-color: #2c2c2c; padding: 10px; border-radius: 4px; overflow-x: auto; color: #eee; }
-                                    code { font-family: monospace; }
-                                    blockquote { border-left: 3px solid #555; padding-left: 10px; margin-left: 0; color: #ccc; }
-                                    table { border-collapse: collapse; width: 100%; margin-bottom: 1em; }
+                                    a { color: #00bcd4; text-decoration: underline; }
+                                    a:hover { color: #88ffff; }
+                                    pre { background-color: #2c2c2c; padding: 10px; border-radius: 4px; overflow-x: auto; color: #eee; border: 1px solid #444; }
+                                    code:not(pre > code) { background-color: #444; padding: 0.2em 0.4em; margin: 0; font-size: 85%; border-radius: 3px; }
+                                    blockquote { border-left: 3px solid #555; padding-left: 10px; margin-left: 0; color: #ccc; font-style: italic; }
+                                    table { border-collapse: collapse; width: 100%; margin-bottom: 1em; border: 1px solid #555; }
                                     th, td { border: 1px solid #555; padding: 8px; text-align: left; }
-                                    th { background-color: #444; }
-                                    img { max-width: 100%; height: auto; }
+                                    th { background-color: #444; font-weight: bold; }
+                                    img { max-width: 100%; height: auto; border-radius: 4px; }
+                                    h1, h2, h3, h4, h5, h6 { margin-top: 1.5em; margin-bottom: 0.5em; line-height: 1.2; color: #fff; }
+                                    h1 { font-size: 2em; border-bottom: 1px solid #555; padding-bottom: 0.3em;}
+                                    h2 { font-size: 1.5em; border-bottom: 1px solid #555; padding-bottom: 0.3em;}
+                                    h3 { font-size: 1.25em; }
+                                    hr { border: 0; height: 1px; background: #555; margin: 1em 0; }
+                                    ul, ol { padding-left: 20px; }
                                 </style>
                             </head>
                             <body>${htmlContent}</body>
