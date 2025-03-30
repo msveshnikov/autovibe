@@ -24,9 +24,7 @@ const callAutoCodeCLI = (seed, apiKey) =>
         // save seed to a README.md file in dedicated (new) directory
         writeFileSync('3/README.md', sanitizedSeed);
 
-        // In a real scenario, consider more robust sanitization or alternative execution methods
-        // Ensure AutoCode CLI is installed or use npx
-        const command = `npx autocode generate gemini-2.0-flash-thinking-exp-01-21 ${apiKey}`;
+        const command = `bunx autocode generate gemini-2.0-flash-thinking-exp-01-21 ${apiKey}`;
         console.log(`Executing AutoCode CLI: ${command}`);
         exec(command, (error, stdout, stderr) => {
             if (error) {
@@ -132,13 +130,10 @@ app.post('/api/loop', async (req, res) => {
     }
 });
 
-// Serve index.html for the root route
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
-
-// Catch-all for serving other static files if needed (though express.static should handle it)
-// Optional: Add specific routes for CSS/JS if needed, but static middleware is generally sufficient.
 
 // Start the server
 app.listen(port, () => {

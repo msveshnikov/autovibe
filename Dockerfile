@@ -12,4 +12,4 @@ COPY . .
 EXPOSE 3000
 
 # Start the server
-CMD ["bun", "server/index.js"]
+CMD ["bun", "app.js"]
