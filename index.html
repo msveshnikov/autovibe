@@ -1278,8 +1278,8 @@
                             <div class="step-number" aria-hidden="true">2</div>
                             <h3 id="step-title-2" class="step-title">Kickoff & Iterate</h3>
                             <p class="step-description">
-                                Start the loop. The system creates a project space and iteratively
-                                runs AutoCode with the chosen model, refining content based on
+                                Start the loop. The system creates a project space with iteration
+                                subfolders and iteratively runs AutoCode, refining content based on
                                 previous steps.
                             </p>
                         </article>
@@ -1288,7 +1288,7 @@
                             <h3 id="step-title-3" class="step-title">Preview & Stop</h3>
                             <p class="step-description">
                                 Watch the live previews update with each iteration. Stop the process
-                                anytime to review the current state.
+                                anytime to review the current state. Share the project link.
                             </p>
                         </article>
                     </div>
@@ -1316,8 +1316,8 @@
                                     aria-describedby="seed-help"
                                 ></textarea>
                                 <p id="seed-help" class="form-help">
-                                    This will be saved as the initial README.md in your project
-                                    folder.
+                                    This will be saved as the README.md in the first iteration
+                                    folder of your project.
                                 </p>
                             </div>
 
@@ -1331,10 +1331,10 @@
                                     aria-describedby="model-help"
                                 >
                                     <option value="gemini-2.0-flash-thinking-exp-01-21" selected>
-                                        Gemini Flash (Fast, Default)
+                                        Gemini Flash 2.0 (Fast, Default)
                                     </option>
                                     <option value="gemini-2.5-pro-exp-03-25">
-                                        Gemini Pro (Slower, More Capable)
+                                        Gemini Pro 2.5 (Slower, More Capable)
                                     </option>
                                     <!-- Add more models here as needed -->
                                 </select>
@@ -1429,7 +1429,7 @@
                         </div>
                     </div>
                     <p style="text-align: center; margin-top: 20px; color: var(--text-muted)">
-                        Previews update after each successful iteration. Interaction with the HTML
+                        Previews show the latest completed iteration. Interaction with the HTML
                         preview is enabled.
                     </p>
                 </div>
@@ -1588,14 +1588,14 @@
                 const readmePreviewIframe = document.getElementById('readme-preview');
                 const htmlPreviewIframe = document.getElementById('html-preview');
                 const shareBtn = document.getElementById('share-btn');
-                const openHtmlBtn = document.getElementById('open-html-btn'); // New button
+                const openHtmlBtn = document.getElementById('open-html-btn');
                 const shareFeedback = document.getElementById('share-feedback');
                 const copyrightYear = document.getElementById('copyright-year');
 
                 // --- State ---
                 let isLoopRunning = false;
                 let currentfolderName = null;
-                let currentIteration = 0;
+                let currentIteration = 0; // Tracks the *last completed* iteration
                 let loopTimeoutId = null; // To control the loop timing
 
                 // --- Initial Setup ---
@@ -1604,8 +1604,9 @@
                 stopLoopBtn.style.display = 'none';
                 stopLoopBtn.disabled = true;
                 iterationStatusDiv.style.display = 'none';
-                shareBtn.disabled = true; // Disable share button initially
-                openHtmlBtn.disabled = true; // Disable open button initially
+                shareBtn.disabled = true;
+                openHtmlBtn.disabled = true;
+                resetPreviews(); // Clear iframes initially
 
                 // --- Event Listeners ---
 
@@ -1636,7 +1637,7 @@
                                 // Smooth scroll to target
                                 targetElement.scrollIntoView({ behavior: 'smooth' });
 
-                                // Wait a bit for scroll to finish before focusing (adjust time if needed)
+                                // Wait a bit for scroll to finish before focusing
                                 setTimeout(() => {
                                     targetElement.focus(); // Focus the section for accessibility
                                     // Try focusing first focusable element if section itself isn't focusable
@@ -1727,12 +1728,32 @@
                     statusMessage.style.display = 'none';
                 }
 
-                async function updateResultPreviews(folderName) {
-                    if (!folderName) return;
+                function resetPreviews() {
+                    // if (readmePreviewIframe) {
+                    //     readmePreviewIframe.srcdoc =
+                    //         '<html lang="en"><body style="background-color:#333; color:#ccc; padding: 15px;">Waiting for project kickoff...</body></html>';
+                    // }
+                    if (htmlPreviewIframe) {
+                        htmlPreviewIframe.src = 'about:blank';
+                    }
+                }
+
+                async function updateResultPreviews(folderName, iterationNumber) {
+                    if (!folderName || iterationNumber < 1) {
+                        console.warn(
+                            `Invalid arguments for updateResultPreviews: folderName=${folderName}, iterationNumber=${iterationNumber}`
+                        );
+                        resetPreviews();
+                        shareBtn.disabled = true;
+                        openHtmlBtn.disabled = true;
+                        return;
+                    }
 
                     const cacheBuster = `?t=${Date.now()}`;
-                    const readmeUrl = `/projects/${folderName}/README.md${cacheBuster}`;
-                    const htmlUrl = `/projects/${folderName}/index.html${cacheBuster}`;
+                    const readmeUrl = `/projects/${folderName}/${iterationNumber}/README.md${cacheBuster}`;
+                    const htmlUrl = `/projects/${folderName}/${iterationNumber}/index.html${cacheBuster}`;
+
+                    console.log(`Updating previews to iteration ${iterationNumber}: ${htmlUrl}`);
 
                     // Update HTML Preview Iframe
                     if (htmlPreviewIframe) {
@@ -1756,16 +1777,9 @@
                                 <meta charset="UTF-8">
                                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                                 <style>
-                                    body {
-                                        background-color: #333;
-                                        color: #eee;
-                                        font-family: sans-serif;
-                                        padding: 15px;
-                                        line-height: 1.6;
-                                    }
-                                    a { color: #00bcd4; text-decoration: underline; }
-                                    a:hover { color: #88ffff; }
-                                    pre { background-color: #2c2c2c; padding: 10px; border-radius: 4px; overflow-x: auto; color: #eee; border: 1px solid #444; }
+                                    body { background-color: #333; color: #eee; font-family: sans-serif; padding: 15px; line-height: 1.6; }
+                                    a { color: #00bcd4; text-decoration: underline; } a:hover { color: #88ffff; }
+                                    pre { background-color: #2c2c2c; padding: 10px; border-radius: 4px; overflow-x: auto; color: #eee; border: 1px solid #444; font-size: 0.9em; }
                                     code:not(pre > code) { background-color: #444; padding: 0.2em 0.4em; margin: 0; font-size: 85%; border-radius: 3px; }
                                     blockquote { border-left: 3px solid #555; padding-left: 10px; margin-left: 0; color: #ccc; font-style: italic; }
                                     table { border-collapse: collapse; width: 100%; margin-bottom: 1em; border: 1px solid #555; }
@@ -1785,20 +1799,22 @@
                                 readmePreviewIframe.srcdoc = iframeHtml;
                             } else {
                                 console.error(
-                                    `Failed to fetch README: ${response.status} ${response.statusText}`
+                                    `Failed to fetch README (Iteration ${iterationNumber}): ${response.status} ${response.statusText}`
                                 );
-                                readmePreviewIframe.srcdoc = `<html lang="en"><body style="background-color:#333; color:#f44336; padding: 15px;">Error loading README.md: ${response.status}</body></html>`;
+                                readmePreviewIframe.srcdoc = `<html lang="en"><body style="background-color:#333; color:#f44336; padding: 15px;">Error loading README.md (Iteration ${iterationNumber}): ${response.status}</body></html>`;
                             }
                         } catch (error) {
-                            console.error('Error fetching or rendering README:', error);
-                            readmePreviewIframe.srcdoc = `<html lang="en"><body style="background-color:#333; color:#f44336; padding: 15px;">Error loading README.md. Check console.</body></html>`;
+                            console.error(
+                                `Error fetching or rendering README (Iteration ${iterationNumber}):`,
+                                error
+                            );
+                            readmePreviewIframe.srcdoc = `<html lang="en"><body style="background-color:#333; color:#f44336; padding: 15px;">Error loading README.md (Iteration ${iterationNumber}). Check console.</body></html>`;
                         }
                     } else {
                         console.error('README preview iframe not found.');
                     }
 
-                    console.log(`Updating previews: README fetched, HTML -> ${htmlUrl}`);
-                    // Enable share and open buttons now that folder name is confirmed
+                    // Enable share and open buttons now that a valid iteration exists
                     shareBtn.disabled = false;
                     openHtmlBtn.disabled = false;
                 }
@@ -1809,9 +1825,10 @@
 
                     clearStatus();
                     clearTimeout(loopTimeoutId);
-                    shareBtn.disabled = true; // Disable share button during kickoff
-                    openHtmlBtn.disabled = true; // Disable open button during kickoff
-                    shareFeedback.style.display = 'none'; // Hide feedback
+                    resetPreviews();
+                    shareBtn.disabled = true;
+                    openHtmlBtn.disabled = true;
+                    shareFeedback.style.display = 'none';
 
                     const seed = seedInput.value.trim();
                     const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
@@ -1822,20 +1839,15 @@
                             'Error: API Key is missing. Please add it below and save.',
                             'error'
                         );
-                        const apiKeySection = document.getElementById('api-key');
-                        if (apiKeySection) {
-                            apiKeySection.scrollIntoView({ behavior: 'smooth' });
-                        }
+                        document.getElementById('api-key')?.scrollIntoView({ behavior: 'smooth' });
                         apiKeyInput.focus();
                         return;
                     }
-
                     if (!seed) {
                         displayStatus('Error: Seed input cannot be empty.', 'error');
                         seedInput.focus();
                         return;
                     }
-
                     if (!selectedModel) {
                         displayStatus('Error: Please select a model.', 'error');
                         modelSelect.focus();
@@ -1849,8 +1861,7 @@
                     iterationStatusDiv.style.display = 'none';
                     spinner.style.display = 'none';
                     isLoopRunning = true;
-                    currentIteration = 0;
-                    iterationCounterSpan.textContent = `Iteration 0`;
+                    currentIteration = 0; // Reset iteration counter
                     currentfolderName = null; // Reset folder name
 
                     try {
@@ -1863,27 +1874,35 @@
                             body: JSON.stringify({ seed: seed, model: selectedModel })
                         });
 
-                        if (!response.ok) {
-                            throw response; // Throw the response object itself for detailed error handling
-                        }
+                        if (!response.ok) throw response;
 
                         const data = await response.json();
 
-                        if (!data.folderName) {
-                            throw new Error('Kickoff response OK but missing project directory.');
+                        if (!data.folderName || typeof data.initialIteration !== 'number') {
+                            throw new Error(
+                                'Kickoff response OK but missing folderName or initialIteration.'
+                            );
                         }
 
                         currentfolderName = data.folderName;
-                        console.log(`Kickoff successful. Project Directory: ${currentfolderName}`);
+                        currentIteration = data.initialIteration; // Set the initial completed iteration
+                        console.log(
+                            `Kickoff successful. Project: ${currentfolderName}, Initial Iteration: ${currentIteration}`
+                        );
 
-                        // Initial preview update
-                        await updateResultPreviews(currentfolderName); // Use await here
+                        // Update UI for the initial state
+                        iterationCounterSpan.textContent = `Iteration ${currentIteration}`;
+                        iterationStatusDiv.style.display = 'flex'; // Show counter immediately
+                        spinner.style.display = 'none'; // But no spinner yet
 
-                        const resultsSection = document.getElementById('results-section');
-                        if (resultsSection) {
-                            resultsSection.scrollIntoView({ behavior: 'smooth' });
-                        }
+                        // Initial preview update for the first iteration
+                        await updateResultPreviews(currentfolderName, currentIteration);
 
+                        document
+                            .getElementById('results-section')
+                            ?.scrollIntoView({ behavior: 'smooth' });
+
+                        // Start the first *actual* iteration (which will be iteration 2)
                         runIteration();
                     } catch (error) {
                         console.error('Error during kickoff:', error);
@@ -1908,16 +1927,16 @@
                 async function runIteration() {
                     if (!isLoopRunning || !currentfolderName) {
                         console.log('Loop stopped or project directory missing. Halting.');
-                        if (!isLoopRunning) stopLoop();
+                        if (!isLoopRunning) stopLoop(); // Ensure cleanup if stopped externally
                         return;
                     }
 
-                    currentIteration++;
-                    iterationCounterSpan.textContent = `Iteration ${currentIteration}`;
+                    const iterationToRun = currentIteration + 1; // The iteration we are about to run
+                    iterationCounterSpan.textContent = `Iteration ${iterationToRun}`; // Show next iteration number
                     iterationStatusDiv.style.display = 'flex';
-                    spinner.style.display = 'block';
-                    displayStatus(`Running iteration ${currentIteration}...`, 'loading');
-                    shareFeedback.style.display = 'none'; // Hide feedback during iteration
+                    spinner.style.display = 'block'; // Show spinner for the *next* iteration
+                    displayStatus(`Running iteration ${iterationToRun}...`, 'loading');
+                    shareFeedback.style.display = 'none';
 
                     const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
                     const selectedModel = modelSelect.value;
@@ -1942,62 +1961,75 @@
                             },
                             body: JSON.stringify({
                                 folderName: currentfolderName,
-                                model: selectedModel
+                                model: selectedModel,
+                                iteration: iterationToRun // Send the iteration number to run
                             })
                         });
 
                         if (!isLoopRunning) {
+                            // Check again in case stop was pressed during the fetch
                             console.log(
-                                'Loop stopped during API call for iteration',
-                                currentIteration
+                                `Loop stopped during API call for iteration ${iterationToRun}`
                             );
-                            stopLoop(); // Call stopLoop to ensure state is reset
+                            stopLoop();
                             return;
                         }
 
-                        if (!response.ok) {
-                            throw response; // Throw the response object itself
+                        if (!response.ok) throw response;
+
+                        const data = await response.json(); // Contains { success, message, cliOutput, iteration }
+
+                        if (!data.success || typeof data.iteration !== 'number') {
+                            throw new Error(
+                                `Loop API response OK but indicates failure or missing iteration number.`
+                            );
                         }
 
-                        // eslint-disable-next-line no-unused-vars
-                        const data = await response.json(); // Parse response (optional, might contain info)
+                        const completedIteration = data.iteration; // The iteration that just finished
+                        currentIteration = completedIteration; // Update state to the completed iteration
 
-                        console.log(`Iteration ${currentIteration} completed successfully.`);
+                        console.log(`Iteration ${completedIteration} completed successfully.`);
                         displayStatus(
-                            `Iteration ${currentIteration} finished. Updating previews...`,
+                            `Iteration ${completedIteration} finished. Updating previews...`,
                             'success'
                         );
+                        iterationCounterSpan.textContent = `Iteration ${completedIteration}`; // Update counter to completed one
+                        spinner.style.display = 'none'; // Hide spinner until next iteration starts
 
-                        // Update previews
-                        await updateResultPreviews(currentfolderName); // Use await here
+                        // Update previews to show the results of the completed iteration
+                        await updateResultPreviews(currentfolderName, completedIteration);
 
                         if (isLoopRunning) {
                             // Schedule next iteration only if loop is still running
-                            loopTimeoutId = setTimeout(runIteration, 500);
+                            loopTimeoutId = setTimeout(runIteration, 500); // Short delay before next
                         } else {
-                            // If loop was stopped *after* successful API call but *before* scheduling next one
                             console.log(
-                                'Loop stopped after successful iteration',
-                                currentIteration
+                                `Loop stopped after successful iteration ${completedIteration}`
                             );
-                            stopLoop(); // Ensure state is fully reset
+                            stopLoop(); // Ensure state is fully reset if stopped
                         }
                     } catch (error) {
-                        console.error(`Error during iteration ${currentIteration}:`, error);
-                        let errorMessage = `Iteration ${currentIteration} failed. Please check console.`;
+                        console.error(`Error during iteration ${iterationToRun}:`, error);
+                        let errorMessage = `Iteration ${iterationToRun} failed. Please check console.`;
+                        let errorType = 'error'; // Default status type
                         if (error instanceof Response) {
                             try {
                                 const errorData = await error.json();
                                 errorMessage = `Iteration Error (${error.status}): ${
                                     errorData.message || error.statusText
                                 }`;
+                                // Adjust type based on status if needed (e.g., 429 -> 'info' or 'warning')
+                                if (error.status === 401) errorMessage += ' Check API Key.';
+                                if (error.status === 429)
+                                    errorMessage += ' Rate limit likely exceeded.';
+                                if (error.status === 504) errorMessage += ' Operation timed out.';
                             } catch (parseError) {
                                 errorMessage = `Iteration Error (${error.status}): ${error.statusText}. Could not parse error response.`;
                             }
                         } else if (error instanceof Error) {
                             errorMessage = `Iteration Error: ${error.message}`;
                         }
-                        displayStatus(errorMessage, 'error');
+                        displayStatus(errorMessage, errorType);
                         stopLoop(); // Stop the loop on error
                     } finally {
                         // Ensure spinner is hidden if the loop is no longer meant to be running
@@ -2010,28 +2042,41 @@
                 function stopLoop() {
                     const wasRunning = isLoopRunning;
                     isLoopRunning = false;
-                    clearTimeout(loopTimeoutId); // Clear any pending iteration
+                    clearTimeout(loopTimeoutId);
                     runLoopBtn.disabled = false;
                     stopLoopBtn.disabled = true;
                     stopLoopBtn.style.display = 'none';
                     spinner.style.display = 'none';
-                    iterationStatusDiv.style.display = 'none';
-                    shareFeedback.style.display = 'none'; // Hide feedback on stop
+                    shareFeedback.style.display = 'none';
 
-                    // Determine final status message and button states
-                    if (wasRunning && currentfolderName) {
-                        displayStatus(`Loop stopped after iteration ${currentIteration}.`, 'info');
-                        shareBtn.disabled = false; // Keep share enabled if stopped normally
-                        openHtmlBtn.disabled = false; // Keep open enabled if stopped normally
-                    } else if (!currentfolderName && !wasRunning) {
-                        // Keep error message if stopped due to kickoff error
-                        shareBtn.disabled = true; // Ensure share is disabled
-                        openHtmlBtn.disabled = true; // Ensure open is disabled
+                    // Update UI based on the state when stopped
+                    if (wasRunning && currentfolderName && currentIteration > 0) {
+                        // Loop was running and completed at least one iteration
+                        displayStatus(
+                            `Loop stopped after iteration ${currentIteration}. Previews show last completed state.`,
+                            'info'
+                        );
+                        iterationCounterSpan.textContent = `Iteration ${currentIteration}`;
+                        iterationStatusDiv.style.display = 'flex'; // Keep showing last completed iteration
+                        shareBtn.disabled = false;
+                        openHtmlBtn.disabled = false;
+                    } else if (currentfolderName && currentIteration > 0) {
+                        // Loop was stopped due to an error after completing at least one iteration
+                        // Keep the error message displayed by runIteration
+                        iterationCounterSpan.textContent = `Iteration ${currentIteration}`;
+                        iterationStatusDiv.style.display = 'flex';
+                        shareBtn.disabled = false; // Allow sharing/opening the last good state
+                        openHtmlBtn.disabled = false;
                     } else {
-                        // Clear status if stopped before kickoff or for other reasons
-                        clearStatus();
-                        shareBtn.disabled = !currentfolderName; // Enable only if folder exists
-                        openHtmlBtn.disabled = !currentfolderName; // Enable only if folder exists
+                        // Stopped before finishing kickoff, during kickoff error, or before first iteration completed
+                        // Keep kickoff error message if present, otherwise clear status
+                        if (!statusMessage.classList.contains('error')) {
+                            clearStatus();
+                        }
+                        iterationStatusDiv.style.display = 'none';
+                        shareBtn.disabled = true;
+                        openHtmlBtn.disabled = true;
+                        resetPreviews(); // Clear previews if nothing completed
                     }
 
                     console.log('Loop stopped.');
@@ -2040,9 +2085,8 @@
                 async function handleShare() {
                     if (!currentfolderName || shareBtn.disabled) return;
 
-                    // Construct the URL based on the current window location
-                    // Assumes the projects are served relative to the root
-                    const projectUrl = `${window.location.origin}/projects/${currentfolderName}/`;
+                    // Share the base project URL, letting the server handle serving (might default to latest or an index)
+                    const projectUrl = `${window.location.origin}/projects/${currentfolderName}/${currentIteration}`;
 
                     try {
                         await navigator.clipboard.writeText(projectUrl);
@@ -2051,7 +2095,7 @@
                         shareFeedback.style.display = 'inline';
                         setTimeout(() => {
                             shareFeedback.style.display = 'none';
-                        }, 2000); // Hide after 2 seconds
+                        }, 2000);
                     } catch (err) {
                         console.error('Failed to copy link: ', err);
                         shareFeedback.textContent = 'Copy failed!';
@@ -2064,8 +2108,9 @@
                 }
 
                 function handleOpenHtml() {
-                    if (!currentfolderName || openHtmlBtn.disabled) return;
-                    const htmlUrl = `/projects/${currentfolderName}/index.html`;
+                    if (!currentfolderName || currentIteration < 1 || openHtmlBtn.disabled) return;
+                    // Open the index.html from the last successfully completed iteration
+                    const htmlUrl = `/projects/${currentfolderName}/${currentIteration}/index.html`;
                     window.open(htmlUrl, '_blank');
                 }
             });
