@@ -2004,7 +2004,6 @@
                         if (error instanceof Response) {
                             try {
                                 const errorData = await error.json();
-                                console.log(errorData);
                                 errorMessage = `Iteration Error (${error.status}): ${
                                     errorData.error || error.statusText
                                 }`;
@@ -2020,7 +2019,6 @@
                         } else if (error instanceof Error) {
                             errorMessage = `Iteration Error: ${error.message}`;
                         }
-                        console.log(errorMessage);
                         displayStatus(errorMessage, errorType);
                         stopLoop();
                     } finally {
