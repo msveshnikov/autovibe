@@ -1,112 +1,82 @@
-## AutoVibe - Sprint Plan - Sprint 1
+Okay, here is the Sprint Plan for the upcoming sprint, focusing on establishing the core user interaction flow and session initiation based on the current backlog and project state.
 
-**Date:** Sun Mar 30 2025 - Sat Apr 05 2025 (7 Days)
+---
 
-**Sprint Goal:** Develop a functional MVP of AutoVibe, enabling users to input a seed, provide their
-API key, and receive basic output from the thinking loop.
+# AutoVibe Sprint Plan: Sprint 1
 
-**Selected User Stories & Tasks:**
+**Sprint Dates:** Mon Mar 31 2025 - Fri Apr 11 2025 (Assuming a 2-week sprint)
 
-| ID    | Title                                             | Priority | Type    | Status | Estimated Effort |
-| :---- | :------------------------------------------------ | :------- | :------ | :----- | :--------------- |
-| NF-01 | **Implement Basic UI for Seed Input & Run**       | [High]   | Feature | To Do  | 2 Story Points   |
-| NF-02 | **Core "Thinking Loop" Logic in Backend**         | [High]   | Feature | To Do  | 5 Story Points   |
-| NF-03 | **Display Basic Output to User**                  | [High]   | Feature | To Do  | 2 Story Points   |
-| NF-04 | **API Endpoint for Loop Execution (`/api/loop`)** | [High]   | Feature | To Do  | 3 Story Points   |
-| NF-05 | **"Bring Your Own API Key" Functionality**        | [High]   | Feature | To Do  | 5 Story Points   |
-| NF-06 | **Basic Error Handling**                          | [High]   | Feature | To Do  | 3 Story Points   |
-| NF-07 | **Loading State Indicators**                      | [Medium] | Feature | To Do  | 2 Story Points   |
+**Sprint Goal:** **Establish the initial user interaction flow and session creation.**
 
-**Total Estimated Effort:** 22 Story Points
+By the end of this sprint, a user should be able to:
+1.  Load the AutoVibe frontend (`index.html`).
+2.  Input their Gemini API key and an initial seed prompt.
+3.  Click a "Run" button to initiate a session via the `/api/kickoff` endpoint.
+4.  See a basic loading indicator while the backend creates a unique session folder (`./projects/{timestamp}`) containing an initial `README.md` (with the seed) and empty `index.html`, `style.css`, `script.js`.
+5.  View the initial content of the created `README.md` and `index.html` within side-by-side iframes on the frontend.
 
-**Sprint Backlog Items Breakdown:**
+This sprint focuses on setting up the foundational structure and the critical path *up to* the point where the iterative loop would begin in the next sprint.
 
-1.  **NF-01: Implement Basic UI for Seed Input & Run (2 SP)**
+---
 
-    - Create a simple form in `index.html` with:
-        - A text input field for the user to enter the "seed" idea.
-        - A button labeled "Run" or "Start" to initiate the loop.
-    - Basic styling to make the input and button visually clear.
+## Selected Backlog Items for Sprint 1 (Max 7)
 
-2.  **NF-02: Core "Thinking Loop" Logic in Backend (5 SP)**
+| ID     | Title                                          | Priority | Type    | Estimate (SP) | Notes                                                                                             |
+| :----- | :--------------------------------------------- | :------- | :------ | :------------ | :------------------------------------------------------------------------------------------------ |
+| AV-007 | Frontend UI - Core Layout & Iframes            | [High]   | Feature | 3 SP          | Create basic HTML structure: inputs, button, spinner placeholder, side-by-side iframes. Basic CSS. |
+| AV-001 | Implement API Key Input & Handling (Frontend)  | [High]   | Feature | 2 SP          | Frontend input field for API key. Securely pass value to JS for API call (NOT stored locally).    |
+| AV-002 | Implement Seed Input UI                        | [High]   | Feature | 1 SP          | Frontend textarea for the user's seed input.                                                      |
+| AV-003 | Implement `/api/kickoff` Endpoint              | [High]   | Feature | 5 SP          | Backend: Create endpoint, receive seed/key, create session folder & initial files (`README.md` with seed, empty `index.html`, `style.css`, `script.js`), return session ID. |
+| AV-005 | Frontend Kickoff Logic                       | [High]   | Feature | 3 SP          | Frontend JS: On "Run", get inputs, call `/api/kickoff`, handle response (store session ID), trigger loading state. |
+| AV-008 | Backend Static File Serving for Projects     | [High]   | Feature | 3 SP          | Backend (`app.js`): Configure static file serving for `./projects/{session_id}/` path.            |
+| AV-011 | Basic Loading/Spinner Indicator                | [High]   | Feature | 1 SP          | Frontend: Show/hide a simple spinner element during the `/api/kickoff` request.                   |
+| **Total** |                                                |          |         | **18 SP**     |                                                                                                   |
 
-    - Implement the core iterative logic in `app.js`.
-        - For this MVP, a simplified loop can be implemented. (Further clarification needed on
-          "gemini 2.5 thinking" - for MVP, a placeholder iterative process can be used if details
-          are not immediately available).
-        - The loop should take the seed as input and generate some iterative output (even if basic
-          for now).
-        - Consider how to integrate with AutoCode CLI later, for now, a simplified internal process.
+*Note: Story Points (SP) are used for relative estimation (1, 2, 3, 5, 8...).*
 
-3.  **NF-03: Display Basic Output to User (2 SP)**
+---
 
-    - Modify `app.js` to send the output from the "thinking loop" back to the frontend.
-    - In `index.html`, display the received output in a designated area (e.g., a `<div>`).
-    - Basic text display is sufficient for this sprint.
+## Dependencies and Risks
 
-4.  **NF-04: API Endpoint for Loop Execution (`/api/loop`) (3 SP)**
+**Dependencies:**
 
-    - In `app.js`, create an Express route for `/api/loop`.
-    - This endpoint should:
-        - Receive the seed input from the frontend via a POST request.
-        - Trigger the "thinking loop" logic (NF-02).
-        - Send the output back to the frontend as a JSON response.
+*   **AV-005 (Frontend Kickoff Logic)** depends on:
+    *   AV-001, AV-002: UI elements must exist to get input values.
+    *   AV-003: The `/api/kickoff` endpoint must be implemented and functional.
+    *   AV-011: Spinner element must exist to be shown/hidden.
+*   **AV-007 (Frontend UI - Iframes)** depends on:
+    *   AV-008: Backend must correctly serve files from the session folder for iframes to load content.
+*   **AV-008 (Backend Static Serving)** depends on:
+    *   AV-003: Session folders and initial files must be created first.
+*   **Environment:** Assumes a working Node.js/Bun development environment is set up as per `README.md`.
 
-5.  **NF-05: "Bring Your Own API Key" Functionality (5 SP)**
+**Risks:**
 
-    - Add a new input field in `index.html` for users to input their API key.
-    - Modify the frontend JavaScript to send the API key along with the seed to the `/api/loop`
-      endpoint.
-    - In `app.js`, receive the API key. For this sprint, focus on:
-        - Simply receiving and acknowledging the API key in the backend.
-        - **Security Consideration for Sprint 1:** For MVP, API key handling can be simplified
-          (e.g., temporarily stored in memory during the loop execution). **Crucially, avoid storing
-          or logging the API key persistently or insecurely.** Proper secure handling will be
-          addressed in later sprints.
+*   **API Key Security (AV-001, AV-003):** Risk of mishandling the API key (e.g., accidental client-side storage, insecure logging). **Mitigation:** Strict adherence to passing the key directly to the backend for immediate use/forwarding, never storing it client-side, careful backend logging. Code reviews focused on security.
+*   **File System Permissions (AV-003):** The backend Node.js process might lack write permissions to create `./projects/` subfolders and files. **Mitigation:** Test permissions early, document necessary setup steps for developers/deployment.
+*   **Static File Serving Complexity (AV-008):** Correctly configuring Express/Node to serve static files from dynamic session-based paths can be tricky (routing, path resolution). **Mitigation:** Dedicated testing for this endpoint and iframe loading.
+*   **`/api/kickoff` Complexity (AV-003):** This involves multiple steps (validation, folder creation, file writing) and could take longer than estimated. **Mitigation:** Allow for potential spill-over or break down further if significant roadblocks appear.
+*   **Iframe Loading Issues (AV-007, AV-008):** Potential for cross-origin issues (if domains differ later) or path errors preventing iframe content display. **Mitigation:** Ensure same-origin policy is met, rigorously test iframe source path construction and backend serving.
 
-6.  **NF-06: Basic Error Handling (3 SP)**
+---
 
-    - Implement basic error handling in `app.js`:
-        - Try-catch blocks around the "thinking loop" execution.
-        - Handle potential errors during API key retrieval (even if simplified in this sprint).
-        - Send error messages back to the frontend as JSON responses.
-    - In `index.html`, display user-friendly error messages if the API request fails.
+## Definition of Done (DoD) for Sprint 1
 
-7.  **NF-07: Loading State Indicators (2 SP)**
-    - In `index.html`, implement a simple loading indicator (e.g., a spinner or text like
-      "Processing...") that appears when the "Run" button is clicked and disappears when the output
-      is displayed or an error occurs.
-    - Control the visibility of the loading indicator using JavaScript based on the API request
-      lifecycle.
+All selected items (AV-001, AV-002, AV-003, AV-005, AV-007, AV-008, AV-011) must meet the following criteria to be considered "Done":
 
-**Dependencies & Risks:**
+1.  **Code Complete:** All necessary code (HTML, CSS, JavaScript, Node.js) has been written.
+2.  **Functionality Implemented:**
+    *   User can input Seed and API Key in the UI.
+    *   Clicking "Run" sends data to `/api/kickoff`.
+    *   Backend successfully creates the session folder and initial files (`README.md` containing the seed, empty `index.html`, `style.css`, `script.js`).
+    *   Backend successfully serves files from the created session folder.
+    *   Frontend displays a loading indicator during kickoff.
+    *   Frontend receives the session ID and correctly sets the `src` attribute for the iframes.
+    *   The initial `README.md` and `index.html` content are visible within the respective iframes after kickoff completes.
+3.  **Code Quality:** Code adheres to basic project style guidelines (e.g., Prettier configured via `.prettierrc`). Code is reasonably commented where complex logic exists.
+4.  **Testing:** Functionality has been manually tested through the user flow described in the Sprint Goal. Basic error conditions (e.g., failed API call) show a console error (formal UI error display is not required for this sprint).
+5.  **Review:** Code has been peer-reviewed (e.g., via GitHub Pull Request).
+6.  **Merged:** Code has been merged into the main development branch (e.g., `main` or `develop`).
+7.  **No Critical Bugs:** No known blocking issues prevent the core sprint goal functionality from working.
 
-- **Dependency:** Frontend tasks (NF-01, NF-03, NF-07) are dependent on the backend API endpoint
-  (NF-04) and core logic (NF-02) being in place. Backend tasks should be prioritized.
-- **Risk:** Understanding and implementing the "thinking loop" logic (NF-02) might be more complex
-  than initially estimated, potentially impacting the sprint timeline. Start with a simplified
-  iterative process for the MVP and iterate on complexity later.
-- **Risk:** Even simplified API key handling (NF-05) requires careful consideration to avoid
-  introducing security vulnerabilities, even in the MVP. Ensure no API keys are logged or stored
-  insecurely.
-- **Risk:** Basic error handling (NF-06) might not cover all edge cases. Focus on handling the most
-  common error scenarios for the MVP and expand error handling in subsequent sprints.
-
-**Definition of Done for Sprint 1:**
-
-- **Functional MVP:** Users can access `index.html`, input a seed and an API key, click "Run," and
-  receive basic output displayed on the page.
-- **Basic UI Implemented:** Seed input field, API key input field, Run button, and output display
-  area are functional and present in `index.html`.
-- **Core Loop Logic Implemented:** A simplified "thinking loop" (placeholder if needed for MVP) is
-  running in `app.js` based on the seed.
-- **API Endpoint Functional:** The `/api/loop` endpoint in `app.js` is working and handles requests
-  and responses.
-- **API Key Functionality:** Users can input an API key, and the backend can receive and acknowledge
-  it (basic handling for MVP).
-- **Basic Error Handling:** Basic error scenarios (e.g., backend errors during loop execution) are
-  handled and displayed to the user.
-- **Loading Indicators:** Loading indicators are displayed during the processing time.
-- **Code Commit:** All code for the sprint is committed and pushed to the main branch.
-- **Sprint Demo:** The team demonstrates the functional MVP and verifies that the Definition of Done
-  is met.
+---

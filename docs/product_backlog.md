@@ -1,97 +1,131 @@
-Okay, I will update the product backlog for AutoVibe based on the provided README and project
-context.
+# AutoVibe Product Backlog - Updated (Mon Mar 31 2025)
 
-Here's the updated product backlog in markdown format:
-
-```markdown
-# AutoVibe Product Backlog - Updated (Sun Mar 30 2025)
-
-**Product Vision:** Empower users with rapid iterative thinking capabilities through a secure,
+**Product Vision:** Empower users with rapid iterative vibe coding capabilities through a secure,
 accessible, and easy-to-use web platform, enabling them to explore ideas and generate unexpected
-outcomes at lightning speed.
+outcomes at lightning speed by running LLM iterations based on an initial seed input and leveraging
+AutoCode.
 
 **Current Project State:**
 
-- Basic frontend (`index.html`) and backend (`app.js`) structure in place, likely functional for
-  core loop execution.
-- Project documentation (`README.md`) exists, outlining architecture, goals, and future
-  considerations.
-- Project structure shows potential separation of frontend assets into `script.js` and `style.css`
-  folders (folders "1" and "2" are unclear and likely irrelevant).
-- No database or advanced state management currently implemented.
-- No CI/CD, advanced testing, or monitoring explicitly mentioned as implemented yet.
+- **Core Files:** `app.js` (backend), `index.html` (frontend) exist. `package.json` indicates a
+  NodeJS/Bun project. `Dockerfile` and `docker-compose.yml` suggest containerization efforts or
+  plans.
+- **Architecture Defined:** Clear client-server model with NodeJS backend serving frontend and API
+  endpoints (`/api/kickoff`, `/api/loop`). File system storage (`./projects/{timestamp}`) for
+  session data and outputs (`README.md`, `index.html`, `style.css`, `script.js`). Frontend uses
+  iframes to display `README.md` and `index.html`. Loop is driven by frontend polling `/api/loop`.
+- **Key Dependencies:** Requires user-provided Gemini API key, integrates with AutoCode CLI.
+- **Documentation:** `README.md` provides a good overview, architecture, setup, and future ideas.
+- **Backlog Status:** Initial backlog drafted previously; this update refines it based on the
+  detailed README description. No features are marked as completed yet.
 
 **Legend:**
 
-- **Priority:** [High] - Must-have for initial release/MVP, [Medium] - Important for early adoption
-  and user satisfaction, [Low] - Nice-to-have, future enhancements.
-- **Type:** Feature, Enhancement, Technical Task, Bug Fix (None currently, but for future use)
-- **Status:** To Do, In Progress, In Review, Done
+- **Priority:** [High] - Essential for core functionality/MVP, [Medium] - Important for
+  usability/robustness, [Low] - Nice-to-have, future enhancements.
+- **Type:** Feature, Enhancement, Technical Task, Bug Fix
+- **Status:** To Do, In Progress, Done
 
 ---
 
-## New Features & User Stories
+## Core Functionality & MVP Features
 
-| ID    | Title                                                | Priority | Type           | Status | Notes                                                                                                                                                                                           |
-| :---- | :--------------------------------------------------- | :------- | :------------- | :----- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| NF-01 | **Implement Basic UI for Seed Input & Run**          | [High]   | Feature        | To Do  | User should be able to input a seed idea in `index.html` and trigger the "thinking loop" via a button. Basic UI elements are needed.                                                            |
-| NF-02 | **Core "Thinking Loop" Logic in Backend**            | [High]   | Feature        | To Do  | Implement the core iterative logic in `app.js` based on the seed input. This is the fundamental functionality of AutoVibe.                                                                      |
-| NF-03 | **Display Basic Output to User**                     | [High]   | Feature        | To Do  | The backend should send the generated output back to the frontend and display it in `index.html`. Basic text display is sufficient for MVP.                                                     |
-| NF-04 | **API Endpoint for Loop Execution (`/api/loop`)**    | [High]   | Feature        | To Do  | Create a `/api/loop` endpoint in `app.js` to receive seed input and trigger the thinking loop. Basic request/response structure using HTTP.                                                     |
-| NF-05 | **"Bring Your Own API Key" Functionality**           | [High]   | Feature        | To Do  | Implement a mechanism for users to input their Gemini API key. Securely handle and use this key in the backend for API calls. Server-side management of API key is preferred for security.      |
-| NF-06 | **Basic Error Handling**                             | [High]   | Feature        | To Do  | Implement basic error handling in both frontend and backend to gracefully manage issues like API failures, invalid input, etc. Display user-friendly error messages.                            |
-| NF-07 | **Loading State Indicators**                         | [Medium] | Feature        | To Do  | Implement visual loading indicators (e.g., spinners) in the frontend to provide feedback to the user while the backend is processing the loop. Improves user experience.                        |
-| NF-08 | **Input Validation (Client-side)**                   | [Medium] | Feature        | To Do  | Add client-side validation in `script.js` to ensure the seed input is in the correct format (if any format constraints are needed) and provide immediate feedback to the user.                  |
-| NF-09 | **Input Validation (Server-side)**                   | [Medium] | Feature        | To Do  | Implement server-side validation in `app.js` to validate the seed input and any configuration parameters received via the API. Crucial for security and data integrity.                         |
-| NF-10 | **Frontend Refactoring (CSS & JS Separation)**       | [Medium] | Enhancement    | To Do  | Separate CSS into `style.css` and JavaScript into `script.js` files instead of inline in `index.html`. Improves code organization and maintainability.                                          |
-| NF-11 | **Implement Basic Result Visualization**             | [Medium] | Feature        | To Do  | Improve the display of results beyond basic text. Consider using cards, lists, or formatted output to make results easier to read and understand.                                               |
-| NF-12 | **Backend Modularity**                               | [Medium] | Enhancement    | To Do  | Refactor `app.js` into modules (e.g., `api.js`, `loop-runner.js`) to improve code organization and maintainability as the backend logic grows more complex.                                     |
-| NF-13 | **Responsiveness for Different Screen Sizes**        | [Low]    | Enhancement    | To Do  | Ensure the UI in `index.html` is responsive and adapts well to different screen sizes (desktop, mobile, tablet) using CSS media queries.                                                        |
-| NF-14 | **Accessibility (WCAG Compliance - Initial)**        | [Low]    | Enhancement    | To Do  | Begin implementing basic accessibility best practices in `index.html` and related frontend code to start working towards WCAG compliance. Focus on semantic HTML and ARIA attributes initially. |
-| NF-15 | **Basic Documentation - API Specification**          | [Low]    | Technical Task | To Do  | Document the `/api/loop` endpoint (request/response format, parameters) in the `README.md` or a separate API documentation file.                                                                |
-| NF-16 | **Unit Tests for Backend Logic**                     | [Low]    | Technical Task | To Do  | Write unit tests for key backend functions in `app.js` (especially the "thinking loop" logic) to ensure code quality and prevent regressions.                                                   |
-| NF-17 | **Configuration Management (Environment Variables)** | [Low]    | Technical Task | To Do  | Implement environment variable configuration for `app.js` (e.g., for port, API keys if managed server-side). Use a `.env` file for local development.                                           |
-| NF-18 | **Implement Rate Limiting (API Endpoint)**           | [Low]    | Technical Task | To Do  | Implement basic rate limiting on the `/api/loop` endpoint in `app.js` to protect against abuse and ensure service stability.                                                                    |
-| NF-19 | **Explore Containerization Strategy**                | [Low]    | Technical Task | To Do  | Investigate and prototype containerization options (Docker or simpler process isolation) for the "thinking loop" execution in `app.js`. Focus on security and consistency.                      |
-| NF-20 | **Investigate Real-time Feedback (WebSockets/SSE)**  | [Low]    | Technical Task | To Do  | Research and prototype implementing WebSockets or Server-Sent Events (SSE) for real-time progress updates and result streaming from backend to frontend.                                        |
-| NF-21 | **Explore State Management Options**                 | [Low]    | Technical Task | To Do  | Research and evaluate different state management options for job status and results (file-based, SQLite, Redis, etc.) for future scalability and persistence.                                   |
-| NF-22 | **Setup Basic CI/CD Pipeline**                       | [Low]    | Technical Task | To Do  | Set up a basic CI/CD pipeline (e.g., using GitHub Actions) for automated testing and deployment to a staging environment.                                                                       |
-| NF-23 | **Basic Monitoring & Logging**                       | [Low]    | Technical Task | To Do  | Implement basic logging in `app.js` to track application behavior and errors. Explore basic monitoring options for server health.                                                               |
+| ID     | Title                                        | Priority | Type    | Status | Notes                                                                                                                                                                                                                     |
+| :----- | :------------------------------------------- | :------- | :------ | :----- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| AV-001 | **Implement API Key Input & Handling**       | [High]   | Feature | To Do  | Frontend field for API key input. Securely pass to backend (NOT stored client-side). Backend uses key for LLM calls. Validate key format minimally.                                                                       |
+| AV-002 | **Implement Seed Input UI**                  | [High]   | Feature | To Do  | Frontend textarea/input for user's initial seed.                                                                                                                                                                          |
+| AV-003 | **Implement `/api/kickoff` Endpoint**        | [High]   | Feature | To Do  | Backend: Receives seed & API key. Creates unique session folder (`./projects/{timestamp}`). Creates initial `README.md` (with seed), empty `index.html`, `style.css`, `script.js`. Returns unique folder name/identifier. |
+| AV-004 | **Implement `/api/loop` Endpoint**           | [High]   | Feature | To Do  | Backend: Receives session identifier. Runs one iteration: executes LLM logic, calls AutoCode CLI within the session folder. AutoCode updates `README.md`/`index.html`.                                                    |
+| AV-005 | **Frontend Kickoff Logic**                   | [High]   | Feature | To Do  | Frontend: On "Run", send seed/key to `/api/kickoff`. Receive session identifier. Store identifier. Trigger first loop call. Set up iframes.                                                                               |
+| AV-006 | **Frontend Loop Control & Polling**          | [High]   | Feature | To Do  | Frontend: After kickoff/previous loop call completes, call `/api/loop` with session identifier. Update iteration counter. Implement polling mechanism.                                                                    |
+| AV-007 | **Frontend UI - Core Layout & Iframes**      | [High]   | Feature | To Do  | `index.html`: Structure with inputs (seed, key), Run/Stop buttons, iteration counter, spinner, side-by-side iframes for `README.md` and `index.html`.                                                                     |
+| AV-008 | **Backend Static File Serving for Projects** | [High]   | Feature | To Do  | Backend (`app.js`) must serve files from `./projects/{session_id}/` so iframes can load `README.md` and `index.html`.                                                                                                     |
+| AV-009 | **Frontend Iframe Refresh**                  | [High]   | Feature | To Do  | Frontend: After each successful `/api/loop` call, force refresh the `README.md` and `index.html` iframes to show updated content.                                                                                         |
+| AV-010 | **Integrate AutoCode CLI Execution**         | [High]   | Feature | To Do  | Backend (`/api/loop`): Correctly execute the `autocode` CLI command within the designated session folder as part of the iteration logic. Handle CLI output/errors.                                                        |
+| AV-011 | **Basic Loading/Spinner Indicator**          | [High]   | Feature | To Do  | Frontend: Show a visual indicator (spinner) while waiting for `/api/kickoff` and `/api/loop` responses. Update iteration counter during loop.                                                                             |
+| AV-012 | **Basic Error Handling & Display**           | [High]   | Feature | To Do  | Frontend/Backend: Handle common errors (API failures, invalid input, file system issues, AutoCode errors). Display user-friendly error messages on the frontend.                                                          |
+| AV-013 | **Implement Stop Functionality**             | [Medium] | Feature | To Do  | Frontend: "Stop" button sends signal (e.g., to `/api/stop` or flag in `/api/loop`). Backend: Detect signal and halt further iterations for that session.                                                                  |
+| AV-014 | **Backend LLM Model Handling (Default)**     | [Medium] | Feature | To Do  | Backend: Use the default specified model (`gemini-2.0-flash-thinking-exp-01-21`) for LLM calls. Allow configuration (e.g., via env var).                                                                                  |
+| AV-015 | **Input Validation (Client & Server)**       | [Medium] | Feature | To Do  | Validate seed input (e.g., not empty) and API key format (basic check) on both client and server.                                                                                                                         |
+
+---
+
+## Enhancements & Technical Tasks
+
+| ID     | Title                                            | Priority | Type           | Status | Notes                                                                                                                                                     |
+| :----- | :----------------------------------------------- | :------- | :------------- | :----- | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AV-016 | **Refactor Frontend CSS/JS**                     | [Medium] | Enhancement    | To Do  | Ensure CSS and JS are cleanly separated into `style.css` and `script.js` within the main application structure (if not already done).                     |
+| AV-017 | **Refactor Backend Code (`app.js`)**             | [Medium] | Enhancement    | To Do  | Break down `app.js` into smaller, manageable modules (e.g., api routes, loop logic, file handling) for better organization and testability.               |
+| AV-018 | **Enhanced Progress Visualization**              | [Low]    | Enhancement    | To Do  | Go beyond basic spinner/counter. Show total planned iterations (if applicable), maybe estimated time. (From README Ideas)                                 |
+| AV-019 | **Iteration History & Management**               | [Low]    | Feature        | To Do  | Allow users to browse previous versions of `README.md`/`index.html` within a session. (From README Ideas)                                                 |
+| AV-020 | **Advanced Configuration Panel**                 | [Low]    | Feature        | To Do  | UI for setting LLM params (temp, tokens), AutoCode flags before running. (From README Ideas)                                                              |
+| AV-021 | **Improved Error Feedback in UI**                | [Low]    | Enhancement    | To Do  | Display specific errors from backend/AutoCode directly in the UI instead of generic messages. (From README Ideas)                                         |
+| AV-022 | **Responsive Design**                            | [Low]    | Enhancement    | To Do  | Ensure UI adapts gracefully to different screen sizes (mobile, tablet). (From README Ideas)                                                               |
+| AV-023 | **Database Integration Investigation**           | [Low]    | Technical Task | To Do  | Evaluate replacing file system storage with a database (e.g., MongoDB, SQLite) for session/result management. (From README Ideas)                         |
+| AV-024 | **Backend State Management Refinement**          | [Low]    | Technical Task | To Do  | Implement explicit state tracking for loops (`pending`, `running`, `stopped`, `completed`, `failed`) in the backend. (From README Ideas)                  |
+| AV-025 | **LLM Model Selection UI**                       | [Low]    | Feature        | To Do  | Allow users to select between configured allowed models (`gemini-flash`, `gemini-pro`) via the UI. Backend needs to handle selection. (From README Ideas) |
+| AV-026 | **Seed Templates/Examples**                      | [Low]    | Feature        | To Do  | Provide pre-defined seed examples to help users get started quickly. (From README Ideas)                                                                  |
+| AV-027 | **Session Persistence & Resume (Requires Auth)** | [Low]    | Feature        | To Do  | Explore user accounts and saving sessions to resume later. (From README Ideas)                                                                            |
+| AV-028 | **Basic Monitoring & Logging Setup**             | [Low]    | Technical Task | To Do  | Implement structured logging (e.g., using Pino) in `app.js`. Set up basic health checks. (From README Ideas)                                              |
+| AV-029 | **Basic CI/CD Pipeline**                         | [Low]    | Technical Task | To Do  | Set up GitHub Actions (or similar) for basic linting, testing (when tests exist), and potentially deployment. (From README Ideas)                         |
+| AV-030 | **Unit Tests for Core Backend Logic**            | [Low]    | Technical Task | To Do  | Write unit tests for critical backend functions (e.g., loop iteration logic, API handlers).                                                               |
+| AV-031 | **Containerization Refinement**                  | [Low]    | Technical Task | To Do  | Review and finalize Dockerfile and docker-compose.yml for local development and potential deployment consistency.                                         |
+| AV-032 | **Explore Real-time Updates (WebSockets/SSE)**   | [Low]    | Technical Task | To Do  | Investigate replacing iframe polling with WebSockets or SSE for smoother, real-time updates of content and progress.                                      |
+| AV-033 | **Accessibility Improvements (WCAG)**            | [Low]    | Enhancement    | To Do  | Review frontend against WCAG guidelines. Implement semantic HTML, ARIA attributes, keyboard navigation improvements.                                      |
+| AV-034 | **API Documentation (Internal)**                 | [Low]    | Technical Task | To Do  | Document the `/api/kickoff` and `/api/loop` endpoints (request/response formats, parameters) within the codebase or README.                               |
+
+---
+
+## New Features or User Stories (Summary of Additions/Refinements)
+
+- **AV-003 (`/api/kickoff`):** Explicitly defined endpoint for session initiation and initial file
+  creation.
+- **AV-004 (`/api/loop`):** Explicitly defined endpoint for single iteration execution, including
+  AutoCode call.
+- **AV-005 (Frontend Kickoff):** Logic to call `/api/kickoff` and initiate the loop process.
+- **AV-006 (Frontend Loop Control):** Specific implementation of frontend-driven polling for
+  `/api/loop`.
+- **AV-007 (UI - Iframes):** Specific requirement for side-by-side iframe display.
+- **AV-008 (Backend File Serving):** Necessary task to make iframe content accessible.
+- **AV-009 (Iframe Refresh):** Explicit task for updating iframe content after loop iteration.
+- **AV-010 (AutoCode Integration):** Refined to emphasize execution within `/api/loop`.
+- **AV-013 (Stop Functionality):** Added based on README description.
+- Priorities adjusted to reflect the core flow described in the README as [High].
 
 ---
 
 ## Updated Priorities for Existing Items
 
-- **All items are currently considered "New Features & User Stories"** as this is likely the initial
-  backlog creation based on the project description.
+- Priorities across the board have been reviewed based on the detailed architecture in the
+  `README.md`.
+- Items essential for the described core user flow (kickoff -> loop -> iframe display -> stop) are
+  marked as **[High]**.
+- Foundational improvements (validation, refactoring) are **[Medium]**.
+- Features listed under "Design Ideas" in the README are generally **[Low]** unless they overlap
+  with core usability.
 
 ---
 
 ## Removed or Completed Items
 
-- **No items removed or completed yet.** This is the starting point.
+- None. This backlog represents the planned work based on the current understanding of the project
+  as defined in the `README.md`.
 
 ---
 
 ## Additional Notes & Comments
 
-- **Focus for the next Sprint/Iteration:** Prioritize items marked as **[High]** and some
-  **[Medium]** priority items to achieve a Minimum Viable Product (MVP). The MVP should demonstrate
-  the core "thinking loop" functionality with a basic UI and essential features.
-- **API Key Security is Paramount:** Ensure the "Bring Your Own API Key" feature is implemented with
-  robust security measures. Avoid storing keys client-side. Server-side management using environment
-  variables or secure vault is recommended for later stages.
-- **Iterative Development:** This backlog is a starting point and will be refined iteratively as
-  development progresses and we gather feedback.
-- **Technical Debt Awareness:** While focusing on MVP, be mindful of technical debt and plan for
-  refactoring and improvements (like modularity, testing, etc.) in subsequent iterations.
-- **"Use AutoCode" Integration:** The "Use AutoCode" goal is implicitly included within the "Core
-  'Thinking Loop' Logic in Backend" feature. The implementation details will need to address how and
-  when AutoCode CLI is leveraged.
-
----
-```
-
-This updated backlog provides a more structured and actionable list of tasks for the AutoVibe
-project, categorized by priority and type, and taking into account the current project state and
-future development considerations outlined in the README.
+- **MVP Focus:** The immediate priority is implementing the **[High]** items to deliver the core
+  functionality described in the README: input seed/key, kick off a session, see iterative updates
+  to `README.md` and `index.html` in iframes via frontend-driven polling of `/api/loop`, and be able
+  to stop the process.
+- **API Key Security:** Re-emphasizing the critical importance of handling the user's API key
+  securely on the backend. It should _never_ be stored or processed extensively on the client-side.
+- **AutoCode Dependency:** The core loop relies heavily on the successful integration and execution
+  of the AutoCode CLI. Error handling around this is crucial.
+- **File System Scalability:** The current file system approach is simple but may face
+  scaling/management challenges later. Database integration (AV-023) should be considered post-MVP.
+- **Polling vs. Real-time:** The defined architecture uses polling (AV-006, AV-009). While
+  functional, exploring real-time updates (AV-032) is a potential future enhancement for better UX.
+- **Iterative Refinement:** This backlog will evolve as development progresses and
+  challenges/opportunities arise.

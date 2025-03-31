@@ -4,10 +4,6 @@
 capabilities. It enables users to explore ideas and generate unexpected outcomes at lightning speed
 by running thousands of LLM iterations based on an initial seed input.
 
-The platform offers a secure and consistent environment for exploring concepts, refining ideas, and
-discovering novel solutions. Whether for brainstorming, vibe coding, or data pattern analysis,
-autovibe.dev provides the engine for rapid exploration and idea generation.
-
 ![alt text](image.png)
 
 # PROD
@@ -19,8 +15,6 @@ https://autovibe.dev
 - **Bring your free API key**: Get your own free API key from
   [here](https://aistudio.google.com/apikey). Secure handling of API keys is paramount.
 - **Seed-Based Creativity:** Allow users to guide the exploration with initial seed inputs.
-- **Accessibility:** Offer a free core model for unrestricted exploration and adhere to WCAG
-  guidelines.
 - **Ease of Use:** Provide an intuitive and user-friendly interface.
 - **Use AutoCode:** Leverage https://autocode.work/ in CLI mode for code generation tasks within the
   loop.
