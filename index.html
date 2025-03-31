@@ -2004,8 +2004,9 @@
                         if (error instanceof Response) {
                             try {
                                 const errorData = await error.json();
+                                console.log(errorData);
                                 errorMessage = `Iteration Error (${error.status}): ${
-                                    errorData.message || errorData.error || error.statusText
+                                    errorData.error || error.statusText
                                 }`;
 
                                 if (error.status === 401) errorMessage += ' Check API Key.';
@@ -2019,6 +2020,7 @@
                         } else if (error instanceof Error) {
                             errorMessage = `Iteration Error: ${error.message}`;
                         }
+                        console.log(errorMessage);
                         displayStatus(errorMessage, errorType);
                         stopLoop();
                     } finally {
@@ -2039,10 +2041,12 @@
                     shareFeedback.style.display = 'none';
 
                     if (wasRunning && currentfolderName && currentIteration > 0) {
-                        displayStatus(
-                            `Loop stopped after iteration ${currentIteration}. Previews show last completed state.`,
-                            'info'
-                        );
+                        if (!statusMessage.className.includes('error')) {
+                            displayStatus(
+                                `Loop stopped after iteration ${currentIteration}. Previews show last completed state.`,
+                                'info'
+                            );
+                        }
                         iterationCounterSpan.textContent = `Iteration ${currentIteration}`;
                         iterationStatusDiv.style.display = 'flex';
                         shareBtn.disabled = false;
