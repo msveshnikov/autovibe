@@ -4,7 +4,6 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <!-- SEO Meta Tags -->
         <title>autovibe.dev - AI-Powered Iterative Coding & Creativity</title>
         <meta
             name="description"
@@ -16,7 +15,6 @@
         />
         <link rel="canonical" href="https://autovibe.dev/" />
 
-        <!-- Open Graph Meta Tags (for social sharing) -->
         <meta
             property="og:title"
             content="autovibe.dev - AI-Powered Iterative Coding & Creativity"
@@ -28,10 +26,9 @@
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://autovibe.dev/" />
         <meta property="og:image" content="https://autovibe.dev/image.png" />
-        <!-- Make sure this image exists -->
+
         <meta property="og:site_name" content="autovibe.dev" />
 
-        <!-- Twitter Card Meta Tags -->
         <meta name="twitter:card" content="summary_large_image" />
         <meta
             name="twitter:title"
@@ -61,9 +58,9 @@
             referrerpolicy="no-referrer"
         />
         <link rel="manifest" href="/site.webmanifest" />
-        <!-- Include marked.js for Markdown rendering -->
+
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <!-- Google tag (gtag.js) -->
+
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YPEGHMQ5P"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
@@ -241,7 +238,7 @@
                 opacity: 0;
                 cursor: pointer;
                 border: none;
-                margin-right: 10px; /* Space between buttons */
+                margin-right: 10px;
             }
 
             .cta-button:hover {
@@ -269,7 +266,6 @@
                 height: 300px;
             }
 
-            /* Disabled button style */
             .cta-button:disabled {
                 opacity: 0.7;
                 cursor: not-allowed;
@@ -288,28 +284,22 @@
                 height: 0;
             }
 
-            /* Stop button specific style */
             #stop-loop-btn {
-                background: linear-gradient(45deg, var(--error), #c62828); /* Red gradient */
+                background: linear-gradient(45deg, var(--error), #c62828);
                 box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
             }
 
             #stop-loop-btn:hover:not(:disabled) {
-                /* Apply hover only when not disabled */
                 transform: translateY(-3px);
                 box-shadow: 0 8px 20px rgba(244, 67, 54, 0.4);
             }
 
             #stop-loop-btn:disabled {
-                background: linear-gradient(
-                    45deg,
-                    var(--error),
-                    #c62828
-                ); /* Keep red when disabled */
+                background: linear-gradient(45deg, var(--error), #c62828);
                 box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
-                opacity: 0.7; /* Standard disabled opacity */
+                opacity: 0.7;
                 cursor: not-allowed;
-                transform: none; /* Remove hover effect when disabled */
+                transform: none;
             }
 
             .section-title {
@@ -526,16 +516,15 @@
                 box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
             }
 
-            /* Style select dropdown arrow */
             .form-select {
                 appearance: none;
                 background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23ccc' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
                 background-repeat: no-repeat;
                 background-position: right 15px center;
                 background-size: 16px 12px;
-                padding-right: 40px; /* Make space for the arrow */
+                padding-right: 40px;
             }
-            /* Style select options */
+
             .form-select option {
                 background-color: var(--dark);
                 color: var(--text);
@@ -552,7 +541,7 @@
                 align-items: center;
                 gap: 10px;
                 margin-top: 20px;
-                flex-wrap: wrap; /* Allow wrap if needed */
+                flex-wrap: wrap;
             }
 
             .status-message {
@@ -561,7 +550,7 @@
                 font-weight: 500;
                 flex-grow: 1;
                 text-align: left;
-                min-width: 200px; /* Ensure it doesn't get too small */
+                min-width: 200px;
             }
 
             .status-message.error {
@@ -590,7 +579,7 @@
                 gap: 10px;
                 font-weight: 500;
                 color: var(--text-secondary);
-                flex-shrink: 0; /* Prevent shrinking */
+                flex-shrink: 0;
             }
 
             .spinner {
@@ -600,7 +589,7 @@
                 border-top-color: var(--spinner-color);
                 border-radius: 50%;
                 animation: spin 1s linear infinite;
-                display: none; /* Hidden by default */
+                display: none;
             }
 
             @keyframes spin {
@@ -615,25 +604,25 @@
 
             .iframe-wrapper {
                 flex: 1;
-                min-width: 300px; /* Minimum width before wrapping */
+                min-width: 300px;
                 display: flex;
                 flex-direction: column;
-                gap: 10px; /* Space between iframe and button */
+                gap: 10px;
             }
 
             .iframe-container {
                 display: flex;
-                gap: 20px; /* Adjust spacing between iframe wrappers */
-                margin-top: 30px; /* Space above the iframe container */
-                flex-wrap: wrap; /* Allow wrapping on smaller screens if needed */
+                gap: 20px;
+                margin-top: 30px;
+                flex-wrap: wrap;
             }
 
             .iframe-container iframe {
-                width: 100%; /* Take full width of wrapper */
+                width: 100%;
                 height: 800px;
                 border: 1px solid var(--light-dark);
                 border-radius: 8px;
-                background-color: #333; /* Default background for loading state */
+                background-color: #333;
             }
 
             .share-button-container {
@@ -763,7 +752,7 @@
                 color: var(--primary);
                 margin-bottom: 15px;
                 display: block;
-                text-decoration: none; /* Added for consistency */
+                text-decoration: none;
             }
 
             .footer-description {
@@ -813,7 +802,7 @@
                 color: var(--text);
                 text-decoration: none;
                 transition: all 0.3s ease;
-                font-size: 1.2rem; /* Added for icon sizing */
+                font-size: 1.2rem;
             }
 
             .social-link:hover {
@@ -870,7 +859,7 @@
                 height: 100%;
                 pointer-events: none;
                 z-index: -1;
-                overflow: hidden; /* Prevent scrollbars from animation */
+                overflow: hidden;
             }
 
             .circle {
@@ -971,7 +960,6 @@
                 }
             }
 
-            /* Responsive Styles */
             @media (max-width: 992px) {
                 .hero-title {
                     font-size: 2.8rem;
@@ -1029,9 +1017,8 @@
                 }
 
                 nav ul li a.secondary-button {
-                    /* Adjust GitHub button in mobile nav */
                     margin-left: 0;
-                    display: inline-block; /* Ensure it behaves like a button */
+                    display: inline-block;
                     margin-top: 10px;
                 }
 
@@ -1070,16 +1057,16 @@
                 }
 
                 .iframe-container {
-                    flex-direction: column; /* Stack iframes vertically */
+                    flex-direction: column;
                     gap: 15px;
                 }
 
                 .iframe-wrapper {
-                    min-width: 100%; /* Take full width when stacked */
+                    min-width: 100%;
                 }
 
                 .iframe-container iframe {
-                    height: 600px; /* Adjust height for smaller screens */
+                    height: 600px;
                 }
 
                 .cta-title {
@@ -1112,12 +1099,12 @@
                 .secondary-button {
                     width: 100%;
                     margin-bottom: 15px;
-                    margin-right: 0; /* Remove margin for stacked buttons */
+                    margin-right: 0;
                 }
 
                 .cta-buttons {
                     flex-direction: column;
-                    align-items: center; /* Center stacked buttons */
+                    align-items: center;
                 }
 
                 .section-title {
@@ -1138,7 +1125,7 @@
                     text-align: center;
                 }
                 .footer-links {
-                    padding-left: 0; /* Remove default list padding */
+                    padding-left: 0;
                 }
             }
         </style>
@@ -1341,7 +1328,6 @@
                                     </option>
                                     <option value="deepseek-reasoner">DeepSeek Reasoner</option>
                                     <option value="o3-mini">O3 Mini</option>
-                                    <!-- Add more models here as needed -->
                                 </select>
                                 <p id="model-help" class="form-help">
                                     Choose the AI model for the iterative process. Your selection
@@ -1396,7 +1382,6 @@
                                 title="README Preview"
                                 aria-label="Live preview of the generated README.md file"
                             ></iframe>
-                            <!-- No share button for README -->
                         </div>
                         <div class="iframe-wrapper">
                             <iframe
@@ -1521,7 +1506,6 @@
                                 aria-label="GitHub Repository"
                                 ><i class="fab fa-github" aria-hidden="true"></i
                             ></a>
-                            <!-- Add other social links here -->
                         </div>
                     </div>
                     <div class="footer-column">
@@ -1560,7 +1544,6 @@
                                     >AutoCode</a
                                 >
                             </li>
-                            <!-- Add links to documentation, contributing guidelines etc. -->
                         </ul>
                     </div>
                 </div>
@@ -1575,7 +1558,6 @@
                 const API_KEY_STORAGE_KEY = 'AutoVibeApiKey';
                 const MODEL_STORAGE_KEY = 'AutoVibeSelectedModel';
 
-                // --- Elements ---
                 const header = document.getElementById('header');
                 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
                 const nav = document.getElementById('nav');
@@ -1598,26 +1580,21 @@
                 const shareFeedback = document.getElementById('share-feedback');
                 const copyrightYear = document.getElementById('copyright-year');
 
-                // --- State ---
                 let isLoopRunning = false;
                 let currentfolderName = null;
-                let currentIteration = 0; // Tracks the *last completed* iteration
-                let loopTimeoutId = null; // To control the loop timing
+                let currentIteration = 0;
+                let loopTimeoutId = null;
 
-                // --- Initial Setup ---
                 copyrightYear.textContent = new Date().getFullYear();
                 loadApiKey();
-                loadSelectedModel(); // Load model preference
+                loadSelectedModel();
                 stopLoopBtn.style.display = 'none';
                 stopLoopBtn.disabled = true;
                 iterationStatusDiv.style.display = 'none';
                 shareBtn.disabled = true;
                 openHtmlBtn.disabled = true;
-                resetPreviews(); // Clear iframes initially
+                resetPreviews();
 
-                // --- Event Listeners ---
-
-                // Header scroll effect
                 window.addEventListener('scroll', () => {
                     if (window.scrollY > 50) {
                         header.classList.add('scrolled');
@@ -1626,28 +1603,24 @@
                     }
                 });
 
-                // Mobile menu toggle
                 mobileMenuBtn.addEventListener('click', () => {
                     const isExpanded = nav.classList.toggle('active');
                     mobileMenuBtn.setAttribute('aria-expanded', isExpanded);
                 });
 
-                // Close mobile menu when a link is clicked or focus moves outside
                 nav.querySelectorAll('a').forEach((link) => {
                     link.addEventListener('click', (e) => {
                         const targetId = link.getAttribute('href');
-                        // Check if it's an internal link
+
                         if (targetId && targetId.startsWith('#')) {
-                            e.preventDefault(); // Prevent default jump
+                            e.preventDefault();
                             const targetElement = document.querySelector(targetId);
                             if (targetElement) {
-                                // Smooth scroll to target
                                 targetElement.scrollIntoView({ behavior: 'smooth' });
 
-                                // Wait a bit for scroll to finish before focusing
                                 setTimeout(() => {
-                                    targetElement.focus(); // Focus the section for accessibility
-                                    // Try focusing first focusable element if section itself isn't focusable
+                                    targetElement.focus();
+
                                     if (document.activeElement !== targetElement) {
                                         const firstFocusable = targetElement.querySelector(
                                             'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -1656,14 +1629,13 @@
                                     }
                                 }, 500);
                             }
-                            // Close nav if it's active (for mobile)
+
                             if (nav.classList.contains('active')) {
                                 nav.classList.remove('active');
                                 mobileMenuBtn.setAttribute('aria-expanded', 'false');
-                                mobileMenuBtn.focus(); // Return focus to menu button
+                                mobileMenuBtn.focus();
                             }
                         } else {
-                            // If it's an external link (like GitHub), just close the nav if open
                             if (nav.classList.contains('active')) {
                                 nav.classList.remove('active');
                                 mobileMenuBtn.setAttribute('aria-expanded', 'false');
@@ -1672,7 +1644,6 @@
                     });
                 });
 
-                // Save API Key
                 saveApiKeyBtn.addEventListener('click', saveApiKey);
                 apiKeyInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
@@ -1680,22 +1651,15 @@
                     }
                 });
 
-                // Save Selected Model on change
                 modelSelect.addEventListener('change', saveSelectedModel);
 
-                // Run Loop Form Submission (Kickoff)
                 loopForm.addEventListener('submit', handleKickoff);
 
-                // Stop Loop Button
                 stopLoopBtn.addEventListener('click', stopLoop);
 
-                // Share Button
                 shareBtn.addEventListener('click', handleShare);
 
-                // Open HTML Button
                 openHtmlBtn.addEventListener('click', handleOpenHtml);
-
-                // --- Functions ---
 
                 function loadApiKey() {
                     const storedKey = localStorage.getItem(API_KEY_STORAGE_KEY);
@@ -1724,7 +1688,6 @@
                 function loadSelectedModel() {
                     const storedModel = localStorage.getItem(MODEL_STORAGE_KEY);
                     if (storedModel) {
-                        // Check if the stored model is still a valid option
                         const exists = Array.from(modelSelect.options).some(
                             (option) => option.value === storedModel
                         );
@@ -1735,7 +1698,7 @@
                             console.warn(
                                 `Stored model "${storedModel}" no longer exists, using default.`
                             );
-                            localStorage.removeItem(MODEL_STORAGE_KEY); // Remove invalid stored value
+                            localStorage.removeItem(MODEL_STORAGE_KEY);
                         }
                     }
                 }
@@ -1766,10 +1729,6 @@
                 }
 
                 function resetPreviews() {
-                    // if (readmePreviewIframe) {
-                    //     readmePreviewIframe.srcdoc =
-                    //         '<html lang="en"><body style="background-color:#333; color:#ccc; padding: 15px;">Waiting for project kickoff...</body></html>';
-                    // }
                     if (htmlPreviewIframe) {
                         htmlPreviewIframe.src = 'about:blank';
                     }
@@ -1792,21 +1751,19 @@
 
                     console.log(`Updating previews to iteration ${iterationNumber}: ${htmlUrl}`);
 
-                    // Update HTML Preview Iframe
                     if (htmlPreviewIframe) {
                         htmlPreviewIframe.src = htmlUrl;
                     } else {
                         console.error('HTML preview iframe not found.');
                     }
 
-                    // Fetch and render README Markdown
                     if (readmePreviewIframe) {
                         try {
                             const response = await fetch(readmeUrl);
                             if (response.ok) {
                                 const markdown = await response.text();
                                 const htmlContent = marked.parse(markdown);
-                                // Create a full HTML document for srcdoc with basic dark theme styling
+
                                 const iframeHtml = `
                             <!DOCTYPE html>
                             <html lang="en">
@@ -1851,7 +1808,6 @@
                         console.error('README preview iframe not found.');
                     }
 
-                    // Enable share and open buttons now that a valid iteration exists
                     shareBtn.disabled = false;
                     openHtmlBtn.disabled = false;
                 }
@@ -1898,8 +1854,8 @@
                     iterationStatusDiv.style.display = 'none';
                     spinner.style.display = 'none';
                     isLoopRunning = true;
-                    currentIteration = 0; // Reset iteration counter
-                    currentfolderName = null; // Reset folder name
+                    currentIteration = 0;
+                    currentfolderName = null;
 
                     try {
                         const response = await fetch('/api/kickoff', {
@@ -1922,24 +1878,21 @@
                         }
 
                         currentfolderName = data.folderName;
-                        currentIteration = data.initialIteration; // Set the initial completed iteration
+                        currentIteration = data.initialIteration;
                         console.log(
                             `Kickoff successful. Project: ${currentfolderName}, Initial Iteration: ${currentIteration}`
                         );
 
-                        // Update UI for the initial state
                         iterationCounterSpan.textContent = `Iteration ${currentIteration}`;
-                        iterationStatusDiv.style.display = 'flex'; // Show counter immediately
-                        spinner.style.display = 'none'; // But no spinner yet
+                        iterationStatusDiv.style.display = 'flex';
+                        spinner.style.display = 'none';
 
-                        // Initial preview update for the first iteration
                         await updateResultPreviews(currentfolderName, currentIteration);
 
                         document
                             .getElementById('results-section')
                             ?.scrollIntoView({ behavior: 'smooth' });
 
-                        // Start the first *actual* iteration (which will be iteration 2)
                         runIteration();
                     } catch (error) {
                         console.error('Error during kickoff:', error);
@@ -1957,21 +1910,21 @@
                             errorMessage = `Kickoff Error: ${error.message}`;
                         }
                         displayStatus(errorMessage, 'error');
-                        stopLoop(); // Reset state on kickoff failure
+                        stopLoop();
                     }
                 }
 
                 async function runIteration() {
                     if (!isLoopRunning || !currentfolderName) {
                         console.log('Loop stopped or project directory missing. Halting.');
-                        if (!isLoopRunning) stopLoop(); // Ensure cleanup if stopped externally
+                        if (!isLoopRunning) stopLoop();
                         return;
                     }
 
-                    const iterationToRun = currentIteration + 1; // The iteration we are about to run
-                    iterationCounterSpan.textContent = `Iteration ${iterationToRun}`; // Show next iteration number
+                    const iterationToRun = currentIteration + 1;
+                    iterationCounterSpan.textContent = `Iteration ${iterationToRun}`;
                     iterationStatusDiv.style.display = 'flex';
-                    spinner.style.display = 'block'; // Show spinner for the *next* iteration
+                    spinner.style.display = 'block';
                     displayStatus(`Running iteration ${iterationToRun}...`, 'loading');
                     shareFeedback.style.display = 'none';
 
@@ -1999,12 +1952,11 @@
                             body: JSON.stringify({
                                 folderName: currentfolderName,
                                 model: selectedModel,
-                                iteration: iterationToRun // Send the iteration number to run
+                                iteration: iterationToRun
                             })
                         });
 
                         if (!isLoopRunning) {
-                            // Check again in case stop was pressed during the fetch
                             console.log(
                                 `Loop stopped during API call for iteration ${iterationToRun}`
                             );
@@ -2014,10 +1966,9 @@
 
                         if (!response.ok) throw response;
 
-                        const data = await response.json(); // Contains { success, message, cliOutput, iteration }
+                        const data = await response.json();
 
                         if (!data.success || typeof data.iteration !== 'number') {
-                            // Check if the server sent an error message even with a 2xx status (shouldn't happen with current backend, but good practice)
                             const errorMsg =
                                 data.message ||
                                 data.error ||
@@ -2025,45 +1976,43 @@
                             throw new Error(errorMsg);
                         }
 
-                        const completedIteration = data.iteration; // The iteration that just finished
-                        currentIteration = completedIteration; // Update state to the completed iteration
+                        const completedIteration = data.iteration;
+                        currentIteration = completedIteration;
 
                         console.log(`Iteration ${completedIteration} completed successfully.`);
                         displayStatus(
                             `Iteration ${completedIteration} finished. Updating previews...`,
                             'success'
                         );
-                        iterationCounterSpan.textContent = `Iteration ${completedIteration}`; // Update counter to completed one
-                        spinner.style.display = 'none'; // Hide spinner until next iteration starts
+                        iterationCounterSpan.textContent = `Iteration ${completedIteration}`;
+                        spinner.style.display = 'none';
 
-                        // Update previews to show the results of the completed iteration
                         await updateResultPreviews(currentfolderName, completedIteration);
 
                         if (isLoopRunning) {
-                            // Schedule next iteration only if loop is still running
-                            loopTimeoutId = setTimeout(runIteration, 500); // Short delay before next
+                            loopTimeoutId = setTimeout(runIteration, 500);
                         } else {
                             console.log(
                                 `Loop stopped after successful iteration ${completedIteration}`
                             );
-                            stopLoop(); // Ensure state is fully reset if stopped
+                            stopLoop();
                         }
                     } catch (error) {
                         console.error(`Error during iteration ${iterationToRun}:`, error);
                         let errorMessage = `Iteration ${iterationToRun} failed. Please check console.`;
-                        let errorType = 'error'; // Default status type
+                        let errorType = 'error';
                         if (error instanceof Response) {
                             try {
                                 const errorData = await error.json();
                                 errorMessage = `Iteration Error (${error.status}): ${
-                                    errorData.message || errorData.error || error.statusText // Check for 'error' field too
+                                    errorData.message || errorData.error || error.statusText
                                 }`;
-                                // Adjust type based on status if needed
+
                                 if (error.status === 401) errorMessage += ' Check API Key.';
                                 if (error.status === 429)
                                     errorMessage += ' Rate limit likely exceeded.';
                                 if (error.status === 504) errorMessage += ' Operation timed out.';
-                                if (error.status === 400) errorType = 'error'; // Keep as error for 400
+                                if (error.status === 400) errorType = 'error';
                             } catch (parseError) {
                                 errorMessage = `Iteration Error (${error.status}): ${error.statusText}. Could not parse error response.`;
                             }
@@ -2071,9 +2020,8 @@
                             errorMessage = `Iteration Error: ${error.message}`;
                         }
                         displayStatus(errorMessage, errorType);
-                        stopLoop(); // Stop the loop on error
+                        stopLoop();
                     } finally {
-                        // Ensure spinner is hidden if the loop is no longer meant to be running
                         if (!isLoopRunning) {
                             spinner.style.display = 'none';
                         }
@@ -2090,34 +2038,28 @@
                     spinner.style.display = 'none';
                     shareFeedback.style.display = 'none';
 
-                    // Update UI based on the state when stopped
                     if (wasRunning && currentfolderName && currentIteration > 0) {
-                        // Loop was running and completed at least one iteration
                         displayStatus(
                             `Loop stopped after iteration ${currentIteration}. Previews show last completed state.`,
                             'info'
                         );
                         iterationCounterSpan.textContent = `Iteration ${currentIteration}`;
-                        iterationStatusDiv.style.display = 'flex'; // Keep showing last completed iteration
+                        iterationStatusDiv.style.display = 'flex';
                         shareBtn.disabled = false;
                         openHtmlBtn.disabled = false;
                     } else if (currentfolderName && currentIteration > 0) {
-                        // Loop was stopped due to an error after completing at least one iteration
-                        // Keep the error message displayed by runIteration
                         iterationCounterSpan.textContent = `Iteration ${currentIteration}`;
                         iterationStatusDiv.style.display = 'flex';
-                        shareBtn.disabled = false; // Allow sharing/opening the last good state
+                        shareBtn.disabled = false;
                         openHtmlBtn.disabled = false;
                     } else {
-                        // Stopped before finishing kickoff, during kickoff error, or before first iteration completed
-                        // Keep kickoff error message if present, otherwise clear status
                         if (!statusMessage.classList.contains('error')) {
                             clearStatus();
                         }
                         iterationStatusDiv.style.display = 'none';
                         shareBtn.disabled = true;
                         openHtmlBtn.disabled = true;
-                        resetPreviews(); // Clear previews if nothing completed
+                        resetPreviews();
                     }
 
                     console.log('Loop stopped.');
@@ -2126,7 +2068,6 @@
                 async function handleShare() {
                     if (!currentfolderName || shareBtn.disabled || currentIteration < 1) return;
 
-                    // Share the URL pointing to the specific last completed iteration's content
                     const projectUrl = `${window.location.origin}/projects/${currentfolderName}/${currentIteration}/index.html`;
 
                     try {
@@ -2150,7 +2091,7 @@
 
                 function handleOpenHtml() {
                     if (!currentfolderName || currentIteration < 1 || openHtmlBtn.disabled) return;
-                    // Open the index.html from the last successfully completed iteration
+
                     const htmlUrl = `/projects/${currentfolderName}/${currentIteration}/index.html`;
                     window.open(htmlUrl, '_blank');
                 }
