@@ -1,0 +1,35 @@
+Unleash your creative potential with AutoVibe, the revolutionary free platform designed for lightning-fast iterative "vibe coding"!
+
+Tired of slow brainstorming and tedious manual iteration? AutoVibe empowers you to explore ideas and generate unexpected outcomes at incredible speed. Simply provide an initial "seed" concept, text snippet, or instruction, and AutoVibe harnesses the power of advanced Large Language Models (LLMs) like Google's Gemini to run thousands of variations based on your input.
+
+**How it Works:**
+
+1.  **Bring Your Key:** Securely input your *own* free API key from Google AI Studio ([https://aistudio.google.com/apikey](https://aistudio.google.com/apikey)). You remain in control.
+2.  **Plant Your Seed:** Enter your starting idea into the intuitive interface.
+3.  **Ignite the Loop:** Hit "Run" and watch as AutoVibe kicks off a rapid iterative process.
+4.  **Witness Creation:** See the results unfold in real-time! AutoVibe displays the generated `README.md` (capturing the evolving idea) and a live `index.html` preview side-by-side in iframes.
+5.  **Iterate & Evolve:** Behind the scenes, AutoVibe leverages the AutoCode CLI (autocode.work) to intelligently generate and refine code or content within each loop cycle, updating the preview files.
+6.  **Stay in Control:** Monitor the iteration count and easily stop the process anytime with the prominent "Stop" button.
+
+**Key Features:**
+
+*   **Rapid LLM Iteration:** Explore thousands of possibilities in minutes, not hours or days.
+*   **Seed-Based Creativity:** Guide the AI's exploration with your initial concept.
+*   **BYO API Key:** Utilizes your free Google Gemini API key for secure and controlled access. Choose between fast (Flash) and powerful (Pro) models.
+*   **AutoCode Integration:** Seamlessly incorporates AutoCode CLI for powerful code generation within the loop.
+*   **Simple & Intuitive UI:** Get started in seconds – no complex setup required.
+*   **Real-Time Previews:** Instantly visualize the generated markdown (`README.md`) and HTML output (`index.html`).
+*   **Session-Based Storage:** Each run creates a unique session, keeping your iterations organized during generation.
+*   **Full Stop Control:** Terminate the generation process whenever you choose.
+*   **Free to Use:** Access the core power of AutoVibe without any cost.
+
+**Who is AutoVibe for?**
+
+*   **Developers:** Rapidly prototype UI components, generate boilerplate code, explore API usage patterns.
+*   **Designers:** Brainstorm layout ideas, generate thematic content variations, create placeholder text.
+*   **Writers & Creators:** Generate story ideas, draft marketing copy variations, overcome writer's block.
+*   **Anyone:** Explore the creative potential of LLMs in a fast, iterative way.
+
+Stop wrestling with single prompts and start vibing with thousands of iterations. AutoVibe accelerates your creative workflow, helping you discover novel solutions and refine your ideas faster than ever before.
+
+Download AutoVibe today and experience the future of rapid, AI-powered creation!

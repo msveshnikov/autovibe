@@ -1,0 +1,16 @@
+Version 1.0.0 - Initial Release!
+
+Welcome to the first release of AutoVibe!
+
+Experience the power of rapid iterative vibe coding. Turn your initial seed ideas into thousands of variations using cutting-edge LLMs like Google Gemini.
+
+Features:
+*   **Seed-Based Generation:** Start with your core concept.
+*   **Rapid Iteration:** Runs thousands of LLM loops quickly.
+*   **BYO API Key:** Use your own free Google AI Studio API key.
+*   **AutoCode Integration:** Leverages AutoCode CLI for code generation tasks.
+*   **Real-Time Previews:** See generated `README.md` and `index.html` update live.
+*   **Simple UI:** Easy input, run, view, and stop controls.
+*   **Free to Use:** Explore AI-powered creativity without cost.
+
+We're excited for you to try AutoVibe and accelerate your ideation process!
