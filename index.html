@@ -633,6 +633,7 @@
                 height: 800px;
                 border: 1px solid var(--light-dark);
                 border-radius: 8px;
+                background-color: #333; /* Default background for loading state */
             }
 
             .share-button-container {
@@ -1278,9 +1279,8 @@
                             <div class="step-number" aria-hidden="true">2</div>
                             <h3 id="step-title-2" class="step-title">Kickoff & Iterate</h3>
                             <p class="step-description">
-                                Start the loop. The system creates a project space with iteration
-                                subfolders and iteratively runs AutoCode, refining content based on
-                                previous steps.
+                                Start the loop. The system creates a project space and iteratively
+                                runs AutoCode, refining content based on previous steps.
                             </p>
                         </article>
                         <article class="step-item" aria-labelledby="step-title-3">
@@ -1330,17 +1330,22 @@
                                     aria-required="true"
                                     aria-describedby="model-help"
                                 >
-                                    <option value="gemini-2.0-flash-thinking-exp-01-21" selected>
+                                    <option value="gemini-2.0-flash-thinking-exp-01-21">
                                         Gemini Flash 2.0 (Fast, Default)
                                     </option>
                                     <option value="gemini-2.5-pro-exp-03-25">
                                         Gemini Pro 2.5 (Slower, More Capable)
                                     </option>
+                                    <option value="claude-3-7-sonnet-20250219">
+                                        Claude 3.7 Sonnet
+                                    </option>
+                                    <option value="deepseek-reasoner">DeepSeek Reasoner</option>
+                                    <option value="o3-mini">O3 Mini</option>
                                     <!-- Add more models here as needed -->
                                 </select>
                                 <p id="model-help" class="form-help">
-                                    Choose the AI model for the iterative process. Flash is quicker,
-                                    Pro might yield more complex results.
+                                    Choose the AI model for the iterative process. Your selection
+                                    will be remembered.
                                 </p>
                             </div>
 
@@ -1568,6 +1573,7 @@
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const API_KEY_STORAGE_KEY = 'AutoVibeApiKey';
+                const MODEL_STORAGE_KEY = 'AutoVibeSelectedModel';
 
                 // --- Elements ---
                 const header = document.getElementById('header');
@@ -1601,6 +1607,7 @@
                 // --- Initial Setup ---
                 copyrightYear.textContent = new Date().getFullYear();
                 loadApiKey();
+                loadSelectedModel(); // Load model preference
                 stopLoopBtn.style.display = 'none';
                 stopLoopBtn.disabled = true;
                 iterationStatusDiv.style.display = 'none';
@@ -1673,6 +1680,9 @@
                     }
                 });
 
+                // Save Selected Model on change
+                modelSelect.addEventListener('change', saveSelectedModel);
+
                 // Run Loop Form Submission (Kickoff)
                 loopForm.addEventListener('submit', handleKickoff);
 
@@ -1708,6 +1718,33 @@
                     } else {
                         localStorage.removeItem(API_KEY_STORAGE_KEY);
                         displayApiKeyStatus('API Key removed.', 'info');
+                    }
+                }
+
+                function loadSelectedModel() {
+                    const storedModel = localStorage.getItem(MODEL_STORAGE_KEY);
+                    if (storedModel) {
+                        // Check if the stored model is still a valid option
+                        const exists = Array.from(modelSelect.options).some(
+                            (option) => option.value === storedModel
+                        );
+                        if (exists) {
+                            modelSelect.value = storedModel;
+                            console.log(`Loaded preferred model: ${storedModel}`);
+                        } else {
+                            console.warn(
+                                `Stored model "${storedModel}" no longer exists, using default.`
+                            );
+                            localStorage.removeItem(MODEL_STORAGE_KEY); // Remove invalid stored value
+                        }
+                    }
+                }
+
+                function saveSelectedModel() {
+                    const selectedModel = modelSelect.value;
+                    if (selectedModel) {
+                        localStorage.setItem(MODEL_STORAGE_KEY, selectedModel);
+                        console.log(`Saved selected model: ${selectedModel}`);
                     }
                 }
 
@@ -1980,9 +2017,12 @@
                         const data = await response.json(); // Contains { success, message, cliOutput, iteration }
 
                         if (!data.success || typeof data.iteration !== 'number') {
-                            throw new Error(
-                                `Loop API response OK but indicates failure or missing iteration number.`
-                            );
+                            // Check if the server sent an error message even with a 2xx status (shouldn't happen with current backend, but good practice)
+                            const errorMsg =
+                                data.message ||
+                                data.error ||
+                                `Loop API response OK but indicates failure or missing iteration number.`;
+                            throw new Error(errorMsg);
                         }
 
                         const completedIteration = data.iteration; // The iteration that just finished
@@ -2016,13 +2056,14 @@
                             try {
                                 const errorData = await error.json();
                                 errorMessage = `Iteration Error (${error.status}): ${
-                                    errorData.message || error.statusText
+                                    errorData.message || errorData.error || error.statusText // Check for 'error' field too
                                 }`;
-                                // Adjust type based on status if needed (e.g., 429 -> 'info' or 'warning')
+                                // Adjust type based on status if needed
                                 if (error.status === 401) errorMessage += ' Check API Key.';
                                 if (error.status === 429)
                                     errorMessage += ' Rate limit likely exceeded.';
                                 if (error.status === 504) errorMessage += ' Operation timed out.';
+                                if (error.status === 400) errorType = 'error'; // Keep as error for 400
                             } catch (parseError) {
                                 errorMessage = `Iteration Error (${error.status}): ${error.statusText}. Could not parse error response.`;
                             }
@@ -2083,10 +2124,10 @@
                 }
 
                 async function handleShare() {
-                    if (!currentfolderName || shareBtn.disabled) return;
+                    if (!currentfolderName || shareBtn.disabled || currentIteration < 1) return;
 
-                    // Share the base project URL, letting the server handle serving (might default to latest or an index)
-                    const projectUrl = `${window.location.origin}/projects/${currentfolderName}/${currentIteration}`;
+                    // Share the URL pointing to the specific last completed iteration's content
+                    const projectUrl = `${window.location.origin}/projects/${currentfolderName}/${currentIteration}/index.html`;
 
                     try {
                         await navigator.clipboard.writeText(projectUrl);

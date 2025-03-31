@@ -17,10 +17,13 @@ const port = process.env.PORT || 3000;
 // Allowed models (add more as needed)
 const ALLOWED_MODELS = [
     'gemini-2.0-flash-thinking-exp-01-21', // Default/Fast
-    'gemini-2.5-pro-exp-03-25' // Better/Slower
+    'gemini-2.5-pro-exp-03-25', // Better/Slower
+    'claude-3-7-sonnet-20250219',
+    'deepseek-reasoner',
+    'o3-mini'
     // Add future model names here
 ];
-const DEFAULT_MODEL = ALLOWED_MODELS[0];
+const DEFAULT_MODEL = ALLOWED_MODELS[0]; // Keep Gemini Flash as default
 
 // --- Helper Functions ---
 

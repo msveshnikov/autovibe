@@ -1,0 +1,6 @@
+.git
+content
+docs
+*.md
+server/media
+media
