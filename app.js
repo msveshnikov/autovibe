@@ -3,10 +3,9 @@ import { exec } from 'child_process';
 import path from 'path';
 import morgan from 'morgan';
 import { fileURLToPath } from 'url';
-import fs from 'fs/promises'; // Use fs/promises
-import { existsSync, constants as fsConstants } from 'fs'; // Use existsSync and constants
+import fs from 'fs/promises';
+import { existsSync, constants as fsConstants } from 'fs';
 
-// Helper to get __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectsDir = path.join(__dirname, 'projects');
@@ -14,20 +13,15 @@ const projectsDir = path.join(__dirname, 'projects');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Allowed models (add more as needed)
 const ALLOWED_MODELS = [
-    'gemini-2.0-flash-thinking-exp-01-21', // Default/Fast
-    'gemini-2.5-pro-exp-03-25', // Better/Slower
+    'gemini-2.0-flash-thinking-exp-01-21',
+    'gemini-2.5-pro-exp-03-25',
     'claude-3-7-sonnet-20250219',
     'deepseek-reasoner',
     'o3-mini'
-    // Add future model names here
 ];
-const DEFAULT_MODEL = ALLOWED_MODELS[0]; // Keep Gemini Flash as default
+const DEFAULT_MODEL = ALLOWED_MODELS[0];
 
-// --- Helper Functions ---
-
-// Ensure projects directory exists and is writable on startup
 const ensureProjectsDir = async () => {
     try {
         await fs.access(projectsDir, fsConstants.W_OK | fsConstants.R_OK);
@@ -40,13 +34,13 @@ const ensureProjectsDir = async () => {
                 console.log('Projects directory created successfully.');
             } catch (mkdirError) {
                 console.error(`Error creating projects directory (${projectsDir}):`, mkdirError);
-                process.exit(1); // Exit if cannot create
+                process.exit(1);
             }
         } else if (error.code === 'EACCES') {
             console.error(
                 `Error: Permission denied for projects directory (${projectsDir}). Please check permissions.`
             );
-            process.exit(1); // Exit if cannot access
+            process.exit(1);
         } else {
             console.error('Error checking/creating projects directory:', error);
             process.exit(1);
@@ -54,41 +48,28 @@ const ensureProjectsDir = async () => {
     }
 };
 
-// Function to run a single AutoCode CLI iteration within a specific folder
 const runSingleIteration = (folderPath, apiKey, modelName) =>
     new Promise((resolve, reject) => {
-        // Validate model name against allowed list (already done in API handler, but good defense in depth)
         const validatedModelName = ALLOWED_MODELS.includes(modelName) ? modelName : DEFAULT_MODEL;
-
-        // Command: bunx autocode-ai generate <model> <apiKey>
-        // AutoCode CLI is expected to read README.md and update files in the CWD.
         const command = `bunx autocode-ai generate ${validatedModelName} ${apiKey}`;
-
         console.log(
             `Executing in ${folderPath} with model ${validatedModelName}: ${command.replace(apiKey, '****')}`
-        ); // Log command safely
-
-        // Set a timeout for the CLI command (e.g., 600 seconds)
-        const executionTimeout = 600000; // 600 seconds in milliseconds
-
+        );
+        const executionTimeout = 600000;
         // eslint-disable-next-line no-unused-vars
         const child = exec(
             command,
             { cwd: folderPath, timeout: executionTimeout },
             (error, stdout, stderr) => {
                 if (error) {
-                    // Check if error is due to timeout
                     if (error.signal === 'SIGTERM' || (error.killed && error.code === null)) {
                         const timeoutMessage = `AutoCode CLI Error: Command timed out after ${executionTimeout / 1000} seconds.`;
                         console.error(timeoutMessage);
                         return reject(new Error(timeoutMessage));
                     }
-                    // Handle other errors
-                    // Prioritize stderr, then stdout, then error message
                     const errorMessageContent = stderr || stdout || error.message;
                     const errorMessage = `AutoCode CLI Error: ${errorMessageContent}`;
                     console.error(errorMessage);
-                    // Reject the promise on error
                     reject(new Error(errorMessage));
                 } else {
                     console.log(`AutoCode CLI Success: ${stdout.trim()}`);
@@ -98,47 +79,29 @@ const runSingleIteration = (folderPath, apiKey, modelName) =>
         );
     });
 
-// --- Middleware ---
-app.use(express.json()); // For parsing application/json
-app.use(morgan('dev')); // Logging HTTP requests
+app.use(express.json());
+app.use(morgan('dev'));
 
-// --- Static File Serving ---
-// Serve root static files (index.html, css, js, images)
 app.use(express.static(path.join(__dirname, '.')));
 
-// Serve files from the projects directory
-// IMPORTANT: Add security checks to prevent path traversal
 app.use(
     '/projects',
     (req, res, next) => {
-        // Decode URL components to prevent encoded traversal sequences
         const requestedPathDecoded = decodeURIComponent(req.path);
         const fullPath = path.join(projectsDir, requestedPathDecoded);
-
-        // Normalize the path to resolve '..' and '.'
         const normalizedPath = path.normalize(fullPath);
-
-        // Check if the normalized path is still within the intended projects directory
         if (!normalizedPath.startsWith(projectsDir)) {
             console.warn(`Path traversal attempt blocked: ${req.path}`);
             return res.status(403).send('Forbidden');
         }
-
-        // Check if the file exists before trying to serve
-        // Note: express.static handles this, but checking here can add logging or custom logic if needed.
         if (!existsSync(normalizedPath)) {
             // Let express.static handle the 404
         }
-
-        // Continue to the static middleware
         next();
     },
     express.static(projectsDir)
 );
 
-// --- API Endpoints ---
-
-// Endpoint to kick off a new session
 app.post('/api/kickoff', async (req, res) => {
     const authHeader = req.header('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -148,29 +111,23 @@ app.post('/api/kickoff', async (req, res) => {
     }
     const apiKey = authHeader.split(' ')[1];
     if (!apiKey || !apiKey.trim()) {
-        // Also check if the key is just whitespace
         return res.status(401).json({ message: 'Unauthorized: Missing or invalid API key.' });
     }
 
-    const { seed } = req.body; // Model is sent but not used in kickoff logic itself
+    const { seed } = req.body;
     if (!seed || typeof seed !== 'string' || !seed.trim()) {
         return res.status(400).json({ message: 'Bad Request: Missing or invalid "seed" input.' });
     }
 
     const timestamp = Date.now();
-    const folderName = `${timestamp}`; // Use timestamp as unique folder name
+    const folderName = `${timestamp}`;
     const projectPath = path.join(projectsDir, folderName);
-    const initialIteration = 1; // Start iterations from 1
+    const initialIteration = 1;
     const initialIterationPath = path.join(projectPath, String(initialIteration));
 
     try {
-        // 1. Create unique project directory and initial iteration subfolder
-        await fs.mkdir(initialIterationPath, { recursive: true }); // Creates parent projectPath too
-
-        // 2. Save seed to README.md in the initial iteration folder
+        await fs.mkdir(initialIterationPath, { recursive: true });
         await fs.writeFile(path.join(initialIterationPath, 'README.md'), seed.trim());
-
-        // 3. Create placeholder files in the initial iteration folder
         await fs.writeFile(
             path.join(initialIterationPath, 'index.html'),
             `
@@ -203,19 +160,16 @@ console.log('Project ${folderName} - Iteration ${initialIteration} script loaded
         console.log(
             `Kickoff successful. Created project folder: ${folderName}, Initial Iteration: ${initialIteration}`
         );
-        // Respond with the created folder name and the starting iteration number
-        res.status(201).json({ folderName: folderName, initialIteration: initialIteration }); // 201 Created
+        res.status(201).json({ folderName: folderName, initialIteration: initialIteration });
     } catch (error) {
         console.error(`Error during kickoff for folder ${folderName}:`, error);
-        // Attempt cleanup? Might be complex if partially successful. Log error.
         res.status(500).json({
             message: 'Internal Server Error during kickoff.',
-            error: error.message // Provide error message in response (consider if this is safe for prod)
+            error: error.message
         });
     }
 });
 
-// Endpoint to run a single iteration loop
 app.post('/api/loop', async (req, res) => {
     const authHeader = req.header('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -228,30 +182,22 @@ app.post('/api/loop', async (req, res) => {
         return res.status(401).json({ message: 'Unauthorized: Missing or invalid API key.' });
     }
 
-    const { folderName, model, iteration } = req.body; // Expect iteration number (the one *to be run*)
+    const { folderName, model, iteration } = req.body;
 
-    // Validate folderName
     if (!folderName || typeof folderName !== 'string' || !folderName.trim()) {
         return res.status(400).json({ message: 'Bad Request: Missing or invalid "folderName".' });
     }
-    // Allow only digits (timestamps)
     if (!/^\d+$/.test(folderName)) {
         console.warn(`Invalid folderName format received: ${folderName}`);
         return res.status(400).json({ message: 'Bad Request: Invalid "folderName" format.' });
     }
 
-    // Validate iteration number (must be the *next* iteration to run, so > 1)
-    if (
-        typeof iteration !== 'number' ||
-        !Number.isInteger(iteration) ||
-        iteration <= 1 // Iteration must be 2 or greater for loop endpoint
-    ) {
+    if (typeof iteration !== 'number' || !Number.isInteger(iteration) || iteration <= 1) {
         return res.status(400).json({
             message: `Bad Request: Invalid "iteration" number (${iteration}). Must be an integer greater than 1.`
         });
     }
 
-    // Validate modelName
     const selectedModel = model && ALLOWED_MODELS.includes(model) ? model : DEFAULT_MODEL;
     if (!model) {
         console.warn(`Model name not provided by client, using default: ${DEFAULT_MODEL}`);
@@ -267,7 +213,6 @@ app.post('/api/loop', async (req, res) => {
     const currentIterationPath = path.join(projectPath, String(iteration));
 
     try {
-        // 1. Check if project folder exists (basic check, more specific checks follow)
         await fs.access(projectPath, fsConstants.R_OK);
     } catch (error) {
         console.error(`Error accessing project folder ${projectPath}:`, error);
@@ -281,7 +226,6 @@ app.post('/api/loop', async (req, res) => {
     }
 
     try {
-        // 2. Check if previous iteration folder exists (source for copy)
         await fs.access(previousIterationPath, fsConstants.R_OK);
     } catch (error) {
         console.error(`Error accessing previous iteration folder ${previousIterationPath}:`, error);
@@ -298,105 +242,80 @@ app.post('/api/loop', async (req, res) => {
     }
 
     try {
-        // 3. Create current iteration folder (destination for copy and CLI execution)
         await fs.mkdir(currentIterationPath, { recursive: true });
-
-        // 4. Copy contents from previous iteration to current iteration
         console.log(`Copying from ${previousIterationPath} to ${currentIterationPath}`);
         await fs.cp(previousIterationPath, currentIterationPath, { recursive: true });
         console.log(`Copy complete.`);
 
-        // 5. Run AutoCode CLI in the current iteration folder
         const result = await runSingleIteration(currentIterationPath, apiKey, selectedModel);
 
-        // AutoCode CLI modifies files directly within the currentIterationPath.
-        // Report success and the completed iteration number back to the client.
         res.json({
             success: true,
             message: `Iteration ${iteration} completed successfully.`,
             cliOutput: result.output,
-            iteration: iteration // Return the completed iteration number
+            iteration: iteration
         });
     } catch (error) {
-        // Handle errors from mkdir, cp, or runSingleIteration
         console.error(`Error during loop iteration ${iteration} for folder ${folderName}:`, error);
 
-        // Analyze the error message to provide a more specific HTTP status code
         const errorMessage = error.message || 'Iteration failed due to an unknown error.';
-        let statusCode = 500; // Default to Internal Server Error
+        let statusCode = 500;
 
-        // Check for specific error patterns from runSingleIteration or fs errors
         if (
             errorMessage.includes('Invalid API Key') ||
             errorMessage.includes('API key is invalid') ||
             errorMessage.includes('API_KEY_INVALID')
         ) {
-            statusCode = 401; // Unauthorized
+            statusCode = 401;
         } else if (
             errorMessage.includes('Content generation blocked') ||
             errorMessage.includes('SAFETY_BLOCK') ||
             errorMessage.includes('SAFETY_SETTINGS')
         ) {
-            statusCode = 400; // Bad Request (content/safety issue)
+            statusCode = 400;
         } else if (errorMessage.includes('timed out')) {
-            statusCode = 504; // Gateway Timeout (if the CLI process timed out)
+            statusCode = 504;
         } else if (errorMessage.includes('command not found') || errorMessage.includes('ENOENT')) {
-            // Check if ENOENT is from fs or exec
             if (error.syscall === 'spawn bunx' || errorMessage.includes('bunx')) {
-                // Error executing the CLI itself
-                statusCode = 500; // Internal server error (configuration issue)
+                statusCode = 500;
                 console.error(
                     'Potential setup issue: Check if "bunx" and "autocode-ai" are accessible in the environment.'
                 );
             } else {
-                // Likely fs error (e.g., copy source/dest disappeared mid-operation)
                 statusCode = 500;
             }
         } else if (errorMessage.includes('RESOURCE_EXHAUSTED')) {
-            statusCode = 429; // Too Many Requests (Rate limit)
+            statusCode = 429;
         } else if (error.code === 'EACCES') {
-            // File system permission error during mkdir or cp
-            statusCode = 500; // Internal Server Error (Permissions issue)
+            statusCode = 500;
             console.error(`Permission error during file operations in ${projectPath}`);
         }
-        // Add more specific checks based on potential AutoCode CLI error patterns if known
 
         res.status(statusCode).json({
             success: false,
             message: `Iteration ${iteration} failed.`,
-            error: errorMessage, // Send back the specific error message
-            iteration: iteration // Include iteration number in error response
+            error: errorMessage,
+            iteration: iteration
         });
     }
 });
 
-// --- Root Route ---
-// Serve index.html for the root path. Static middleware might handle this too,
-// but an explicit route ensures it works as expected.
 app.get('/', (req, res) => {
-    // Check if the request accepts HTML, otherwise it might be an API call expecting JSON
-    // Although specific API routes are defined, this adds robustness.
     const acceptsHtml = req.accepts('html');
     if (acceptsHtml) {
         res.sendFile(path.join(__dirname, 'index.html'));
     } else {
-        // If it's not accepting HTML (e.g., API client), send a 404 or appropriate response
         res.status(404).json({ message: 'Resource not found or invalid request type for /' });
     }
 });
 
-// --- Catch-all for 404 Not Found (API routes) ---
-// This should come after all other routes
 app.use('/api/*', (req, res) => {
     res.status(404).json({ message: 'API endpoint not found.' });
 });
 
-// --- Global Error Handler (Optional but recommended) ---
-// Catches errors passed via next(error)
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
     console.error('Unhandled Error:', err);
-    // Avoid sending stack trace in production
     const message = process.env.NODE_ENV === 'production' ? 'Internal Server Error' : err.message;
     res.status(err.status || 500).json({
         message: 'An unexpected error occurred.',
@@ -404,8 +323,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-// --- Server Start ---
-// Ensure projects dir exists before starting server
 ensureProjectsDir()
     .then(() => {
         app.listen(port, () => {
