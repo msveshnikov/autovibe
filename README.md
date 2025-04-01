@@ -22,6 +22,7 @@ https://autovibe.dev
 ## Architecture Description
 
 - **Backend (`app.js`):**
+
     - A single NodeJS application responsible for:
         - Serving the frontend (`index.html`).
         - Providing API endpoints (e.g., `/api/loop`) for the frontend.
@@ -33,7 +34,11 @@ https://autovibe.dev
         - Sending results back to the frontend via standard HTTP responses.
     - ALLOWED_MODELS
         - 'gemini-2.0-flash-thinking-exp-01-21', // Default/Fast
-        - 'gemini-2.5-pro-exp-03-25' // Better/Slower
+        - 'gemini-2.5-pro-exp-03-25' // Better/Slower/Rate limited
+        - "claude-3-7-sonnet-20250219"
+        - "deepseek-reasoner"
+        - "o3-mini"
+
 - **Frontend (`index.html`):**
     - A single HTML file, including inline or linked CSS and JavaScript.
     - Provides the user interface for inputting the seed and initiating the loop.
@@ -96,11 +101,11 @@ To start using autovibe.dev:
 2.  **Configure API key:** Enter it in the provided field.
 3.  **Input Your Seed:** Enter your initial idea, concept, or data into the provided input field on
     the main page (`index.html`).
-4.  **Run the Loop:** Click the "Run" or "Start" button. Observe any loading indicators.
+4.  **Run the Loop:** Click the "Run" button. Observe any loading indicators.
 5.  **Explore Output:** Wait for the results to appear. Explore the generated ideas and outcomes
     displayed on the page.
 6.  **Stop:** If you want to stop the process, click the "Stop" button. The loop will terminate, and
-    you can review and download the results generated up to that point.
+    you can review the results generated up to that point.
 7.  **Share** your results with others or use them for further exploration.
 
 ## Installation (Local Development)
@@ -108,7 +113,7 @@ To start using autovibe.dev:
 To set up the project for local development:
 
 1.  **Prerequisites:**
-    - Install [Bun.sh](https://bun.sh/) (or Node.js if you prefer).
+    - Install [Bun.sh](https://bun.sh/).
 2.  **Clone the Repository:**
     ```bash
     git clone https://github.com/msveshnikov/autovibe
@@ -128,8 +133,6 @@ To set up the project for local development:
 
 ## Design Ideas and Considerations
 
-This section outlines potential improvements and future directions for AutoVibe:
-
 **User Interface & Experience (UI/UX):**
 
 - **Enhanced Progress Visualization:** Implement a more informative progress indicator showing the
@@ -140,10 +143,8 @@ This section outlines potential improvements and future directions for AutoVibe:
   of specific iteration states.
 - **Advanced Configuration:** Provide a dedicated settings panel for users to fine-tune parameters
   like LLM temperature, max tokens, and specific AutoCode CLI flags before starting a loop.
-- **Improved Error Feedback:** Display errors from the backend loop or AutoCode CLI directly in the
-  UI, providing clearer context than just failed requests.
-- **Responsive Design:** Ensure the interface adapts cleanly to various screen sizes, including
-  mobile devices.
+- **Seed Templates:** Offer pre-defined seed examples or templates for common use cases (e.g.,
+  landing page generation, component design, documentation writing) to help users get started.
 
 **Backend & Architecture:**
 
@@ -152,23 +153,8 @@ This section outlines potential improvements and future directions for AutoVibe:
   accounts or saved sessions are introduced.
 - **State Management:** Implement more explicit state management for each running loop (e.g.,
   `pending`, `running`, `completed`, `failed`, `stopped`) tracked in the backend.
-
-**Feature Enhancements:**
-
-- **LLM Model Selection:** Allow users to select from different compatible LLMs via the UI,
-  potentially requiring different API keys or configurations.
-- **Seed Templates:** Offer pre-defined seed examples or templates for common use cases (e.g.,
-  landing page generation, component design, documentation writing) to help users get started.
 - **Session Persistence:** Explore options for users to save their sessions (seed, configuration,
   generated results) and resume them later (likely requires user authentication).
-
-**Operational:**
-
-- **Monitoring & Logging:** Integrate comprehensive logging and monitoring tools (e.g., Prometheus,
-  Grafana, Sentry) to track application health, performance, and errors.
-- **CI/CD Pipeline:** Establish automated testing and deployment pipelines using tools compatible
-  with the project structure (e.g., GitHub Actions) to streamline development and ensure code
-  quality.
 
 ## Contributing
 

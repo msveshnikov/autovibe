@@ -1,7 +1,7 @@
 {
     "name": "autovibe",
-    "version": "1.0.0",
-    "description": "A web platform designed to empower users with rapid iterative thinking capabilities.",
+    "version": "1.0.1",
+    "description": "A web platform for vibe coding",
     "main": "app.js",
     "type": "module",
     "scripts": {
@@ -11,9 +11,8 @@
         "autocode": "bunx autocode-ai"
     },
     "author": "MaxSoft",
-    "license": "ISC",
+    "license": "MIT",
     "dependencies": {
-        "@google/generative-ai": "^0.24.0",
         "express": "^4.19.2",
         "morgan": "^1.10.0"
     },
@@ -21,8 +20,5 @@
         "eslint": "^8.57.0",
         "nodemon": "^3.1.0",
         "prettier": "^3.2.5"
-    },
-    "engines": {
-        "node": ">=18.0.0"
     }
 }
