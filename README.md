@@ -327,7 +327,6 @@ To set up the project for local development:
     bun run start
     ```
 
-````
 5.  **Access:** Open your web browser and navigate to `http://localhost:3000` (or the port specified
  by `process.env.PORT`).
 
