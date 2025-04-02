@@ -323,12 +323,13 @@ To set up the project for local development:
     bun install
     ```
 4.  **Run the Application:**
+
     ```bash
     bun run start
     ```
 
 5.  **Access:** Open your web browser and navigate to `http://localhost:3000` (or the port specified
- by `process.env.PORT`).
+    by `process.env.PORT`).
 
 ## 8. Deployment (Docker)
 
@@ -337,44 +338,44 @@ The project includes configuration for Docker deployment using `Dockerfile` and
 
 1.  **Build the Docker Image (Optional):**
 
- - You can build the image locally: `docker build -t autovibe-local .`
- - Or use the pre-built image: `extender777/autovibe` (as specified in `docker-compose.yml`)
+- You can build the image locally: `docker build -t autovibe-local .`
+- Or use the pre-built image: `extender777/autovibe` (as specified in `docker-compose.yml`)
 
 2.  **Run using Docker Compose:**
 
- - Ensure Docker and Docker Compose are installed.
- - Create a `projects` directory in the same location as the `docker-compose.yml` file if it
-   doesn't exist: `mkdir projects`
- - Run the command:
-     ```bash
-     docker-compose up -d
-     ```
- - This will start the AutoVibe backend service using the specified image
-   (`extender777/autovibe`).
- - It maps port `8030` on the host to port `3000` inside the container.
- - It mounts the local `./projects` directory to `/app/projects` inside the container, ensuring
-   generated project files persist on the host.
- - The service is configured to restart automatically unless explicitly stopped.
+- Ensure Docker and Docker Compose are installed.
+- Create a `projects` directory in the same location as the `docker-compose.yml` file if it doesn't
+  exist: `mkdir projects`
+- Run the command:
+    ```bash
+    docker-compose up -d
+    ```
+- This will start the AutoVibe backend service using the specified image (`extender777/autovibe`).
+- It maps port `8030` on the host to port `3000` inside the container.
+- It mounts the local `./projects` directory to `/app/projects` inside the container, ensuring
+  generated project files persist on the host.
+- The service is configured to restart automatically unless explicitly stopped.
 
 3.  **Access:** The application should be accessible at `http://<your-docker-host-ip>:8030`.
 
 4.  **Stopping:**
- ```bash
- docker-compose down
- ```
+
+```bash
+docker-compose down
+```
 
 ## 9. Configuration
 
 - **API Keys:** Managed client-side via the UI and stored in browser Local Storage
-(`AutoVibeApiKey`). Passed to the backend via the `Authorization` header for each API call.
+  (`AutoVibeApiKey`). Passed to the backend via the `Authorization` header for each API call.
 - **LLM Models:** Selected client-side via a dropdown. The chosen model ID (`AutoVibeSelectedModel`)
-is stored in Local Storage and sent to the backend with `/api/kickoff` and `/api/loop` requests.
-The backend validates the model against `ALLOWED_MODELS` defined in `app.js` and uses the default
-if an invalid or no model is provided.
+  is stored in Local Storage and sent to the backend with `/api/kickoff` and `/api/loop` requests.
+  The backend validates the model against `ALLOWED_MODELS` defined in `app.js` and uses the default
+  if an invalid or no model is provided.
 - **Port:** The backend server runs on port `3000` by default, but can be configured via the `PORT`
-environment variable. The Docker Compose setup maps host port `8030` to this container port.
+  environment variable. The Docker Compose setup maps host port `8030` to this container port.
 - **AutoCode Timeout:** The execution timeout for the `autocode-ai` CLI command is hardcoded in
-`app.js` (`executionTimeout = 600000` ms, i.e., 10 minutes).
+  `app.js` (`executionTimeout = 600000` ms, i.e., 10 minutes).
 
 ## 10. Design Ideas and Future Considerations
 
@@ -383,29 +384,28 @@ These are potential areas for future development, based on the initial README:
 **User Interface & Experience (UI/UX):**
 
 - **Iteration History & Management:** Allow browsing, comparing, selecting, and downloading previous
-iteration states (`README.md` and `index.html` versions) within a session.
+  iteration states (`README.md` and `index.html` versions) within a session.
 - **Advanced Configuration:** Add options for LLM temperature, max tokens, or specific `autocode-ai`
-CLI flags directly in the UI.
+  CLI flags directly in the UI.
 - **Seed Templates:** Offer pre-defined seed examples for common use cases (landing pages,
-components, etc.).
+  components, etc.).
 
 **Backend & Architecture:**
 
 - **Database Integration:** Replace file-system storage with a database (e.g., MongoDB, PostgreSQL)
-for better querying, management, scalability, and potential user account features.
+  for better querying, management, scalability, and potential user account features.
 - **State Management:** Implement more robust backend state tracking for loops (`pending`,
-`running`, `completed`, `failed`, `stopped`).
+  `running`, `completed`, `failed`, `stopped`).
 - **Session Persistence:** Allow users to save and resume sessions (requires user authentication and
-database storage).
+  database storage).
 
 ## 11. Contributing
 
-Contributions are welcome! Please refer to the `CONTRIBUTING.md` file for guidelines on submitting bug reports, feature requests, and pull requests.
+Contributions are welcome! Please refer to the `CONTRIBUTING.md` file for guidelines on submitting
+bug reports, feature requests, and pull requests.
 
 ## 12. License
 
 This project is licensed under the **MIT License**. (See `LICENSE` file).
 
-
 # TODO
-````
