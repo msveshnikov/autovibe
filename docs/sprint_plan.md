@@ -1,108 +1,194 @@
-Okay, here is the Sprint Plan for the upcoming sprint, focusing on establishing the core user
-interaction flow and session initiation based on the current backlog and project state.
+## Sprint Plan - Sprint 1: Core Loop Foundation
 
----
+**Sprint Goal:** Establish the foundational backend and frontend components to initiate and execute
+a single iteration of the AutoVibe core loop, enabling users to input a seed and trigger the
+`autocode-ai` process on the backend.
 
-# AutoVibe Sprint Plan: Sprint 1
+**Sprint Duration:** 1 week (Adjust as needed based on team capacity) **Sprint Start Date:** Mon Apr
+07 2025 **Sprint End Date:** Fri Apr 11 2025
 
-**Sprint Dates:** Mon Mar 31 2025 - Fri Apr 11 2025 (Assuming a 2-week sprint)
+**Selected User Stories/Tasks:**
 
-**Sprint Goal:** **Establish the initial user interaction flow and session creation.**
+| ID     | Title                                              | Priority | Type    | Estimated Effort |
+| :----- | :------------------------------------------------- | :------- | :------ | :--------------- |
+| AV-001 | Implement API Key Input & Handling                 | [High]   | Feature | 3 story points   |
+| AV-002 | Implement Seed Input UI                            | [High]   | Feature | 1 story point    |
+| AV-003 | Implement `/api/kickoff` Endpoint                  | [High]   | Feature | 5 story points   |
+| AV-004 | Implement `/api/loop` Endpoint (Basic Loop)        | [High]   | Feature | 8 story points   |
+| AV-005 | Frontend Kickoff Logic                             | [High]   | Feature | 3 story points   |
+| AV-007 | Frontend UI - Core Layout & Iframes (Placeholders) | [High]   | Feature | 2 story points   |
+| AV-010 | Integrate AutoCode CLI Execution                   | [High]   | Feature | 5 story points   |
 
-By the end of this sprint, a user should be able to:
+**Total Estimated Effort:** 27 story points
 
-1.  Load the AutoVibe frontend (`index.html`).
-2.  Input their Gemini API key and an initial seed prompt.
-3.  Click a "Run" button to initiate a session via the `/api/kickoff` endpoint.
-4.  See a basic loading indicator while the backend creates a unique session folder
-    (`./projects/{timestamp}`) containing an initial `README.md` (with the seed) and empty
-    `index.html`, `style.css`, `script.js`.
-5.  View the initial content of the created `README.md` and `index.html` within side-by-side iframes
-    on the frontend.
+**Sprint Item Breakdown and Details:**
 
-This sprint focuses on setting up the foundational structure and the critical path _up to_ the point
-where the iterative loop would begin in the next sprint.
+1.  **AV-001: Implement API Key Input & Handling (3 story points)**
 
----
+    - **Description:** Develop the frontend UI element (input field) for users to enter their API
+      key. Implement JavaScript to save the API key to the browser's Local Storage when the "Save
+      API Key" button is clicked. On the backend (`app.js`), implement middleware or logic to
+      extract the API key from the `Authorization: Bearer` header in incoming requests.
+    - **Tasks:**
+        - Frontend: Create API key input field and "Save" button in `index.html`.
+        - Frontend: Implement JavaScript to handle "Save" button click and store API key in Local
+          Storage (`AutoVibeApiKey`).
+        - Backend: Implement middleware or function in `app.js` to extract API key from
+          `Authorization` header.
+    - **Dependencies:** None
+    - **Risks:** Potential issues with browser Local Storage access or header parsing in NodeJS.
 
-## Selected Backlog Items for Sprint 1 (Max 7)
+2.  **AV-002: Implement Seed Input UI (1 story point)**
 
-| ID        | Title                                         | Priority | Type    | Estimate (SP) | Notes                                                                                                                                                                       |
-| :-------- | :-------------------------------------------- | :------- | :------ | :------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| AV-007    | Frontend UI - Core Layout & Iframes           | [High]   | Feature | 3 SP          | Create basic HTML structure: inputs, button, spinner placeholder, side-by-side iframes. Basic CSS.                                                                          |
-| AV-001    | Implement API Key Input & Handling (Frontend) | [High]   | Feature | 2 SP          | Frontend input field for API key. Securely pass value to JS for API call (NOT stored locally).                                                                              |
-| AV-002    | Implement Seed Input UI                       | [High]   | Feature | 1 SP          | Frontend textarea for the user's seed input.                                                                                                                                |
-| AV-003    | Implement `/api/kickoff` Endpoint             | [High]   | Feature | 5 SP          | Backend: Create endpoint, receive seed/key, create session folder & initial files (`README.md` with seed, empty `index.html`, `style.css`, `script.js`), return session ID. |
-| AV-005    | Frontend Kickoff Logic                        | [High]   | Feature | 3 SP          | Frontend JS: On "Run", get inputs, call `/api/kickoff`, handle response (store session ID), trigger loading state.                                                          |
-| AV-008    | Backend Static File Serving for Projects      | [High]   | Feature | 3 SP          | Backend (`app.js`): Configure static file serving for `./projects/{session_id}/` path.                                                                                      |
-| AV-011    | Basic Loading/Spinner Indicator               | [High]   | Feature | 1 SP          | Frontend: Show/hide a simple spinner element during the `/api/kickoff` request.                                                                                             |
-| **Total** |                                               |          |         | **18 SP**     |                                                                                                                                                                             |
+    - **Description:** Create a textarea in the frontend (`index.html`) for users to input their
+      seed prompt.
+    - **Tasks:**
+        - Frontend: Add a textarea element with appropriate labels and styling to `index.html` for
+          seed input.
+    - **Dependencies:** None
+    - **Risks:** Minimal.
 
-_Note: Story Points (SP) are used for relative estimation (1, 2, 3, 5, 8...)._
+3.  **AV-003: Implement `/api/kickoff` Endpoint (5 story points)**
 
----
+    - **Description:** Develop the `/api/kickoff` POST endpoint in `app.js`. This endpoint should:
+        - Receive the seed and model from the request body.
+        - Validate the model against `ALLOWED_MODELS`.
+        - Generate a unique timestamp-based folder name.
+        - Create the project folder structure (`./projects/{timestamp}/1/`).
+        - Create initial files in the iteration `1` folder: `README.md` (containing the seed), and
+          empty `index.html`, `style.css`, `script.js`.
+        - Return a `201 Created` response with JSON:
+          `{ "folderName": "...", "initialIteration": 1 }`.
+    - **Tasks:**
+        - Backend: Create `/api/kickoff` endpoint in `app.js` using Express.js.
+        - Backend: Implement model validation against `ALLOWED_MODELS`.
+        - Backend: Implement folder creation logic and initial file creation.
+        - Backend: Implement response handling and JSON response structure.
+    - **Dependencies:** None
+    - **Risks:** File system operations might have permission issues or errors. Model validation
+      logic might need refinement.
 
-## Dependencies and Risks
+4.  **AV-004: Implement `/api/loop` Endpoint (Basic Loop) (8 story points)**
 
-**Dependencies:**
+    - **Description:** Develop the `/api/loop` POST endpoint in `app.js`. This endpoint (for this
+      sprint, in a basic form) should:
+        - Receive `folderName`, `model`, and `iteration` from the request body.
+        - Copy files from the previous iteration folder (`N-1`) to the current iteration folder
+          (`N`).
+        - **For this sprint, focus on basic CLI execution and success/error response. Detailed error
+          handling and output parsing can be in later sprints.** Execute the
+          `autocode-ai generate {model} {apiKey}` command within the iteration folder using
+          `child_process.exec`.
+        - Return a `200 OK` response on successful CLI execution (even if content is not fully
+          validated yet), and error response on CLI failure. Include basic success/failure message
+          and iteration number in the JSON response.
+    - **Tasks:**
+        - Backend: Create `/api/loop` endpoint in `app.js`.
+        - Backend: Implement file copying from previous iteration.
+        - Backend: Implement `child_process.exec` call to `autocode-ai generate` command with model
+          and API key.
+        - Backend: Implement basic success/error handling for CLI execution and response generation.
+    - **Dependencies:** AV-003 (project folder structure needs to be in place). `autocode-ai` CLI
+      tool needs to be available in the environment.
+    - **Risks:** `autocode-ai` CLI execution might be complex to integrate. Error handling for CLI
+      execution (timeouts, errors) needs to be implemented. API key needs to be passed securely to
+      CLI (via arguments in this MVP).
 
-- **AV-005 (Frontend Kickoff Logic)** depends on:
-    - AV-001, AV-002: UI elements must exist to get input values.
-    - AV-003: The `/api/kickoff` endpoint must be implemented and functional.
-    - AV-011: Spinner element must exist to be shown/hidden.
-- **AV-007 (Frontend UI - Iframes)** depends on:
-    - AV-008: Backend must correctly serve files from the session folder for iframes to load
-      content.
-- **AV-008 (Backend Static Serving)** depends on:
-    - AV-003: Session folders and initial files must be created first.
-- **Environment:** Assumes a working Node.js/Bun development environment is set up as per
-  `README.md`.
+5.  **AV-005: Frontend Kickoff Logic (3 story points)**
 
-**Risks:**
+    - **Description:** Implement the JavaScript logic in `index.html` to handle the "Run Vibing
+      Loop" button click. This logic should:
+        - Retrieve the API key from Local Storage.
+        - Get the seed text from the seed textarea.
+        - Disable the "Run" button and potentially show a "Stop" button (basic UI change).
+        - Send a POST request to `/api/kickoff` with the seed and a default model (for now, hardcode
+          `gemini-2.0-flash-thinking-exp-01-21`). Include the API key in the `Authorization` header.
+        - On successful response from `/api/kickoff`, store the `folderName` and set
+          `currentIteration = 1` in frontend JavaScript variables.
+    - **Tasks:**
+        - Frontend: Implement JavaScript event listener for "Run Vibing Loop" button.
+        - Frontend: Implement API key retrieval from Local Storage and seed retrieval from textarea.
+        - Frontend: Implement `fetch` call to `/api/kickoff` with seed, default model, and API key
+          in header.
+        - Frontend: Implement basic UI feedback (button state change).
+        - Frontend: Handle successful response from `/api/kickoff` and store `folderName`,
+          `currentIteration`.
+    - **Dependencies:** AV-001, AV-002, AV-003 need to be at least partially implemented to test
+      this.
+    - **Risks:** Frontend API call logic and response handling might have errors.
 
-- **API Key Security (AV-001, AV-003):** Risk of mishandling the API key (e.g., accidental
-  client-side storage, insecure logging). **Mitigation:** Strict adherence to passing the key
-  directly to the backend for immediate use/forwarding, never storing it client-side, careful
-  backend logging. Code reviews focused on security.
-- **File System Permissions (AV-003):** The backend Node.js process might lack write permissions to
-  create `./projects/` subfolders and files. **Mitigation:** Test permissions early, document
-  necessary setup steps for developers/deployment.
-- **Static File Serving Complexity (AV-008):** Correctly configuring Express/Node to serve static
-  files from dynamic session-based paths can be tricky (routing, path resolution). **Mitigation:**
-  Dedicated testing for this endpoint and iframe loading.
-- **`/api/kickoff` Complexity (AV-003):** This involves multiple steps (validation, folder creation,
-  file writing) and could take longer than estimated. **Mitigation:** Allow for potential spill-over
-  or break down further if significant roadblocks appear.
-- **Iframe Loading Issues (AV-007, AV-008):** Potential for cross-origin issues (if domains differ
-  later) or path errors preventing iframe content display. **Mitigation:** Ensure same-origin policy
-  is met, rigorously test iframe source path construction and backend serving.
+6.  **AV-007: Frontend UI - Core Layout & Iframes (Placeholders) (2 story points)**
 
----
+    - **Description:** Set up the basic HTML structure in `index.html`. This includes:
+        - Sections for API Key input, Seed input, Run/Stop buttons, and a "Live Previews" section.
+        - Placeholders for the README Preview and Generated HTML Preview iframes. **For this sprint,
+          these iframes will be placeholders and will not be dynamically updated with content.** The
+          focus is on setting up the UI structure.
+    - **Tasks:**
+        - Frontend: Structure `index.html` with sections for different UI elements as described.
+        - Frontend: Add placeholder `<iframe>` elements for README and HTML previews in the "Live
+          Previews" section. Basic styling can be added.
+    - **Dependencies:** None
+    - **Risks:** Basic HTML structure and layout. Minimal risk.
 
-## Definition of Done (DoD) for Sprint 1
+7.  **AV-010: Integrate AutoCode CLI Execution (5 story points)**
+    - **Description:** Implement the core logic in the `/api/loop` endpoint (AV-004) to execute the
+      `autocode-ai generate` command using NodeJS `child_process.exec`. Ensure the command is
+      executed with the correct model and API key, and within the appropriate iteration folder as
+      the current working directory. Capture basic CLI output and handle potential errors (timeouts,
+      command failures).
+    - **Tasks:**
+        - Backend: Implement `child_process.exec` call within `/api/loop` endpoint to execute
+          `autocode-ai generate {model} {apiKey}`.
+        - Backend: Set the `cwd` (current working directory) for `child_process.exec` to the
+          iteration folder.
+        - Backend: Capture basic CLI output (stdout/stderr - for logging/debugging, not necessarily
+          for frontend display in this sprint).
+        - Backend: Implement basic timeout handling for `child_process.exec` (e.g., default 10
+          minutes from README).
+    - **Dependencies:** AV-004 (endpoint structure), `autocode-ai` CLI tool availability.
+    - **Risks:** `child_process.exec` integration can be tricky, especially with error handling and
+      timeouts. Passing API key securely via command arguments in this MVP might be a temporary
+      solution; security should be reviewed in later sprints.
 
-All selected items (AV-001, AV-002, AV-003, AV-005, AV-007, AV-008, AV-011) must meet the following
-criteria to be considered "Done":
+**Dependencies Summary:**
 
-1.  **Code Complete:** All necessary code (HTML, CSS, JavaScript, Node.js) has been written.
-2.  **Functionality Implemented:**
-    - User can input Seed and API Key in the UI.
-    - Clicking "Run" sends data to `/api/kickoff`.
-    - Backend successfully creates the session folder and initial files (`README.md` containing the
-      seed, empty `index.html`, `style.css`, `script.js`).
-    - Backend successfully serves files from the created session folder.
-    - Frontend displays a loading indicator during kickoff.
-    - Frontend receives the session ID and correctly sets the `src` attribute for the iframes.
-    - The initial `README.md` and `index.html` content are visible within the respective iframes
-      after kickoff completes.
-3.  **Code Quality:** Code adheres to basic project style guidelines (e.g., Prettier configured via
-    `.prettierrc`). Code is reasonably commented where complex logic exists.
-4.  **Testing:** Functionality has been manually tested through the user flow described in the
-    Sprint Goal. Basic error conditions (e.g., failed API call) show a console error (formal UI
-    error display is not required for this sprint).
-5.  **Review:** Code has been peer-reviewed (e.g., via GitHub Pull Request).
-6.  **Merged:** Code has been merged into the main development branch (e.g., `main` or `develop`).
-7.  **No Critical Bugs:** No known blocking issues prevent the core sprint goal functionality from
-    working.
+- AV-004 depends on AV-003 and `autocode-ai` CLI.
+- AV-005 depends on AV-001, AV-002, AV-003.
+- AV-010 depends on AV-004 and `autocode-ai` CLI.
 
----
+**Sprint Risks:**
+
+- Integration complexity with `autocode-ai` CLI.
+- Error handling in backend and frontend API interactions.
+- Time estimation might be inaccurate for initial CLI integration tasks.
+
+**Definition of Done for Sprint 1:**
+
+- **API Key Input & Storage:** Users can input and save their API key in the browser.
+- **Seed Input UI:** A textarea for seed input is present in the UI.
+- **`/api/kickoff` Endpoint Functional:** The backend endpoint successfully creates project folders
+  and initial files upon receiving a seed.
+- **`/api/loop` Endpoint (Basic):** The backend endpoint can copy files, execute `autocode-ai` CLI,
+  and return a basic success/error response after CLI execution.
+- **Frontend Kickoff Logic Implemented:** Frontend JavaScript can initiate the kickoff process by
+  calling `/api/kickoff`.
+- **Basic UI Layout:** Core UI sections and placeholders for iframes are in place in `index.html`.
+- **CLI Execution Integrated:** The backend can execute the `autocode-ai` CLI within the iteration
+  loop.
+- **Project Folders Created:** Project and iteration folders are created on the server file system
+  with initial and iterated files.
+
+**Out of Scope for Sprint 1:**
+
+- Live preview updates in iframes.
+- Detailed error handling and UI error display.
+- Model selection UI and backend model handling beyond default.
+- Stop functionality.
+- "Share Project Link" and "Open HTML" features.
+- Responsive design.
+- Frontend polling loop for iterations beyond kickoff.
+
+This sprint plan focuses on building the essential backbone of AutoVibe, setting the stage for more
+advanced features and UI enhancements in subsequent sprints. Prioritization is on achieving a
+functional, albeit basic, core loop first.
