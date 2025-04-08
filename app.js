@@ -300,12 +300,171 @@ app.post('/api/loop', async (req, res) => {
     }
 });
 
-app.get('/', (req, res) => {
-    const acceptsHtml = req.accepts('html');
-    if (acceptsHtml) {
-        res.sendFile(path.join(__dirname, 'index.html'));
-    } else {
-        res.status(404).json({ message: 'Resource not found or invalid request type for /' });
+// Endpoint to list projects and return HTML for library display
+app.get('/api/lib', async (req, res) => {
+    try {
+        const projectFolders = await fs.readdir(projectsDir, { withFileTypes: true });
+        const projectDataPromises = projectFolders
+            .filter((dirent) => dirent.isDirectory() && /^\d+$/.test(dirent.name)) // Filter for directories named like timestamps
+            .map(async (projectDir) => {
+                const projectPath = path.join(projectsDir, projectDir.name);
+                let latestIteration = 0;
+                let readmeContent = 'N/A';
+                let latestIterationPath = '';
+
+                try {
+                    const iterationFolders = await fs.readdir(projectPath, { withFileTypes: true });
+                    const iterationNumbers = iterationFolders
+                        .filter((dirent) => dirent.isDirectory() && /^\d+$/.test(dirent.name))
+                        .map((dirent) => parseInt(dirent.name, 10))
+                        .sort((a, b) => b - a); // Sort descending to get latest first
+
+                    if (iterationNumbers.length > 0) {
+                        latestIteration = iterationNumbers[0];
+                        latestIterationPath = path.join(projectPath, String(latestIteration));
+
+                        // Try reading README.md for preview
+                        try {
+                            readmeContent = await fs.readFile(
+                                path.join(latestIterationPath, 'README.md'),
+                                'utf-8'
+                            );
+                        } catch (readError) {
+                            console.warn(
+                                `Could not read README.md for ${projectDir.name}/${latestIteration}: ${readError.message}`
+                            );
+                            readmeContent = `Error reading README.md: ${readError.code}`;
+                        }
+
+                        // We don't need to read index.html content for the HTML response, just the link
+                    } else {
+                        console.warn(`No valid iteration folders found in ${projectDir.name}`);
+                    }
+                } catch (iterError) {
+                    console.error(`Error processing project ${projectDir.name}:`, iterError);
+                }
+
+                return {
+                    folderName: projectDir.name,
+                    latestIteration: latestIteration,
+                    readmePreview:
+                        readmeContent.substring(0, 300) + (readmeContent.length > 300 ? '...' : ''), // Limit preview size
+                    latestIterationUrl:
+                        latestIteration > 0
+                            ? `/projects/${projectDir.name}/${latestIteration}/index.html`
+                            : null
+                };
+            });
+
+        let projects = await Promise.all(projectDataPromises);
+        // Sort projects by folder name (timestamp) descending (newest first)
+        projects.sort((a, b) => parseInt(b.folderName, 10) - parseInt(a.folderName, 10));
+
+        // Generate HTML response
+        let htmlResponse = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoVibe Project Library</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
+        h1 { text-align: center; color: #333; }
+        #project-library { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .project-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .project-card h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            color: #0056b3;
+            word-break: break-all; /* Prevent long IDs from overflowing */
+        }
+        .project-card .info {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .project-card .preview {
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 10px;
+            font-size: 0.85em;
+            max-height: 150px; /* Limit preview height */
+            overflow-y: auto; /* Add scroll if content exceeds max height */
+            margin-bottom: 15px;
+            white-space: pre-wrap; /* Preserve whitespace and wrap lines */
+            word-wrap: break-word;
+            flex-grow: 1; /* Allow preview to take available space */
+        }
+        .project-card .actions {
+            margin-top: auto; /* Push actions to the bottom */
+        }
+        .project-card a {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease;
+        }
+        .project-card a:hover {
+            background-color: #0056b3;
+        }
+        .no-projects { text-align: center; color: #777; margin-top: 50px; }
+    </style>
+</head>
+<body>
+    <h1>AutoVibe Project Library</h1>
+`;
+
+        if (projects.length === 0) {
+            htmlResponse += '<p class="no-projects">No projects found yet.</p>';
+        } else {
+            htmlResponse += '<div id="project-library">';
+            projects.forEach((project) => {
+                const projectDate = new Date(parseInt(project.folderName, 10)).toLocaleString();
+                htmlResponse += `
+            <div class="project-card">
+                <h2>Project ${project.folderName}</h2>
+                <p class="info">Created: ${projectDate}<br>Latest Iteration: ${project.latestIteration}</p>
+                <pre class="preview readme-preview" title="README.md Preview">${escapeHtml(project.readmePreview)}</pre>
+                <div class="actions">
+                    ${project.latestIterationUrl ? `<a href="${project.latestIterationUrl}" target="_blank">Open Latest HTML</a>` : '<span>No iterations available</span>'}
+                </div>
+            </div>`;
+            });
+            htmlResponse += '</div>'; // End #project-library
+        }
+
+        htmlResponse += `
+</body>
+</html>`;
+
+        res.setHeader('Content-Type', 'text/html');
+        res.send(htmlResponse);
+    } catch (error) {
+        console.error('Error retrieving project library:', error);
+        if (error.code === 'ENOENT') {
+            // If the main projects directory doesn't exist yet, return empty list HTML
+            res.setHeader('Content-Type', 'text/html');
+            res.send(`
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>AutoVibe Project Library</title><style>body { font-family: sans-serif; text-align: center; margin-top: 50px; color: #777; }</style></head><body><h1>AutoVibe Project Library</h1><p>No projects directory found.</p></body></html>`);
+        } else {
+            res.status(500).setHeader('Content-Type', 'text/html');
+            res.send(`
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Error</title></head><body><h1>Error</h1><p>Failed to retrieve project library.</p><pre>${escapeHtml(error.message)}</pre></body></html>`);
+        }
     }
 });
 

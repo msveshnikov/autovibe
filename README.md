@@ -409,3 +409,6 @@ bug reports, feature requests, and pull requests.
 This project is licensed under the **MIT License**. (See `LICENSE` file).
 
 # TODO
+
+- add GET /api/lib endpoint to return list of projects with small preview of the latest iteration (readme+html) in small rectangles, all of them! (in html ready to open in browser and with link to latest iteration)
+- return full html in this endpoint!
