@@ -22,6 +22,17 @@ const ALLOWED_MODELS = [
 ];
 const DEFAULT_MODEL = ALLOWED_MODELS[0];
 
+// Helper function to escape HTML special characters
+function escapeHtml(unsafe) {
+    if (!unsafe || typeof unsafe !== 'string') return '';
+    return unsafe
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 const ensureProjectsDir = async () => {
     try {
         await fs.access(projectsDir, fsConstants.W_OK | fsConstants.R_OK);
