@@ -4,7 +4,7 @@ import path from 'path';
 import morgan from 'morgan';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
-import { existsSync, constants as fsConstants } from 'fs';
+import { constants as fsConstants } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
