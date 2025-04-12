@@ -521,8 +521,9 @@ app.get('/api/lib', async (req, res) => {
                 const projectDate = new Date(parseInt(project.folderName, 10)).toLocaleString();
                 let historyButtonsHtml = '<div class="history-buttons">';
                 project.iterationHistory.forEach((iterNum) => {
-                    // Link all iterations for history browsing
-                    historyButtonsHtml += `<a href="/projects/${project.folderName}/${iterNum}/index.html" target="_blank" class="history-button" title="Open Iteration ${iterNum}">${iterNum}</a>`;
+                    if (iterNum > 2) {
+                        historyButtonsHtml += `<a href="/projects/${project.folderName}/${iterNum}/index.html" target="_blank" class="history-button" title="Open Iteration ${iterNum}">${iterNum}</a>`;
+                    }
                 });
                 historyButtonsHtml += '</div>';
 

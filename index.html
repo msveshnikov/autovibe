@@ -1544,6 +1544,9 @@
                                     >AutoCode</a
                                 >
                             </li>
+                            <li>
+                                <a href="/api/lib" target="_blank">See All Projects</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -1960,7 +1963,7 @@
                             console.log(
                                 `Loop stopped during API call for iteration ${iterationToRun}`
                             );
-                            stopLoop();
+                            stopLoop(); // Ensure stopLoop updates UI if stopped during fetch
                             return;
                         }
 
