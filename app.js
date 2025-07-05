@@ -15,8 +15,8 @@ const port = process.env.PORT || 3000;
 
 const ALLOWED_MODELS = [
     'gemini-2.0-flash-thinking-exp-01-21',
-    'gemini-2.5-pro-exp-03-25',
-    'gemini-2.5-flash-preview-04-17',
+    'gemini-2.5-pro',
+    'gemini-2.5-flash',
     'claude-3-7-sonnet-20250219',
     'deepseek-reasoner',
     'o3-mini'
