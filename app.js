@@ -17,9 +17,9 @@ const ALLOWED_MODELS = [
     'gemini-2.0-flash-thinking-exp-01-21',
     'gemini-2.5-pro',
     'gemini-2.5-flash',
-    'claude-3-7-sonnet-20250219',
+    'claude-sonnet-4-20250514',
     'deepseek-reasoner',
-    'o3-mini'
+    'o4-mini'
 ];
 const DEFAULT_MODEL = ALLOWED_MODELS[0];
 const MIN_ITERATIONS_FOR_LIB = 3; // Minimum iterations to show in library
