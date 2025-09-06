@@ -1,411 +1,283 @@
-﻿# AutoVibe
+# AutoVibe
 
-**AutoVibe** is a free web platform designed to empower users with rapid iterative "vibe coding"
-capabilities. It enables users to explore ideas and generate unexpected outcomes at lightning speed
-by running potentially thousands of Large Language Model (LLM) iterations based on an initial seed
-input.
+**AutoVibe** is a free web platform designed to empower users with rapid iterative "vibe coding" capabilities. It enables users to explore ideas and generate unexpected outcomes at speed by running many Large Language Model (LLM) iterations based on an initial seed input. AutoVibe uses the AutoCode CLI (autocode-ai) under the hood to generate and evolve project files (README.md, index.html, style.css, script.js) and presents live previews.
 
-![alt text](image.png)
+![AutoVibe preview](image.png)
 
-The core concept revolves around providing a simple seed idea and letting an AI iteratively build
-upon it, using tools like AutoCode in the background to generate code (HTML, CSS, JS) and content
-(README). Users can observe the evolution of the project in real-time through live previews and stop
-the process whenever they find a desirable outcome.
+Production URL: https://autovibe.dev
 
-**Production URL:** [https://autovibe.dev](https://autovibe.dev)
+Table of Contents
+- Overview
+- Key Goals & Philosophy
+- Key Features
+- Architecture & Components
+- Project Structure (current)
+- Getting Started (local development)
+- Deployment (Docker)
+- Configuration & Environment Variables
+- API Endpoints
+- Design Ideas & Future Considerations
+  - UX / Product
+  - Iteration Control & Safety
+  - Backend & Architecture
+  - Storage, Persistence & Data Model
+  - Execution, Isolation & Resource Management
+  - Security & Privacy
+  - Observability, Metrics & Monitoring
+  - Testing, CI/CD & Developer Experience
+  - Cost Control & Quotas
+  - Accessibility, Internationalization & Legal
+- Roadmap & Priorities
+- Contributing
+- License
 
-**Key Goals & Philosophy:**
+Overview
+--------
+AutoVibe accepts a short "seed" prompt and iteratively applies LLM-powered transformations using the AutoCode CLI, storing each iteration into a timestamped project folder (./projects/{folderName}/{iteration}/). The frontend provides live previews of the evolving README and generated HTML, and lets users start/stop the loop, share links, and open the generated HTML.
 
-- **Bring Your Own API Key:** Users provide their own (free) API key (e.g., from Google AI Studio),
-  ensuring transparency and control over API usage. Secure handling of the key (via browser local
-  storage) is prioritized.
-- **Seed-Based Creativity:** The process starts with a user-provided "seed" (initial idea or
-  prompt), guiding the AI's exploration.
-- **Rapid Iteration:** Leverage LLMs to perform many iterations quickly, exploring diverse
-  possibilities from the initial seed.
-- **Ease of Use:** Offer an intuitive web interface requiring minimal setup.
-- **Leverage AutoCode:** Utilize the `autocode-ai` CLI tool within the iterative loop for structured
-  code and content generation based on the evolving project state.
-- **Discover Unexpected Outcomes:** Embrace the emergent nature of iterative AI generation to find
-  novel solutions and creative directions.
+Key Goals & Philosophy
+----------------------
+- Bring Your Own API Key: Users control and provide their own API key (stored locally by default).
+- Seed-Based Creativity: Start from a seed prompt and let the model explore.
+- Rapid Iteration: Run many iterations quickly to explore diverse outputs.
+- Simplicity: Lightweight web UI with minimal setup for users.
+- Reproducibility: Preserve iteration outputs on disk so every step is inspectable and shareable.
+- Safety & Privacy: Default to privacy-preserving behavior; avoid capturing sensitive keys server-side unless explicitly opted in.
 
-## 2. Key Features
+Key Features (summary)
+----------------------
+- Web-based UI that runs in a browser and stores the API key locally.
+- Model selection with validation against an allow-list.
+- Iterative loop managing multiple AutoCode CLI runs.
+- Live previews of generated README.md (rendered) and index.html.
+- Files persisted to ./projects/{timestamp}/{iteration}/ and served statically.
+- Sharing via direct links to the latest iteration index.html.
+- Basic Docker deployment artifacts included.
 
-- **Web-Based Interface:** Accessible via any modern web browser at
-  [autovibe.dev](https://autovibe.dev).
-- **Seed Input:** Users provide an initial text prompt to start the iterative process.
-- **API Key Management:** Securely stores the user's API key in browser local storage. Supports keys
-  from providers compatible with the backend models.
-- **Model Selection:** Allows users to choose from a curated list of supported LLMs (e.g., Gemini
-  Flash, Gemini Pro, Claude Sonnet, DeepSeek, O3 Mini), balancing speed and capability.
-- **Iterative Loop:** Backend process manages the execution of potentially thousands of iterations
-  based on the seed and selected model.
-- **AutoCode Integration:** Uses the `autocode-ai` CLI tool within each iteration to update project
-  files (`README.md`, `index.html`, `style.css`, `script.js`).
-- **Live Previews:** Displays the generated `README.md` (rendered as HTML) and `index.html` in
-  side-by-side iframes, updating after each successful iteration.
-- **Real-time Status:** Shows the current iteration number and indicates when the loop is running or
-  stopped. Provides status messages for kickoff, iteration progress, success, and errors.
-- **Loop Control:** Users can start and stop the iterative loop at any time.
-- **File System Storage:** Each session creates a unique, timestamped folder on the server to store
-  iteration results, allowing direct access to generated files if needed (via URL).
-- **Sharing:** Allows users to copy a direct link to the `index.html` of the latest completed
-  iteration for a specific project.
-- **Open HTML:** Provides a button to open the latest generated `index.html` in a new browser tab.
-- **Responsive Design:** The user interface adapts to different screen sizes.
+Architecture & Components
+-------------------------
+- Frontend: Single-file `index.html` (HTML + inline CSS + JS). Uses `marked` for Markdown rendering.
+- Backend: Single `app.js` Express server (Bun runtime). Serves static UI and `/api/*` endpoints for kickoff/loop. Runs autocode-ai CLI in per-iteration directories.
+- File Storage: Local filesystem `./projects` with one folder per session (timestamp by default) and subfolders per iteration.
+- External: `autocode-ai` CLI + LLM APIs (user-provided API key).
 
-## 3. Architecture
+Project Structure (current)
+---------------------------
+Notable files and folders:
+- app.js — Express backend entrypoint
+- index.html — Frontend UI
+- Dockerfile, docker-compose.yml — Deployment
+- package.json, .prettierrc — project metadata
+- site.webmanifest — PWA metadata
+- docs/ — marketing and store metadata (app_description.txt, release_notes.txt, privacy_policy.html, etc.)
+- projects/ — runtime-generated (not checked into repo)
 
-AutoVibe employs a simple client-server architecture with file-system based storage for session
-data.
+Getting Started (local development)
+-----------------------------------
+Prerequisites
+- Bun (https://bun.sh/)
+- git
+- autocode-ai CLI accessible (bunx autocode-ai or globally)
 
-### 3.1. Backend (`app.js`)
-
-- **Technology:** Single NodeJS application built with Express.js. Uses Bun as the runtime.
-- **Responsibilities:**
-    - Serves the static frontend (`index.html`, CSS, JS, images).
-    - Provides API endpoints for the frontend (`/api/kickoff`, `/api/loop`).
-    - Handles the core "thinking loop" process initiation and iteration execution.
-    - Receives the seed input, selected model, and API key from the frontend.
-    - Manages the creation and population of unique project folders on the server's file system
-      (`./projects/{timestamp}/{iteration}/`).
-    - Executes the `autocode-ai` CLI command using Node's `child_process.exec` within the
-      appropriate project iteration directory.
-    - Validates user input and API keys (basic format check).
-    - Validates selected models against an allowed list (`ALLOWED_MODELS`).
-    - Handles errors during file operations or CLI execution (including timeouts).
-    - Sends results (folder name, iteration status, error messages) back to the frontend via
-      standard HTTP JSON responses.
-    - Includes basic security measures like preventing path traversal when serving project files.
-    - Uses `morgan` for request logging.
-- **Allowed Models:**
-    - `gemini-2.0-flash-thinking-exp-01-21` (Default/Fast)
-    - `gemini-2.5-pro-exp-03-25` (Better/Slower/Rate limited)
-    - `claude-3-7-sonnet-20250219`
-    - `deepseek-reasoner`
-    - `o3-mini`
-
-### 3.2. Frontend (`index.html`)
-
-- **Technology:** Single HTML file containing structure (HTML), styling (CSS within `<style>` tags),
-  and logic (JavaScript within `<script>` tags). Uses the `marked` library to render Markdown.
-- **Responsibilities:**
-    - Provides the user interface for:
-        - Inputting the API Key.
-        - Inputting the seed prompt.
-        - Selecting the LLM model.
-        - Starting and stopping the loop.
-    - Stores the API key and preferred model in the browser's Local Storage.
-    - Communicates with the backend API (`/api/kickoff`, `/api/loop`) using asynchronous `fetch`
-      requests.
-    - Sends the API key securely in the `Authorization: Bearer <key>` header.
-    - Displays status messages, iteration count, and loading indicators.
-    - Dynamically updates the `src` or `srcdoc` attributes of the `<iframe>` elements to display the
-      latest `README.md` and `index.html` from the corresponding project folder URL served by the
-      backend.
-    - Handles user interactions like button clicks (Run, Stop, Save API Key, Share, Open HTML).
-    - Provides links to external resources (Google AI Studio, GitHub).
-
-### 3.3. File System Storage
-
-- **Location:** A directory named `projects` resides in the application's root directory on the
-  server.
-- **Structure:**
-    - Each time a user starts a new loop ("kickoff"), a new folder is created inside `projects`
-      named with the current Unix timestamp (e.g., `projects/1678886400000`).
-    - Inside each timestamped project folder, subfolders are created for each iteration, named
-      numerically (e.g., `1`, `2`, `3`, ...).
-    - Iteration `1` contains the initial files:
-        - `README.md`: Contains the user's seed input.
-        - `index.html`: Basic placeholder HTML.
-        - `style.css`: Basic placeholder CSS.
-        - `script.js`: Basic placeholder JS.
-    - For subsequent iterations (e.g., iteration `N`), the backend first copies all files from
-      iteration `N-1` into the new folder `N`. Then, it runs the `autocode-ai` CLI within the folder
-      `N`, which modifies the files (`README.md`, `index.html`, etc.) in place based on its
-      generation process.
-- **Access:** Files within these folders are served statically by the backend via the `/projects/`
-  route, allowing the frontend iframes to load them.
-
-### 3.4. External Dependencies
-
-- **AutoCode CLI (`autocode-ai`):** The core AI generation engine used within each iteration. The
-  backend executes this tool via `bunx autocode-ai generate <model> <apiKey>`. It's expected to read
-  the current state from files (like `README.md`) in its working directory and update them based on
-  the LLM interaction.
-- **LLM APIs (e.g., Google AI):** The AutoCode CLI relies on external LLM APIs. The user provides
-  their own API key, which is passed to the CLI by the backend.
-
-## 4. Module Interactions / Workflow
-
-1.  **Initialization (User Loads Page):**
-
-    - User navigates to `https://autovibe.dev`.
-    - Browser loads `index.html`.
-    - Client-side JavaScript runs:
-        - Loads API key from Local Storage (if present) into the input field.
-        - Loads preferred model from Local Storage (if present) into the dropdown.
-        - Sets up event listeners for buttons and forms.
-
-2.  **API Key Setup (First time / Update):**
-
-    - User pastes their API key into the "Your Google AI API Key" field.
-    - User clicks "Save API Key".
-    - JavaScript saves the key to Local Storage and displays a confirmation message.
-
-3.  **Loop Kickoff:**
-
-    - User enters a "seed" prompt into the textarea.
-    - User selects a desired LLM model from the dropdown.
-    - User clicks the "Run Vibing Loop" button.
-    - Frontend JS:
-        - Validates that API key, seed, and model are present.
-        - Retrieves the API key from Local Storage.
-        - Disables the "Run" button, enables and shows the "Stop" button.
-        - Displays a "Kicking off..." status message.
-        - Sends a `POST` request to `/api/kickoff` with `{ seed: "...", model: "..." }` in the body
-          and `Authorization: Bearer <apiKey>` in the headers.
-
-4.  **Backend Kickoff Processing (`/api/kickoff`):**
-
-    - `app.js` receives the request.
-    - Validates the `Authorization` header and extracts the API key.
-    - Validates the `seed` and `model` from the request body.
-    - Generates a unique `folderName` (current Unix timestamp).
-    - Creates the directory structure: `./projects/{folderName}/1/`.
-    - Writes the `seed` content to `./projects/{folderName}/1/README.md`.
-    - Creates initial placeholder `index.html`, `style.css`, and `script.js` in
-      `./projects/{folderName}/1/`.
-    - Responds to the frontend with `201 Created` and JSON:
-      `{ "folderName": "...", "initialIteration": 1 }`.
-
-5.  **Frontend Kickoff Response Handling:**
-
-    - Frontend JS receives the successful kickoff response.
-    - Stores the `folderName` and sets `currentIteration` to `1`.
-    - Updates the iteration counter display ("Iteration 1").
-    - Calls `updateResultPreviews(folderName, 1)`:
-        - Fetches `/projects/{folderName}/1/README.md`, renders it using `marked`, and loads it into
-          the README iframe (`srcdoc`).
-        - Sets the `src` of the HTML preview iframe to `/projects/{folderName}/1/index.html`.
-        - Enables the "Share" and "Open HTML" buttons.
-    - Scrolls the page to the results section.
-    - Calls the `runIteration()` function to start the first actual AI iteration.
-
-6.  **Iterative Loop Execution (Frontend initiates):**
-
-    - Frontend JS (`runIteration()`):
-        - Checks if `isLoopRunning` is `true`.
-        - Determines the next iteration number (`iterationToRun = currentIteration + 1`).
-        - Updates UI: Shows spinner, displays "Running iteration {iterationToRun}..." status.
-        - Retrieves API key and selected model.
-        - Sends a `POST` request to `/api/loop` with
-          `{ folderName: "...", model: "...", iteration: iterationToRun }` and
-          `Authorization: Bearer <apiKey>`.
-
-7.  **Backend Iteration Processing (`/api/loop`):**
-
-    - `app.js` receives the request.
-    - Validates inputs (`folderName`, `model`, `iteration`, API key).
-    - Checks if the project folder and the _previous_ iteration folder exist.
-    - Creates the directory for the _current_ iteration:
-      `./projects/{folderName}/{iterationToRun}/`.
-    - Copies all files from the previous iteration folder
-      (`./projects/{folderName}/{iterationToRun - 1}/`) to the current iteration folder.
-    - Executes the command: `bunx autocode-ai generate {model} {apiKey}` with the `cwd` (current
-      working directory) set to `./projects/{folderName}/{iterationToRun}/`.
-        - This command interacts with the specified LLM API using the provided key.
-        - It modifies the files (`README.md`, `index.html`, etc.) within the current iteration
-          folder.
-    - Waits for the command to complete (or timeout - default 600s).
-    - If successful, responds with `200 OK` and JSON:
-      `{ "success": true, "message": "...", "cliOutput": "...", "iteration": iterationToRun }`.
-    - If failed (CLI error, timeout, invalid API key, safety block, etc.), responds with an
-      appropriate error status code (400, 401, 429, 500, 504) and JSON:
-      `{ "success": false, "message": "...", "error": "...", "iteration": iterationToRun }`.
-
-8.  **Frontend Iteration Response Handling:**
-
-    - Frontend JS receives the response from `/api/loop`.
-    - **On Success:**
-        - Updates `currentIteration` to the received `iteration` number.
-        - Updates UI: Hides spinner, shows success message, updates iteration counter ("Iteration
-          {N}").
-        - Calls `updateResultPreviews(folderName, currentIteration)` to refresh the iframes with the
-          newly generated content.
-        - If `isLoopRunning` is still `true`, schedules the next call to `runIteration()` using
-          `setTimeout` (e.g., after 500ms).
-    - **On Failure:**
-        - Displays the error message received from the backend.
-        - Calls `stopLoop()` to halt the process.
-
-9.  **Stopping the Loop:**
-
-    - User clicks the "Stop Loop" button.
-    - Frontend JS (`stopLoop()`):
-        - Sets `isLoopRunning = false`.
-        - Clears any pending `setTimeout` for the next iteration (`clearTimeout(loopTimeoutId)`).
-        - Updates UI: Disables "Stop" button, hides it, enables "Run" button, hides spinner.
-        - Displays a "Loop stopped" status message.
-        - Keeps the previews showing the last successfully completed iteration.
-
-10. **Sharing:**
-
-    - User clicks the "Share Project Link" button (enabled after first iteration).
-    - Frontend JS copies the URL
-      `https://autovibe.dev/projects/{folderName}/{currentIteration}/index.html` to the clipboard.
-    - Displays a temporary "Link copied!" feedback message.
-
-11. **Opening HTML:**
-    - User clicks the "Open HTML" button (enabled after first iteration).
-    - Frontend JS opens the URL `/projects/{folderName}/{currentIteration}/index.html` in a new
-      browser tab.
-
-## 5. API Endpoints
-
-| Method | Path                                       | Description                                                                                                  | Request Body                                                   | Headers                          | Success Response                                                                          | Error Response                                                                    |
-| :----- | :----------------------------------------- | :----------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------- | :------------------------------- | :---------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
-| `GET`  | `/`                                        | Serves the main `index.html` frontend application.                                                           | N/A                                                            | N/A                              | `200 OK` with HTML content                                                                | `404 Not Found` (if Accept header isn't HTML)                                     |
-| `POST` | `/api/kickoff`                             | Initializes a new project session and the first iteration based on a seed.                                   | `{ "seed": "string", "model": "string" }`                      | `Authorization: Bearer <apiKey>` | `201 Created` `{ "folderName": "...", "initialIteration": 1 }`                            | `400 Bad Request`, `401 Unauthorized`, `500 Internal Server Error` (JSON error)   |
-| `POST` | `/api/loop`                                | Executes the next iteration of the AutoCode process for a given project.                                     | `{ "folderName": "...", "model": "...", "iteration": number }` | `Authorization: Bearer <apiKey>` | `200 OK` `{ "success": true, "message": "...", "cliOutput": "...", "iteration": number }` | `400`, `401`, `404`, `429`, `500`, `504` (JSON error `{ "success": false, ... }`) |
-| `GET`  | `/projects/{folderName}/{iter}/{fileName}` | Serves static files generated during iterations (e.g., `index.html`, `README.md`, `style.css`, `script.js`). | N/A                                                            | N/A                              | `200 OK` with file content                                                                | `403 Forbidden` (Path Traversal), `404 Not Found`                                 |
-| `GET`  | `/api/*`                                   | Catch-all for undefined API routes.                                                                          | N/A                                                            | N/A                              | N/A                                                                                       | `404 Not Found` `{ "message": "API endpoint not found." }`                        |
-
-## 6. Usage Instructions (Getting Started)
-
-To start using autovibe.dev:
-
-1.  **Access the Website:** Navigate to [https://autovibe.dev](https://autovibe.dev).
-2.  **Configure API key:**
-    - Scroll down to the "Manage API Key" section.
-    - Obtain a free API key from [Google AI Studio](https://aistudio.google.com/apikey) (or another
-      supported provider if applicable).
-    - Paste the key into the "Your Google AI API Key" input field.
-    - Click "Save API Key". The key is stored locally in your browser.
-3.  **Input Your Seed:**
-    - Scroll to the "Start Your Loop" section.
-    - Enter your initial idea, concept, or prompt into the "Enter Your Seed" textarea. This defines
-      the starting point (`README.md` for Iteration 1).
-4.  **Select Model:** Choose the desired AI model from the dropdown menu. Your preference is saved
-    locally.
-5.  **Run the Loop:** Click the "Run Vibing Loop" button.
-    - Observe the status messages and the iteration counter below the button.
-    - The page will scroll down to the "Live Previews" section.
-6.  **Explore Output:**
-    - Wait for the first iteration results to appear in the "README Preview" and "Generated HTML
-      Preview" iframes.
-    - The iframes will refresh automatically as subsequent iterations complete.
-    - You can interact with the content within the "Generated HTML Preview" iframe.
-7.  **Stop:** If you want to stop the process, click the red "Stop Loop" button that appears while
-    the loop is running. The loop will terminate after the current iteration finishes (if one is in
-    progress), and you can review the results generated up to that point.
-8.  **Share / Open:** Once the loop is stopped or has run at least one iteration, you can:
-    - Click "Share Project Link" to copy the URL of the latest `index.html` preview to your
-      clipboard.
-    - Click "Open HTML" to open the latest `index.html` preview in a new tab.
-
-## 7. Installation (Local Development)
-
-To set up the project for local development:
-
-1.  **Prerequisites:**
-    - Install [Bun.sh](https://bun.sh/).
-    - Ensure `git` is installed.
-    - Ensure the `autocode-ai` CLI tool is accessible in your environment (e.g., via
-      `bunx autocode-ai` or globally installed). Check [AutoCode setup](https://autocode.work/).
-2.  **Clone the Repository:**
-    ```bash
-    git clone https://github.com/msveshnikov/autovibe
-    cd autovibe
-    ```
-3.  **Install Dependencies:**
-    ```bash
-    bun install
-    ```
-4.  **Run the Application:**
-
-    ```bash
-    bun run start
-    ```
-
-5.  **Access:** Open your web browser and navigate to `http://localhost:3000` (or the port specified
-    by `process.env.PORT`).
-
-## 8. Deployment (Docker)
-
-The project includes configuration for Docker deployment using `Dockerfile` and
-`docker-compose.yml`.
-
-1.  **Build the Docker Image (Optional):**
-
-- You can build the image locally: `docker build -t autovibe-local .`
-- Or use the pre-built image: `extender777/autovibe` (as specified in `docker-compose.yml`)
-
-2.  **Run using Docker Compose:**
-
-- Ensure Docker and Docker Compose are installed.
-- Create a `projects` directory in the same location as the `docker-compose.yml` file if it doesn't
-  exist: `mkdir projects`
-- Run the command:
-    ```bash
-    docker-compose up -d
-    ```
-- This will start the AutoVibe backend service using the specified image (`extender777/autovibe`).
-- It maps port `8030` on the host to port `3000` inside the container.
-- It mounts the local `./projects` directory to `/app/projects` inside the container, ensuring
-  generated project files persist on the host.
-- The service is configured to restart automatically unless explicitly stopped.
-
-3.  **Access:** The application should be accessible at `http://<your-docker-host-ip>:8030`.
-
-4.  **Stopping:**
-
+Clone, install and run:
 ```bash
-docker-compose down
+git clone https://github.com/msveshnikov/autovibe
+cd autovibe
+bun install
+bun run start
+# open http://localhost:3000
 ```
 
-## 9. Configuration
+Deployment (Docker)
+-------------------
+A Dockerfile and docker-compose.yml are provided. Basic usage:
+- Create local projects folder: `mkdir projects`
+- Build (optional): `docker build -t autovibe-local .`
+- Run: `docker-compose up -d`
+- Access: http://localhost:8030 (docker-compose maps host 8030 to container 3000)
 
-- **API Keys:** Managed client-side via the UI and stored in browser Local Storage
-  (`AutoVibeApiKey`). Passed to the backend via the `Authorization` header for each API call.
-- **LLM Models:** Selected client-side via a dropdown. The chosen model ID (`AutoVibeSelectedModel`)
-  is stored in Local Storage and sent to the backend with `/api/kickoff` and `/api/loop` requests.
-  The backend validates the model against `ALLOWED_MODELS` defined in `app.js` and uses the default
-  if an invalid or no model is provided.
-- **Port:** The backend server runs on port `3000` by default, but can be configured via the `PORT`
-  environment variable. The Docker Compose setup maps host port `8030` to this container port.
-- **AutoCode Timeout:** The execution timeout for the `autocode-ai` CLI command is hardcoded in
-  `app.js` (`executionTimeout = 600000` ms, i.e., 10 minutes).
+Configuration & Environment Variables
+-------------------------------------
+Introduce environment variables for configuration and production readiness. Consider adding a `.env.example` with keys like:
+- PORT (default 3000)
+- PROJECTS_DIR (default ./projects)
+- AUTOCODE_CLI_CMD (e.g., "bunx autocode-ai")
+- AUTOCODE_TIMEOUT_MS (e.g., 600000)
+- MAX_ITERATIONS (default cap)
+- ITERATION_DELAY_MS (delay between iterations)
+- LOG_LEVEL (info/warn/error/debug)
+- ALLOWED_MODELS (comma-separated list)
+- RETENTION_DAYS (auto-cleanup)
+- S3_BUCKET / DATABASE_URL / REDIS_URL (if using external storage/queue)
 
-## 10. Design Ideas and Future Considerations
+API Endpoints (summary)
+-----------------------
+- GET / — serves index.html
+- POST /api/kickoff — create new session and iteration 1 (requires Authorization: Bearer <key>)
+- POST /api/loop — run next iteration (requires Authorization)
+- GET /projects/{folder}/{iter}/{file} — static files for preview
+- GET /api/* — returns 404 for unknown API paths
 
-These are potential areas for future development, based on the initial README:
+Design Ideas & Future Considerations
+-----------------------------------
+This section outlines actionable design directions, architectural improvements, and operational considerations aligned with the current codebase and repository layout.
 
-**User Interface & Experience (UI/UX):**
+Principles to follow
+- Privacy-first: Avoid storing user API keys server-side unless necessary; use client-side storage or ephemeral proxies.
+- Reproducibility: Keep full iteration artifacts and metadata (manifest) per session so runs can be inspected and reproduced.
+- Safety and Limits: Enforce iteration limits, timeouts, and resource caps to prevent runaway usage.
+- Observability: Provide metrics, logs and health endpoints for safe operation and troubleshooting.
+- Modular & Testable: Refactor monolithic `app.js` into smaller modules (routes, controllers, services, utils) to improve maintainability and testing.
 
-- **Iteration History & Management:** Allow browsing, comparing, selecting, and downloading previous
-  iteration states (`README.md` and `index.html` versions) within a session.
-- **Advanced Configuration:** Add options for LLM temperature, max tokens, or specific `autocode-ai`
-  CLI flags directly in the UI.
-- **Seed Templates:** Offer pre-defined seed examples for common use cases (landing pages,
-  components, etc.).
+1) UX / Product
+- Iteration history UI: allow browsing, previewing, and diffing arbitrary iterations (side-by-side diff of README.md and rendered HTML).
+- Snapshot & compare: provide the ability to mark snapshots, compare two iterations, or export selected iterations as ZIP.
+- Templates: curated seed templates (landing page, marketing page, component stub).
+- Advanced run options: expose model parameters (temperature, max tokens) and autocode CLI flags in a collapsible "Advanced" UI.
+- Run budgets & safety: let users pick max iterations and tokens-per-iteration budgets before starting.
+- Share & privacy controls: allow sessions to be public, unlisted (tokenized share link), or private (requires authentication).
+- Embeddable previews: provide an embed snippet or an optional sanitized iframe with strict CSP and sandbox attributes.
 
-**Backend & Architecture:**
+2) Iteration Control & Safety
+- Max iterations: leverage a configurable MAX_ITERATIONS environment variable and per-session cap.
+- Stop conditions: allow automatic stopping criteria: no-change detection (files unchanged), safety block detection, token usage cap, or model response flags.
+- Backoff & retry: implement exponential backoff for rate-limited responses (429), with configurable retry limits.
+- CLI exit handling: capture CLI stdout/stderr streamed back to the UI; save outputs to iteration metadata.
+- Safety classification: scan outputs for disallowed content and either sanitize or stop the loop.
 
-- **Database Integration:** Replace file-system storage with a database (e.g., MongoDB, PostgreSQL)
-  for better querying, management, scalability, and potential user account features.
-- **State Management:** Implement more robust backend state tracking for loops (`pending`,
-  `running`, `completed`, `failed`, `stopped`).
-- **Session Persistence:** Allow users to save and resume sessions (requires user authentication and
-  database storage).
+3) Backend & Architecture
+- Refactor: split `app.js` into:
+  - routes/ (api routes)
+  - controllers/ (request handling)
+  - services/autocodeExecutor.js (CLI invocation + streaming + timeout)
+  - services/storage.js (filesystem abstraction & optional S3)
+  - models/session.js (session metadata management)
+- Replace timestamp-only folder names with UUIDs or timestamp+UUID for collision resistance.
+- Provide a session manifest file (session.json) inside each project folder that stores:
+  - id, createdAt, seed, model, status, iterations[] {iteration, timestamp, cliOutputFile, notes}
+- Job queue: move long-running CLI invocations to a background worker queue (Redis + BullMQ or similar) so HTTP endpoints return immediately with job IDs. This improves scalability and resiliency.
+- Workers: dedicated worker processes (or containers) execute autocode tasks and report status back to the main app.
 
-## 11. Contributing
+4) Storage, Persistence & Data Model
+- Session metadata: create session.json to record seed, model, config, iteration metadata, CLI logs and status.
+- Optional DB: introduce Postgres/MongoDB for session indexing, query, user accounts, and retention policies.
+- Object storage: store iteration artifacts (index.html, README.md, assets) in S3-compatible storage for durability and easier scaling; keep local cache or symlink for fast static serving.
+- Retention & cleanup: implement retention policy and TTL-based cleanup (configurable RETENTION_DAYS). Provide administrative CLI to purge or archive old projects.
 
-Contributions are welcome! Please refer to the `CONTRIBUTING.md` file for guidelines on submitting
-bug reports, feature requests, and pull requests.
+5) Execution, Isolation & Resource Management
+- Sandbox execution: execute autocode in isolated environments:
+  - Option A: run CLI inside an ephemeral container per iteration to limit filesystem access and resource usage.
+  - Option B: use process-level sandboxing (chroot-like or namespaces) plus non-root users.
+- Resource limits: enforce CPU/memory/time limits for CLI runs; set execution timeout and capture exits gracefully.
+- Concurrency control: limit number of concurrent CLI runs per server or globally with configurable worker pool size.
+- Streaming logs: stream autocode CLI logs to the frontend in real-time via SSE or WebSockets for better UX.
 
-## 12. License
+6) Security & Privacy
+- API keys:
+  - Do not log user API keys (mask them in logs).
+  - Prefer storing API keys client-side only. If server-side storage is required, encrypt keys at rest using a secrets manager.
+  - Consider an ephemeral proxy/token system to avoid long-term storage of user keys.
+- Input validation & sanitization: strictly validate all incoming inputs (seed, model, folder names, iteration numbers) to prevent path traversal and injection.
+- Static file serving:
+  - Enforce safe file serving with proper path resolution and deny-list for file types if necessary.
+  - Apply strong CSP headers and sandbox attributes for iframe previews.
+- HTTP security:
+  - Use secure headers via Helmet or equivalent.
+  - Require HTTPS in production; provide guidance for TLS (Let's Encrypt/Certbot, reverse proxy).
+- Authentication & Authorization:
+  - For private sessions and persistent accounts, add auth (OAuth, JWT or session-based).
+  - Provide role-based access for admin operations (cleanup, view logs).
+- Security policy & reporting:
+  - Add SECURITY.md and a disclosure process for responsible vulnerability reporting.
+  - Consider automated dependency scanning and SCA in CI.
 
-This project is licensed under the **MIT License**. (See `LICENSE` file).
+7) Observability, Metrics & Monitoring
+- Health endpoints: /health, /readiness and /metrics for system health and automated orchestration.
+- Metrics: expose Prometheus metrics:
+  - autovibe_iterations_total
+  - autovibe_iteration_duration_seconds
+  - autovibe_cli_exit_code_count
+  - autovibe_api_requests_total, autovibe_api_errors_total
+  - autovibe_queue_depth
+- Structured logs: use JSON-structured logs to centralize logs (ELK, Loki).
+- Alerting: set up alerting rules for high error rates, high queue length, or excessive memory/CPU usage.
+- Tracing: instrument critical paths (kickoff, loop execution) with tracing (Jaeger/OpenTelemetry).
 
-# TODO
+8) Testing, CI/CD & Developer Experience
+- Tests:
+  - Unit tests for services and utilities.
+  - Integration tests for API endpoints mocking the autocode CLI (or using a lightweight stub).
+  - E2E tests for the web UI using Puppeteer/Playwright (mocked LLM responses).
+- CI:
+  - Add GitHub Actions / GitLab CI for lint, tests, build, and container image push.
+  - Run security checks, dependency audits and formatting in CI.
+- Pre-commit: add git hooks with Husky or simple scripts for formatting and linting.
+- Local developer UX:
+  - Provide `.env.example`, `Makefile` or npm scripts for common tasks (dev, test, build).
+  - Provide a lightweight autocode CLI stub for local offline testing.
+
+9) Cost Control & Quotas
+- Per-session budget: allow users to set total tokens or cost caps for a session.
+- Iteration cost estimation: add a conservative cost estimator before each run and display running totals.
+- Alerts and automatic stop: stop the loop if budget is exceeded or the user has no remaining quota.
+- Rate limiting: global and per-IP rate limiting to control load and abuse.
+
+10) Accessibility, Internationalization & Legal
+- Accessibility: ensure UI elements are keyboard-accessible and follow WCAG guidelines.
+- Internationalization: allow localization of UI strings and seed templates for other languages.
+- Privacy policy & compliance: keep docs/privacy_policy.html updated and include mechanisms for data deletion on user request.
+- Legal: clarify terms of use regarding user-provided API keys and generated content ownership.
+
+Implementation Suggestions (short-term)
+- Add session manifest (session.json) to each project folder to track state and metadata.
+- Add simple background queue and worker to avoid blocking HTTP request threads during autocode runs.
+- Add metrics endpoint and basic health checks.
+- Introduce a download-as-zip feature and iteration diff UI.
+- Refactor app.js into modular directories to improve testability and maintainability.
+- Add .env.example and improved Dockerfile (multi-stage build + non-root user).
+
+Roadmap & Priorities
+--------------------
+Near-term:
+1. Refactor app.js into modular services and add session manifest.
+2. Implement job queue + worker for CLI runs (single-machine Redis-backed).
+3. Add iteration history UI and diffing.
+4. Add basic metrics, /health endpoint, and a CI workflow.
+
+Mid-term:
+1. Optional DB for session indexing and user accounts.
+2. S3-compatible artifact storage and retention policies.
+3. Per-iteration sandboxing (containerized execution).
+4. Public/private sharing controls and signed URLs.
+
+Long-term:
+1. Multi-tenant production architecture with autoscaling workers and robust RBAC.
+2. Integrated billing/usage dashboards and multi-provider LLM support.
+3. On-prem/self-hosted installation guide and Helm charts for Kubernetes deployment.
+
+Contributing
+------------
+Contributions are welcome. Please follow these best practices:
+- Open an issue first to discuss larger changes.
+- Add tests for new behavior or bug fixes.
+- Follow repository code style (.prettierrc) and run formatting before commits.
+- Provide a clear PR description and reference any relevant issues.
+
+Add or update these repository files to improve contributor experience:
+- CONTRIBUTING.md
+- CODE_OF_CONDUCT.md
+- SECURITY.md
+- .env.example
+- .gitignore
+- .github/workflows/ci.yml
+
+License
+-------
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+Acknowledgements & Notes
+------------------------
+- The project currently relies on the autocode-ai CLI and user-provided LLM API keys. Any changes that move keys server-side should be designed with encryption, user consent, and clear privacy controls.
+- The docs/ folder contains app metadata (app_description.txt, release_notes.txt, privacy_policy.html, etc.) — use it for release automation and store listing content where appropriate.
+
+This README focuses on practical and actionable design ideas to evolve AutoVibe from a file-system, single-process prototype into a production-ready, user-focused, and secure platform while preserving the lightweight iterative workflow that makes the tool compelling.
